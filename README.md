@@ -1,4 +1,4 @@
-![VsTools](http://www.menees.com/Images/VSTools.png)
+![VsTools](http://www.menees.com/Images/VSTools.png) ![windows build](https://github.com/menees/VsTools/workflows/windows%20build/badge.svg)
 # Menees VS Tools
 
 Menees VS Tools is an extension for Visual Studio.  It adds several new commands to process selected text, add new text, and work with open files.  It started life in 2001 as an add-in for Visual C++ 6, and it has been rewritten several times since for various versions of Visual Studio. Some of its commands are:
