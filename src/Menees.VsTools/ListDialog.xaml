@@ -1,0 +1,34 @@
+﻿<ui:DialogWindow x:Class="Menees.VsTools.ListDialog"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+		Title="List" MinHeight="500" MinWidth="300" SizeToContent="WidthAndHeight" x:ClassModifier="internal" WindowStartupLocation="CenterOwner"
+				 FocusManager.FocusedElement="{Binding ElementName=editBox}" ResizeMode="NoResize" ShowInTaskbar="False">
+	<Grid Margin="6">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<DockPanel Grid.ColumnSpan="2">
+			<Label x:Name="prompt" Content="Prompt:" DockPanel.Dock="Top"/>
+			<!--AlternationCount="1" AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"-->
+			<DataGrid x:Name="list" Margin="5,0" IsReadOnly="True" EnableRowVirtualization="False"
+					  HorizontalGridLinesBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+					  VerticalGridLinesBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" 
+					  AutoGenerateColumns="False" SelectionChanged="List_SelectionChanged" MouseDoubleClick="List_MouseDoubleClick" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="#" Binding="{Binding Path=Item1}"/>
+					<DataGridTextColumn x:Name="itemColumn" Header="Item" Binding="{Binding Path=Item2}"/>
+				</DataGrid.Columns>
+			</DataGrid>
+		</DockPanel>
+		<TextBox x:Name="editBox" Grid.Row="1" Grid.ColumnSpan="2" MaxWidth="600" Margin="6" TextChanged="EditBox_TextChanged" />
+		<Button x:Name="okayButton" Grid.Row="2" Content="OK" MinWidth="75" Margin="6" IsDefault="True" Click="OkayButton_Click" HorizontalAlignment="Right"/>
+		<Button Content="Cancel" Grid.Row="2" Grid.Column="1" MinWidth="75" Margin="6" IsCancel="True" HorizontalAlignment="Left"/>
+	</Grid>
+</ui:DialogWindow>

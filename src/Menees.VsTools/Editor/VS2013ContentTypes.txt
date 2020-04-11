@@ -1,0 +1,116 @@
+-- See notes at end.
+
+UNKNOWN
+intellisense : text
+quickinfo : intellisense
+text : any
+snippet picker : text
+Output : text
+ConsoleOutput : Output
+FindResults : text
+code : text
+Command : code
+Immediate : code
+any
+projection : any
+plaintext : text
+inert
+sighelp-doc : intellisense
+sighelp : intellisense
+htmlx : text, code
+ASP : htmlx
+ASP.NET : htmlx
+aspx : ASP.NET
+asax : ASP.NET
+ascx : ASP.NET
+ashx : ASP.NET
+asmx : ASP.NET
+javascript : code, code
+underscore : javascript
+wsh : htmlx
+srf : htmlx
+svc : ASP.NET
+msgx : ASP.NET
+master : ASP.NET
+htc : htmlx
+css : projection, text, code
+Razor : htmlx
+RazorCSharp : Razor
+RazorVisualBasic : Razor
+vbscript : text, code
+ResJSON : code, code
+Basic : code, code
+vbHostable : Basic
+vbExpression : vbHostable
+CoffeeScript : text, code
+css.extensions : css
+handlebars : htmlx
+mustache : htmlx
+LESS : css.extensions, code
+SCSS : css.extensions, code
+JSON : code, code
+TypeScript : code, code
+PowerShell.v3 : code, code
+C/C++ : code
+CSharp : code
+ENC : code
+F# : code
+FSharpInteractive : code
+HTML : code
+Memory : code
+RDL Expression : code
+Register : code
+SQL Server Tools : code
+T-SQL90 : code
+XAML : code
+XML : code
+XOML : code
+TFSourceControlOutput : Output
+BuildOutput : Output
+BuildOrderOutput : Output
+DatabaseOutput : Output
+TestsOutput : Output
+SourceControlOutput : Output
+DebugOutput : Output
+
+
+All of the IContentTypes above have TypeName == DisplayName.
+ContentTypeAttribute and IContentTypeRegistryService.AddContentType only take a TypeName.
+Put the code below in HighlightTextViewListener.cs to get a list of current content types.
+
+		private static bool initialized;
+
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
+		[Import]
+		internal IContentTypeRegistryService ContentTypeRegistryService { get; set; }
+
+		public void SubjectBuffersConnected(IWpfTextView textView, ConnectionReason reason, Collection<ITextBuffer> subjectBuffers)
+		{
+			if (!initialized)
+			{
+				initialized = true;
+				string result = string.Join("\r\n", this.ContentTypeRegistryService.ContentTypes.Select(c => GetContextTypeInfo(c)));
+				Debug.WriteLine(result);
+			}
+		}
+
+		private static string GetContextTypeInfo(IContentType type)
+		{
+			StringBuilder sb = new StringBuilder();
+			sb.Append(type.TypeName);
+			if (type.TypeName != type.DisplayName)
+			{
+				sb.Append(" (").Append(type.DisplayName).Append(")");
+			}
+
+			bool first = true;
+			foreach (IContentType baseType in type.BaseTypes)
+			{
+				sb.Append(first ? " : " : ", ");
+				sb.Append(baseType.TypeName);
+				first = false;
+			}
+
+			return sb.ToString();
+		}
+		

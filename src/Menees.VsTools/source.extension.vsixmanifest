@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="Menees VS Tools 2019" Version="1.0.4" Language="en-US" Publisher="Bill Menees" />
+        <DisplayName>Menees VS Tools 2019</DisplayName>
+        <Description xml:space="preserve">Provides several new commands such as Sort, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, and ExpandAllRegions. Also, provides colorized text in the Output and Find Results windows.</Description>
+        <MoreInfo>https://github.com/menees/VsTools</MoreInfo>
+        <License>Resources\LICENSE</License>
+        <Icon>Resources\Package.ico</Icon>
+        <PreviewImage>Resources\PreviewImage.png</PreviewImage>
+        <Tags>Sort, Trim, Whitespace, Statistics, Execute, Region, Guid, Collapse, Expand, Comments, TODO</Tags>
+    </Metadata>
+    <Installation InstalledByMsi="false">
+        <!-- http://blogs.msdn.com/b/visualstudio/archive/2013/08/08/update-for-extension-authors-vsix-manifest-version-ranges.aspx -->
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0,17.0)" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.6,)" />
+        <Dependency Id="Microsoft.VisualStudio.MPF.12.0" DisplayName="Visual Studio MPF 12.0" d:Source="Installed" Version="[12.0,)" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0.28315.86,17.0)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
+</PackageManifest>

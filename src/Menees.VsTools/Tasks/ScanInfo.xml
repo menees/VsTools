@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ScanInfo>
+	<Style Name="C">
+		<SingleLineDelimiter>//</SingleLineDelimiter>
+		<MultiLineDelimiter Begin="/*" End="*/" />
+		<Languages>CPlusPlus, CSharp, IDL, JavaScript, TypeScript</Languages>
+		<Extensions>cs, c, cpp, cxx, cc, java, js, ts, cshtml, h, hpp, inl, idl, tli, tlh, hh, hxx, rc, aspx, ascx, master, asax</Extensions>
+	</Style>
+
+	<Style Name="VB">
+		<SingleLineDelimiter>'</SingleLineDelimiter>
+		<Languages>VB, VBScript</Languages>
+		<Extensions>vb, vbs, vbhtml, aspx, ascx, master, asax</Extensions>
+	</Style>
+
+	<Style Name="SQL">
+		<SingleLineDelimiter>--</SingleLineDelimiter>
+		<MultiLineDelimiter Begin="/*" End="*/" />
+		<Languages>SQL</Languages>
+		<Extensions>sql</Extensions>
+	</Style>
+
+	<Style Name="XML/HTML">
+		<MultiLineDelimiter Begin="&lt;!--" End="--&gt;"/>
+		<!-- Note: ScanInfo.Infer treats XML as a required language. -->
+		<Languages>XML, HTML</Languages>
+		<Extensions>
+			xml, xaml, xoml, htm, html, config, settings, xsd, wsdl, resx, csproj, vbproj, vcxproj,
+			xsl, xslt, edmx, dbml, cshtml, vbhtml, aspx, ascx, master, ps1xml, xhtml, svg, myapp
+		</Extensions>
+	</Style>
+
+	<Style Name="CSS">
+		<MultiLineDelimiter Begin="/*" End="*/" />
+		<Languages>CSS</Languages>
+		<Extensions>css, htm, html, cshtml, vbhtml, aspx, ascx, master, less</Extensions>
+	</Style>
+
+	<Style Name="F#">
+		<SingleLineDelimiter>//</SingleLineDelimiter>
+		<MultiLineDelimiter Begin="(*" End="*)" />
+		<Languages>FSharp</Languages>
+		<Extensions>fs, fsi, fsx, fsscript</Extensions>
+	</Style>
+
+	<Style Name="Batch">
+		<SingleLineDelimiter>REM</SingleLineDelimiter>
+		<SingleLineDelimiter>::</SingleLineDelimiter>
+		<Extensions>bat, cmd</Extensions>
+	</Style>
+
+	<Style Name="PowerShell">
+		<SingleLineDelimiter>#</SingleLineDelimiter>
+		<MultiLineDelimiter Begin="&lt;#" End="#&gt;"/>
+		<Languages>PowerShell</Languages>
+		<Extensions>ps1, psm1, psc1, psd1, ps1xml</Extensions>
+	</Style>
+
+	<Style Name="Razor">
+		<MultiLineDelimiter Begin="@*" End="*@"/>
+		<Extensions>cshtml, vbhtml</Extensions>
+	</Style>
+
+	<Style Name="AspNet">
+		<MultiLineDelimiter Begin="&lt;%--" End="--%&gt;"/>
+		<Extensions>aspx, ascx, master</Extensions>
+	</Style>
+
+	<Style Name="Python/Solution">
+		<SingleLineDelimiter>#</SingleLineDelimiter>
+		<Languages>Python</Languages>
+		<Extensions>py, sln, editorconfig</Extensions>
+	</Style>
+
+	<Style Name="Asm/Ini/Reg">
+		<SingleLineDelimiter>;</SingleLineDelimiter>
+		<Extensions>asm, ini, reg</Extensions>
+	</Style>
+
+	<Style Name="PlainText">
+		<SingleLineDelimiter><!-- None --></SingleLineDelimiter>
+		<!-- Note: ScanInfo.Infer treats PlainText as a required language. -->
+		<Languages>PlainText</Languages>
+		<Extensions>txt</Extensions>
+	</Style>
+
+	<Binary Name="Image/Font">
+		<Extensions>
+			gif, jpg, jpe, jpeg, png, bmp, dib, tif, wmf, ras, eps, pcx, pcd, tga, dds, ico, pdn, img, jfif, ttf, eot, woff
+		</Extensions>
+	</Binary>
+
+	<Binary Name="Database">
+		<Extensions>
+			mdf, mdb, accdb
+		</Extensions>
+	</Binary>
+
+	<Binary Name="Audio/Video">
+		<Extensions>
+			wav, ra, ram, au, aiff, mp2, mp3, mp4, avi, mpg, mpeg, mov, qt, mid, midi, wma, wmv, flc
+		</Extensions>
+	</Binary>
+
+	<Binary Name="Container">
+		<Extensions>
+			zip, gz, tgz, tar, 7z, rar, bz, bz2, arc, hqx, lha, tbz, tbz2, taz
+		</Extensions>
+	</Binary>
+
+	<Binary Name="Document">
+		<Extensions>
+			docx, doc, xlsx, xls, pdf, pptx, ppt, mht, mhtml, msg, odp, ods, odt, pub, rtf, xps, ps
+		</Extensions>
+	</Binary>
+
+	<Binary Name="Executable/Debug/Development">
+		<Extensions>
+			exe, dll, ocx, sys, cd, rdlc, bsc, dmp, mdmp, hdmp, pri, resources, res, aps, chm, msi, msp, rgs, tlb, xbap, map
+		</Extensions>
+	</Binary>
+</ScanInfo>

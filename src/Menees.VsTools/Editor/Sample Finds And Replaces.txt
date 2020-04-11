@@ -1,0 +1,64 @@
+----------------------------------------------------------------------------------------------------------------------------------
+-- Simplest Find with nothing checked.
+----------------------------------------------------------------------------------------------------------------------------------
+Find all "OutputHighlightType", Subfolders, Keep modified files open, Find Results 1, "C:\Projects\DotNetSuite\Extensibility\ThirdParty Samples\VS Color Output\vscoloroutput_9f1008bf223b\VSColorOutput", "*.*"
+  Matching lines: 0    Matching files: 0    Total files searched: 18
+
+----------------------------------------------------------------------------------------------------------------------------------
+-- Uses ", List filenames only" option
+----------------------------------------------------------------------------------------------------------------------------------
+Find all "IVsTextView", Match case, Whole word, Regular expressions, Subfolders, Keep modified files open, List filenames only, Find Results 1, "C:\Projects\DotNetSuite\Extensibility\ThirdParty Samples\VS Color Output\vscoloroutput_9f1008bf223b\VSColorOutput", "*.cs"
+  C:\Projects\DotNetSuite\Extensibility\ThirdParty Samples\VS Color Output\vscoloroutput_9f1008bf223b\VSColorOutput\TextManagerEvents.cs
+  Matching files: 1    Total files searched: 15
+
+----------------------------------------------------------------------------------------------------------------------------------
+-- Multiple results with match text included
+----------------------------------------------------------------------------------------------------------------------------------
+Find all "IVsTextView", Match case, Regular expressions, Subfolders, Keep modified files open, Find Results 1, "C:\Projects\DotNetSuite\Extensibility\ThirdParty Samples\VS Color Output\vscoloroutput_9f1008bf223b\VSColorOutput", "*.cs"
+  C:\Projects\DotNetSuite\Extensibility\ThirdParty Samples\VS Color Output\vscoloroutput_9f1008bf223b\VSColorOutput\TextManagerEvents.cs(37):        public void OnRegisterView(IVsTextView pView)
+  C:\Projects\DotNetSuite\Extensibility\ThirdParty Samples\VS Color Output\vscoloroutput_9f1008bf223b\VSColorOutput\TextManagerEvents.cs(41):        public void OnUnregisterView(IVsTextView pView)
+  Matching lines: 2    Matching files: 1    Total files searched: 15
+
+----------------------------------------------------------------------------------------------------------------------------------
+-- Use a regex that starts with , and ends with "
+----------------------------------------------------------------------------------------------------------------------------------
+Find all ", int"", Match case, Regular expressions, Subfolders, Keep modified files open, Find Results 1, "C:\Projects\DotNetSuite\Extensibility\ThirdParty Samples\VS Color Output\vscoloroutput_9f1008bf223b\VSColorOutput", "*.cs"
+  Matching lines: 0    Matching files: 0    Total files searched: 15
+
+  Note: Using a leading comma causes an exception in VSColorOutput:
+	System.ArgumentOutOfRangeException: Length cannot be less than zero.
+	Parameter name: length
+	   at System.String.Substring(Int32 startIndex, Int32 length)
+	   at BlueOnionSoftware.FindResultsClassifier.CanSearch(SnapshotSpan span)
+	   at BlueOnionSoftware.FindResultsClassifier.GetClassificationSpans(SnapshotSpan span)
+	   at Microsoft.VisualStudio.Text.Classification.Implementation.ClassifierTagger.<GetTags>d__0.MoveNext()
+	   at Microsoft.VisualStudio.Text.Tagging.Implementation.TagAggregator`1.<GetTagsForBuffer>d__5.MoveNext()
+	   
+----------------------------------------------------------------------------------------------------------------------------------
+-- Turned off "Include sub-folders" option
+----------------------------------------------------------------------------------------------------------------------------------
+Find all "Testing", Keep modified files open, Find Results 1, "C:\Projects", "*.cs"
+  No files were found to look in.
+
+----------------------------------------------------------------------------------------------------------------------------------
+-- Clicked "Stop Find" to cancel a Find.
+----------------------------------------------------------------------------------------------------------------------------------
+Find all "string\s\b(_\w+|[\w-[0-9_]]\w*)Text", Regular expressions, Subfolders, Keep modified files open, Find Results 1, "C:\Projects", "*.cs"
+  C:\Projects\Antlr\277\examples\csharp\csharp_v1\CSharpFlexLexer.cs(1411):  public String yytext() {
+  C:\Projects\CSharp\AdoNetMetadataExplorer\MetadataTreeNode.cs(116):		public static string GetExceptionText(Exception ex)
+  C:\Projects\CSharp\CableModemMonitor\HtmlTextReader.cs(9):		public HtmlTextReader(string strText, bool bIgnoreCase)
+  Matching lines: 3    Matching files: 3    Total files searched: 838
+  Find was stopped in progress.
+
+----------------------------------------------------------------------------------------------------------------------------------
+-- Clicked "Replace in Files" with "Keep modified files open after Replace All" unchecked.
+----------------------------------------------------------------------------------------------------------------------------------
+Replace all "Form1", "FormReplace1", Subfolders, Find Results 2, Entire Solution, ""
+  C:\Projects\DotNetSuite\Testing\WindowsFormsApplication2\Form1.cs(14,23):	public partial class FormReplace1 : Form
+  C:\Projects\DotNetSuite\Testing\WindowsFormsApplication2\Form1.cs(20,16):        public FormReplace1()	
+  C:\Projects\DotNetSuite\Testing\WindowsFormsApplication2\Form1.Designer.cs(3,16):	partial class FormReplace1
+  C:\Projects\DotNetSuite\Testing\WindowsFormsApplication2\Form1.Designer.cs(58,7):			// FormReplace1
+  C:\Projects\DotNetSuite\Testing\WindowsFormsApplication2\Form1.Designer.cs(67,17):			this.Name = "FormReplace1";
+  C:\Projects\DotNetSuite\Testing\WindowsFormsApplication2\Form1.Designer.cs(68,17):			this.Text = "FormReplace1";
+  C:\Projects\DotNetSuite\Testing\WindowsFormsApplication2\Program.cs(19,24):			Application.Run(new FormReplace1());
+  Total replaced: 7  Matching files: 3  Total files searched: 11

@@ -1,0 +1,460 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!--  This is the file that defines the actual layout and type of the commands.
+				It is divided in different sections (e.g. command definition, command
+				placement, ...), with each defining a specific set of properties.
+				See the comment before each section for more details about how to
+				use it. -->
+
+	<!--  The VSCT compiler (the tool that translates this file into the binary
+				format that VisualStudio will consume) has the ability to run a preprocessor
+				on the vsct file; this preprocessor is (usually) the C++ preprocessor, so
+				it is possible to define includes and macros with the same syntax used
+				in C++ files. Using this ability of the compiler here, we include some files
+				defining some of the constants that we will use inside the file. -->
+
+	<!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+	<Extern href="stdidcmd.h"/>
+
+	<!--This header contains the command ids for the menus provided by the shell.
+	C:\Program Files\Microsoft Visual Studio 11.0\VSSDK\VisualStudioIntegration\Common\Inc\vsshlids.h-->
+	<Extern href="vsshlids.h"/>
+
+	<!--The Commands section is where the commands, menus and menu groups are defined.
+			This section uses a Guid to identify the package that provides the command defined inside it. -->
+	<Commands package="MainPackage">
+		<!-- Inside this section we have different sub-sections: one for the menus, another
+		for the menu groups, one for the buttons (the actual commands), one for the combos
+		and the last one for the bitmaps used. Each element is identified by a command id that
+		is a unique pair of guid and numeric identifier; the guid part of the identifier is usually
+		called "command set" and is used to group different commands inside a logically related
+		group; your package should define its own command set in order to avoid collisions
+		with command ids defined by other packages. -->
+
+		<!-- In this section you can define new menu groups. A menu group is a container for
+				 other menus or buttons (commands); from a visual point of view you can see the
+				 group as the part of a menu contained between two lines. The parent of a group
+				 must be a menu. -->
+		<Groups>
+			<Group guid="CommandSet" id="ToolbarGroup1" priority="0x0100"/>
+			<Group guid="CommandSet" id="ToolbarGroup2" priority="0x0100"/>
+			<Group guid="CommandSet" id="EditOutliningGroup" priority="0x0100"/>
+			<Group guid="CommandSet" id="ToolsMenuGroup" priority="0x0100"/>
+			<Group guid="CommandSet" id="ToolsSubMenuGroup01" priority="0x0101"/>
+			<Group guid="CommandSet" id="ToolsSubMenuGroup02" priority="0x0102"/>
+		</Groups>
+
+		<!--Buttons section. -->
+		<!--This section defines the elements the user can interact with, like a menu command or a button
+				or combo box in a toolbar. -->
+		<Buttons>
+			<!--The MSDN docs for the <Strings> element are wrong, but the following blog article is correct:
+			http://alinconstantin.blogspot.com/2011/08/element-in-vsct-files-buttontext.html
+			To specify the command name displayed for the Keyboard options and Command Window, we have
+			to specify both LocCanonicalName and CanonicalName.  The <CommandName> means something else.
+			-->
+			<!--
+			Current accelerator characters (indicated with an &amp; prefix per
+			http://msdn.microsoft.com/en-us/library/cc826040.aspx):
+			S		Sort Lines
+			T		Trim
+			A		Statistics
+			G		Generate GUID
+			X		Execute Text
+			F		Execute File
+			D		Add Region
+			C		Collapse All Regions
+			P		Expand All Regions
+			O	Comment Selection (2)
+			U		Uncomment Selection (2)
+			N		Add TODO Comment
+			-->
+			<Button guid="CommandSet" id="SortLines" priority="0x0100" type="Button">
+				<Icon guid="Images" id="SortLines" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>&amp;Sort Lines</ButtonText>
+					<ToolTipText>Sorts the selected lines of text</ToolTipText>
+					<CanonicalName>Menees.VsTools.SortLines</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.SortLines</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="Trim" priority="0x0102" type="Button">
+				<Icon guid="Images" id="Trim" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>&amp;Trim</ButtonText>
+					<ToolTipText>Trims whitespace from the selected lines of text</ToolTipText>
+					<CanonicalName>Menees.VsTools.Trim</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.Trim</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="Statistics" priority="0x0103" type="Button">
+				<Icon guid="Images" id="Statistics" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>St&amp;atistics</ButtonText>
+					<ToolTipText>Calculates some basic statistics for the selected lines of text</ToolTipText>
+					<CanonicalName>Menees.VsTools.Statistics</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.Statistics</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="GenerateGuid" priority="0x0106" type="Button">
+				<Icon guid="Images" id="GenerateGuid" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>&amp;Generate GUID</ButtonText>
+					<ToolTipText>Generates a new GUID and pastes it in the selection</ToolTipText>
+					<CanonicalName>Menees.VsTools.GenerateGuid</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.GenerateGuid</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="ExecuteText" priority="0x0107" type="Button">
+				<Icon guid="Images" id="ExecuteText" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Execute Te&amp;xt</ButtonText>
+					<ToolTipText>Executes the selected lines of text</ToolTipText>
+					<CanonicalName>Menees.VsTools.ExecuteText</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.ExecuteText</LocCanonicalName>
+				</Strings>
+			</Button>
+
+			<Button guid="CommandSet" id="ExecuteFile" priority="0x0108" type="Button">
+				<Icon guid="Images" id="ExecuteFile" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Execute &amp;File</ButtonText>
+					<ToolTipText>Executes the current file with its associated program</ToolTipText>
+					<CanonicalName>Menees.VsTools.ExecuteFile</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.ExecuteFile</LocCanonicalName>
+				</Strings>
+			</Button>
+
+			<Button guid="CommandSet" id="AddRegion" priority="0x0111" type="Button">
+				<Icon guid="Images" id="AddRegion" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>A&amp;dd Region</ButtonText>
+					<ToolTipText>Surrounds the current selection with a #region</ToolTipText>
+					<CanonicalName>Menees.VsTools.AddRegion</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.AddRegion</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CollapseAllRegions" priority="0x0112" type="Button">
+				<Icon guid="Images" id="CollapseAllRegions" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>&amp;Collapse All Regions</ButtonText>
+					<ToolTipText>Collapses all of the #regions in the file</ToolTipText>
+					<CanonicalName>Menees.VsTools.CollapseAllRegions</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CollapseAllRegions</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="ExpandAllRegions" priority="0x0113" type="Button">
+				<Icon guid="Images" id="ExpandAllRegions" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Ex&amp;pand All Regions</ButtonText>
+					<ToolTipText>Expands all of the #regions in the file</ToolTipText>
+					<CanonicalName>Menees.VsTools.ExpandAllRegions</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.ExpandAllRegions</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CommentSelection" priority="0x0114" type="Button">
+				<Icon guid="Images" id="CommentSelection" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>C&amp;omment Selection (2)</ButtonText>
+					<ToolTipText>Comments out the selected lines.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CommentSelection</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CommentSelection</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="UncommentSelection" priority="0x0115" type="Button">
+				<Icon guid="Images" id="UncommentSelection" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>&amp;Uncomment Selection (2)</ButtonText>
+					<ToolTipText>Uncomments the selected lines.</ToolTipText>
+					<CanonicalName>Menees.VsTools.UncommentSelection</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.UncommentSelection</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="AddToDoComment" priority="0x116" type="Button">
+				<Icon guid="Images" id="AddToDoComment"/>
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Add TODO Comme&amp;nt</ButtonText>
+					<ToolTipText>Adds a TODO comment.</ToolTipText>
+					<CanonicalName>Menees.VsTools.AddToDoComment</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.AddToDoComment</LocCanonicalName>
+				</Strings>
+			</Button>
+		</Buttons>
+
+		<!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
+		<Bitmaps>
+			<!--  The bitmap id is defined in a way that is a little bit different from the others:
+						the declaration starts with a guid for the bitmap strip, then there is the resource id of the
+						bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
+						inside a button definition. An important aspect of this declaration is that the element id
+						must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
+			<Bitmap guid="Images" href="Resources\Images.png" usedList="SortLines, Trim, Statistics, ExecuteText, ExecuteFile, GenerateGuid, AddRegion, ExpandAllRegions, CollapseAllRegions, CommentSelection, UncommentSelection, AddToDoComment"/>
+		</Bitmaps>
+
+		<Menus>
+			<Menu guid="CommandSet" id="ToolsSubMenu" type="Menu">
+				<!--By default, Menu visibility is based on at least one child being visible, per Ryan Molden from Microsoft.
+				http://social.msdn.microsoft.com/Forums/en-US/vsx/thread/2b671222-b0c7-4e6b-ae12-ddb43b119078
+				If we used DefaultInvisible and DynamicVisibility here, we'd have to provide a QueryStatus handler for the
+				ToolsSubMenu ID to provide custom visibility logic.  We only do that for commands right now, and the
+				default menu visibility logic is just what we need.-->
+				<Strings>
+					<ButtonText>&amp;Menees VS Tools</ButtonText>
+				</Strings>
+			</Menu>
+
+			<Menu guid="CommandSet" id="Toolbar" type="Toolbar" priority="0x0100">
+				<!--According to http://msdn.microsoft.com/en-us/library/bb491716.aspx, the DynamicVisibility flag
+				doesn't apply to commands on toolbars.  So we'll leave it out (along with DefaultInvisible).-->
+				<CommandFlag>DefaultDocked</CommandFlag>
+				<Strings>
+					<ButtonText>Menees VS Tools</ButtonText>
+				</Strings>
+			</Menu>
+		</Menus>
+
+	</Commands>
+
+	<CommandPlacements>
+		<!--Tools -> Menees VS Tools-->
+		<CommandPlacement guid="CommandSet" id="SortLines" priority="0x0100">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="Trim" priority="0x0102">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="Statistics" priority="0x0103">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="GenerateGuid" priority="0x0106">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ExecuteText" priority="0x0107">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ExecuteFile" priority="0x0108">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="AddRegion" priority="0x0111">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CollapseAllRegions" priority="0x0112">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ExpandAllRegions" priority="0x0113">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CommentSelection" priority="0x0114">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="UncommentSelection" priority="0x0115">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="AddToDoComment" priority="0x0116">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToolsSubMenuGroup01" priority="0x0101">
+			<Parent guid="CommandSet" id="ToolsSubMenu" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToolsSubMenuGroup02" priority="0x0102">
+			<Parent guid="CommandSet" id="ToolsSubMenu" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToolsSubMenu" priority="0x0100">
+			<Parent guid="CommandSet" id="ToolsMenuGroup" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToolsMenuGroup" priority="0x0100">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+		</CommandPlacement>
+
+		<!--Edit -> Outlining-->
+		<CommandPlacement guid="CommandSet" id="AddRegion" priority="0x0100">
+			<Parent guid="CommandSet" id="EditOutliningGroup" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CollapseAllRegions" priority="0x0101">
+			<Parent guid="CommandSet" id="EditOutliningGroup" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ExpandAllRegions" priority="0x0102">
+			<Parent guid="CommandSet" id="EditOutliningGroup" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="EditOutliningGroup" priority="0xFFFF">
+			<!-- This puts our region commands under the main menu's Edit -> Outlining sub-menu. -->
+			<Parent guid="guidStdEditor" id="IDM_VS_EDITOR_OUTLINING_MENU" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="EditOutliningGroup" priority="0xFFFF">
+			<!-- This puts our region commands under the editor context menu's Outlining sub-menu. -->
+			<!-- This id came from C:\Program Files (x86)\Microsoft Visual Studio 12.0\VSSDK\VisualStudioIntegration\Common\Inc\ShellCmdPlace.vsct -->
+			<Parent guid="guidStdEditor" id="IDM_VS_EDITOR_CSCD_OUTLINING_MENU"/>
+		</CommandPlacement>
+
+		<!--Toolbar-->
+		<!--I wanted to have a few commands visible by default and then all the remaining
+		commands available in the toolbar's spillover section.  However, according to Ryan Molden
+		at Microsoft, that's not possible in VS 2012.  Only Microsoft's tools can configure buttons
+		that aren't visible by default.  Now I'm showing all the main commands because it's much
+		easier for a user to turn off buttons than to add them.
+		http://social.msdn.microsoft.com/Forums/en-US/vsx/thread/14a0a46d-0002-4828-8028-46ce4411b50f
+		-->
+		<CommandPlacement guid="CommandSet" id="SortLines" priority="0x0100">
+			<Parent guid="CommandSet" id="ToolbarGroup1" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="Trim" priority="0x0102">
+			<Parent guid="CommandSet" id="ToolbarGroup1" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="Statistics" priority="0x0103">
+			<Parent guid="CommandSet" id="ToolbarGroup1" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="GenerateGuid" priority="0x0106">
+			<Parent guid="CommandSet" id="ToolbarGroup1" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ExecuteText" priority="0x0107">
+			<Parent guid="CommandSet" id="ToolbarGroup1" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ExecuteFile" priority="0x0108">
+			<Parent guid="CommandSet" id="ToolbarGroup1" />
+		</CommandPlacement>
+
+		<CommandPlacement guid="CommandSet" id="AddRegion" priority="0x0100">
+			<Parent guid="CommandSet" id="ToolbarGroup2" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CollapseAllRegions" priority="0x0101">
+			<Parent guid="CommandSet" id="ToolbarGroup2" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ExpandAllRegions" priority="0x0102">
+			<Parent guid="CommandSet" id="ToolbarGroup2" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CommentSelection" priority="0x0103">
+			<Parent guid="CommandSet" id="ToolbarGroup2" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="UncommentSelection" priority="0x0104">
+			<Parent guid="CommandSet" id="ToolbarGroup2" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="AddToDoComment" priority="0x0105">
+			<Parent guid="CommandSet" id="ToolbarGroup2" />
+		</CommandPlacement>
+
+		<CommandPlacement guid="CommandSet" id="ToolbarGroup1" priority="0x0101">
+			<Parent guid="CommandSet" id="Toolbar" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToolbarGroup2" priority="0x0102">
+			<Parent guid="CommandSet" id="Toolbar" />
+		</CommandPlacement>
+	</CommandPlacements>
+
+	<VisibilityConstraints>
+		<!--VS delay-loads packages so it can start up faster.  It won't load our package until the
+		first visible command is clicked or until one of the UICONTEXTs
+		in our package's [ProvideAutoLoad(UICONTEXT_*)] attributes occurs.  Those need to list
+		the same UICONTEXTs as in the visibility constraints below.  These contraints are only
+		applied once our package is loaded, so the same UICONTEXTs need to be used in both places.
+
+		See the following article for info on using <VisibilityConstraints> and <VisibilityItem>
+		"Implementing Menu Commands for Optimal Availability"	http://technet.microsoft.com/en-us/library/bb165339(v=vs.90).aspx.
+		More about ProvideAutoLoad: http://blogs.realdolmen.com/experts/2010/09/07/some-clarity-on-auto-loading-visual-studio-2010-extensions/
+		http://dotneteers.net/blogs/divedeeper/archive/2008/03/23/LVNSideBar1.aspx
+		-->
+		<VisibilityItem guid="CommandSet" id="SortLines" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="Trim" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="Statistics" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="GenerateGuid" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="ExecuteText" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="ExecuteFile" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="AddRegion" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="CollapseAllRegions" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="ExpandAllRegions" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="CommentSelection" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="UncommentSelection" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="AddToDoComment" context="UICONTEXT_CodeWindow" />
+	</VisibilityConstraints>
+
+	<KeyBindings>
+		<!--According to Ryan Molden at Microsoft, using GUID_TextEditorFactory will restrict to the text editor,
+		and using guidVSStd97 will apply the key binding in the global scope.
+		http://social.msdn.microsoft.com/Forums/en-US/vsx/thread/75abe9d3-d263-40c7-b07a-8e4c06fcbf15 -->
+		<KeyBinding guid="CommandSet" id="AddRegion" mod1="Control" key1="K" mod2="Control" key2="O" editor="GUID_TextEditorFactory"/>
+		<KeyBinding guid="CommandSet" id="CollapseAllRegions" mod1="Control" key1="M" mod2="Control" key2="K" editor="GUID_TextEditorFactory"/>
+		<KeyBinding guid="CommandSet" id="AddToDoComment" mod1="Control" key1="K" mod2="Control" key2="VK_OEM_COMMA" editor="GUID_TextEditorFactory"/>
+	</KeyBindings>
+
+	<Symbols>
+		<!-- This is the package guid. -->
+		<GuidSymbol name="MainPackage" value="{f9e42449-f3ad-495d-b631-5e69c5ef0331}" />
+
+		<!-- This is the guid used to group the menu commands together -->
+		<GuidSymbol name="CommandSet" value="{10fe9051-8cf6-48fc-9062-94a4fb4cd480}">
+			<IDSymbol name="EditOutliningGroup" value="0x1020" />
+			<IDSymbol name="Toolbar" value="0x1021" />
+			<IDSymbol name="ToolbarGroup1" value="0x1022" />
+			<IDSymbol name="ToolsMenuGroup" value="0x1023" />
+			<IDSymbol name="ToolsSubMenu" value="0x1024" />
+			<IDSymbol name="ToolsSubMenuGroup01" value="0x1026"/>
+			<IDSymbol name="ToolsSubMenuGroup02" value="0x1027"/>
+			<IDSymbol name="ToolbarGroup2" value="0x1031" />
+
+			<IDSymbol name="SortLines" value="301" />
+			<IDSymbol name="Trim" value="302" />
+			<IDSymbol name="Statistics" value="303" />
+			<IDSymbol name="GenerateGuid" value="306" />
+			<IDSymbol name="ExecuteText" value="307" />
+			<IDSymbol name="ExecuteFile" value="308" />
+			<IDSymbol name="AddRegion" value="311" />
+			<IDSymbol name="CollapseAllRegions" value="312" />
+			<IDSymbol name="ExpandAllRegions" value="313" />
+			<IDSymbol name="CommentSelection" value="316" />
+			<IDSymbol name="UncommentSelection" value="317" />
+			<IDSymbol name="AddToDoComment" value="319"/>
+		</GuidSymbol>
+
+		<GuidSymbol name="Images" value="{23de3de7-c077-43ea-b7e6-9ce5d7936031}" >
+			<IDSymbol name="SortLines" value="1" />
+			<IDSymbol name="Trim" value="2" />
+			<IDSymbol name="Statistics" value="3" />
+			<IDSymbol name="ExecuteText" value="4" />
+			<IDSymbol name="ExecuteFile" value="5" />
+			<IDSymbol name="GenerateGuid" value="6" />
+			<IDSymbol name="AddRegion" value="7" />
+			<IDSymbol name="ExpandAllRegions" value="8" />
+			<IDSymbol name="CollapseAllRegions" value="9" />
+			<IDSymbol name="CommentSelection" value="10" />
+			<IDSymbol name="UncommentSelection" value="11" />
+			<IDSymbol name="AddToDoComment" value="12"/>
+		</GuidSymbol>
+	</Symbols>
+
+</CommandTable>
