@@ -218,9 +218,9 @@ namespace Menees.VsTools.Editor
 					// parsing as reliable as possible, we'll validate the line start, and then we'll work backward through the
 					// known arg terms until we find the earliest one present.  Then the unescaped search term/expression
 					// should be in double quotes immediately before that arg.
-					int findResults = text.LastIndexOf(", Find Results "); // This should always be present.
+					int findResults = text.LastIndexOf(", Find Results "); // This was always present before VS 2019 16.5. Missing after that.
 					int listFileNamesOnly = text.LastIndexOf(", List filenames only, ");
-					int keepOpen = text.LastIndexOf(", Keep modified files open, "); // This is always present for Find; it's optional for Replace.
+					int keepOpen = text.LastIndexOf(", Keep modified files open, "); // This was always present for Find (not Replace) before VS 2019 16.5.
 					int subfolders = text.LastIndexOf(", Subfolders, ");
 					int regularExpressions = text.LastIndexOf(", Regular expressions, ");
 					int wholeWord = text.LastIndexOf(", Whole word, ");
