@@ -218,23 +218,40 @@ namespace Menees.VsTools.Editor
 					// parsing as reliable as possible, we'll validate the line start, and then we'll work backward through the
 					// known arg terms until we find the earliest one present.  Then the unescaped search term/expression
 					// should be in double quotes immediately before that arg.
-					int findResults = text.LastIndexOf(", Find Results "); // This was always present before VS 2019 16.5. Missing after that.
-					int listFileNamesOnly = text.LastIndexOf(", List filenames only, ");
-					int keepOpen = text.LastIndexOf(", Keep modified files open, "); // This was always present for Find (not Replace) before VS 2019 16.5.
-					int subfolders = text.LastIndexOf(", Subfolders, ");
+					int listFileNamesOnly = text.LastIndexOf(", List filenames only, "); // pre-VS 2019 16.5
 					int regularExpressions = text.LastIndexOf(", Regular expressions, ");
-					int wholeWord = text.LastIndexOf(", Whole word, ");
+					int wholeWord1 = text.LastIndexOf(", Whole word, ");
+					int wholeWord2 = text.LastIndexOf(", Match whole word, "); // New verbiage in VS 2019 16.5
 					int matchCase = text.LastIndexOf(", Match case, ");
-					int block = text.LastIndexOf(", Block, "); // When "Current Block (...)" is selected
 					int[] afterPatternChoices = new[]
 						{
-							findResults, listFileNamesOnly, keepOpen, subfolders, regularExpressions, wholeWord, matchCase, block,
-							int.MaxValue, // Include at least one value that always >= 0 since Min() requires that.
+							listFileNamesOnly, regularExpressions, wholeWord1, wholeWord2, matchCase,
+							text.LastIndexOf(", Find Results "), // pre-VS 2019 16.5
+							text.LastIndexOf(", Keep modified files open, "), // pre-VS 2019 16.5
+							text.LastIndexOf(", Subfolders, "),
+							text.LastIndexOf(", Block, "),
+							text.LastIndexOf(", Entire solution"),
+							text.LastIndexOf(", Current project"),
+							text.LastIndexOf(", All open documents, "),
+							text.LastIndexOf(", Current document"),
+							text.LastIndexOf(", Selection, "),
+							int.MaxValue, // Include at least one value that's always >= 0 since Min() requires that.
 						};
 					int afterPattern = afterPatternChoices.Where(index => index >= 0).Min();
 
 					// VS won't let you search for an empty string, and the pattern should always have a double quote added after it.
 					int patternIndex = linePrefix.Length;
+					if (afterPattern == int.MaxValue)
+					{
+						// We couldn't find any known scope or option, so look for the first quote followed by a comma or just the first quote.
+						// Then add 1 because we need the position after the last quote.
+						afterPattern = text.IndexOf("\",", patternIndex) + 1;
+						if (afterPattern == 0)
+						{
+							afterPattern = text.IndexOf('"', patternIndex) + 1;
+						}
+					}
+
 					if (afterPattern < int.MaxValue && afterPattern > (patternIndex + 1))
 					{
 						string pattern = text.Substring(patternIndex, afterPattern - (patternIndex + 1));
@@ -277,7 +294,7 @@ namespace Menees.VsTools.Editor
 
 									// VS seems to only apply the "Whole word" option when "Regular expressions" isn't used, so
 									// we'll do the same.  Otherwise, VS would return lines that we couldn't highlight a match in!
-									if (wholeWord >= 0)
+									if (wholeWord1 >= 0 || wholeWord2 >= 0)
 									{
 										const string WholeWordBoundary = @"\b";
 										pattern = WholeWordBoundary + pattern + WholeWordBoundary;
