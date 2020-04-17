@@ -27,6 +27,9 @@ namespace Menees.VsTools.Editor
 		private static readonly Regex FilenameOnlyRegex = new Regex(FilenamePrefixPattern + "$", RegexOptions.Compiled);
 		private static readonly Regex FilenameAndLineNumberRegex = new Regex(FilenamePrefixPattern + @"\(\d+(\,\d+)?\)\:", RegexOptions.Compiled);
 
+		private static readonly Regex FindAllPattern = new Regex("(?n)Find all \"(?<pattern>.+?)\",", RegexOptions.Compiled);
+		private static readonly Regex ReplaceAllPattern = new Regex("(?n)Replace all \".+?\", \"(?<pattern>.+?)\",", RegexOptions.Compiled);
+
 		private static readonly object ResourceLock = new object();
 		private static IClassificationType matchType;
 		private static IClassificationType fileNameType;
@@ -206,113 +209,64 @@ namespace Menees.VsTools.Editor
 			{
 				FindArgs result = null;
 
-				// Example line to parse with all Find args enabled:
-				// Find all "X", Match case, Whole word, Regular expressions, Subfolders, Keep modified files open, List filenames only, Find Results 1, "C:\...
-				const string FindLinePrefix = "Find all \"";
-				const string ReplaceLinePrefix = "Replace all \"";
-				string linePrefix = text.StartsWith(FindLinePrefix) ? FindLinePrefix : text.StartsWith(ReplaceLinePrefix) ? ReplaceLinePrefix : null;
-				if (!string.IsNullOrEmpty(linePrefix))
+				// VS 2019 16.5 totally changed the Find Results window and options. Update 16.5.4 restored some functionality to its List View,
+				// but now it truncates the pattern after 20 characters. It still doesn't escape patterns, so comma and double quote are ambiguous.
+				Match match = FindAllPattern.Match(text);
+				if (!match.Success)
 				{
-					// The Find Results header line contains an unescaped search term/expression, which can be a problem
-					// if it contains commas, double quotes, or text that also appears as one of the options.  To try to make
-					// parsing as reliable as possible, we'll validate the line start, and then we'll work backward through the
-					// known arg terms until we find the earliest one present.  Then the unescaped search term/expression
-					// should be in double quotes immediately before that arg.
-					int listFileNamesOnly = text.LastIndexOf(", List filenames only, "); // pre-VS 2019 16.5
-					int regularExpressions = text.LastIndexOf(", Regular expressions, ");
-					int wholeWord1 = text.LastIndexOf(", Whole word, ");
-					int wholeWord2 = text.LastIndexOf(", Match whole word, "); // New verbiage in VS 2019 16.5
-					int matchCase = text.LastIndexOf(", Match case, ");
-					int[] afterPatternChoices = new[]
-						{
-							listFileNamesOnly, regularExpressions, wholeWord1, wholeWord2, matchCase,
-							text.LastIndexOf(", Find Results "), // pre-VS 2019 16.5
-							text.LastIndexOf(", Keep modified files open, "), // pre-VS 2019 16.5
-							text.LastIndexOf(", Subfolders, "),
-							text.LastIndexOf(", Block, "),
-							text.LastIndexOf(", Entire solution"),
-							text.LastIndexOf(", Current project"),
-							text.LastIndexOf(", All open documents, "),
-							text.LastIndexOf(", Current document"),
-							text.LastIndexOf(", Selection, "),
-							int.MaxValue, // Include at least one value that's always >= 0 since Min() requires that.
-						};
-					int afterPattern = afterPatternChoices.Where(index => index >= 0).Min();
+					match = ReplaceAllPattern.Match(text);
+				}
 
-					// VS won't let you search for an empty string, and the pattern should always have a double quote added after it.
-					int patternIndex = linePrefix.Length;
-					if (afterPattern == int.MaxValue)
+				if (match.Success && match.Groups.Count == 2)
+				{
+					int afterMatchIndex = match.Index + match.Value.Length;
+					int listFileNamesOnly = text.IndexOf("List filenames only", afterMatchIndex, StringComparison.OrdinalIgnoreCase);
+					int regularExpressions = text.IndexOf("Regular expressions", afterMatchIndex, StringComparison.OrdinalIgnoreCase);
+					int wholeWord = text.IndexOf("Whole word", afterMatchIndex, StringComparison.OrdinalIgnoreCase);
+					int matchCase = text.IndexOf("Match case", afterMatchIndex, StringComparison.OrdinalIgnoreCase);
+
+					Group group = match.Groups[1];
+					string pattern = group.Value;
+					const string Ellipsis = "...";
+					bool truncated = false;
+					if (pattern.EndsWith(Ellipsis))
 					{
-						// We couldn't find any known scope or option, so look for the first quote followed by a comma or just the first quote.
-						// Then add 1 because we need the position after the last quote.
-						afterPattern = text.IndexOf("\",", patternIndex) + 1;
-						if (afterPattern == 0)
-						{
-							afterPattern = text.IndexOf('"', patternIndex) + 1;
-						}
+						pattern = pattern.Substring(0, pattern.Length - Ellipsis.Length);
+						truncated = true;
 					}
 
-					if (afterPattern < int.MaxValue && afterPattern > (patternIndex + 1))
+					result = new FindArgs
 					{
-						string pattern = text.Substring(patternIndex, afterPattern - (patternIndex + 1));
+						ListFileNamesOnly = listFileNamesOnly >= 0,
+						PatternIndex = group.Index,
+						PatternLength = pattern.Length,
+					};
 
-						// For Replace All, the Find and Replace terms are both listed.  We only want the Replace term
-						// since it's all that we'll be able to highlight in the matched/replaced lines that are returned.
-						if (linePrefix == ReplaceLinePrefix)
+					try
+					{
+						if (regularExpressions < 0)
 						{
-							// The Find and Replace terms are unescaped, so it's possible that one contains this separator.
-							// It's unlikely, but if it happens, then our highlights may be off or non-existent.
-							const string Separator = "\", \"";
-							int separatorIndex = pattern.IndexOf(Separator);
-							if (separatorIndex >= 0)
+							pattern = Regex.Escape(pattern);
+
+							// VS seems to only apply the "Whole word" option when "Regular expressions" isn't used, so we'll do the same.
+							// We can't apply it at the end of a truncated pattern because the truncation might have occurred mid-word.
+							if (wholeWord >= 0)
 							{
-								separatorIndex += Separator.Length;
-								pattern = pattern.Substring(separatorIndex);
-								patternIndex += separatorIndex;
-							}
-							else
-							{
-								// Something is wrong.  The Find and Replace terms weren't formatted like we expected.
-								pattern = null;
+								const string WholeWordBoundary = @"\b";
+								pattern = WholeWordBoundary + pattern + (truncated ? string.Empty : WholeWordBoundary);
 							}
 						}
 
-						if (!string.IsNullOrEmpty(pattern))
-						{
-							result = new FindArgs
-							{
-								ListFileNamesOnly = listFileNamesOnly >= 0,
-								PatternIndex = patternIndex,
-								PatternLength = pattern.Length,
-							};
-
-							try
-							{
-								if (regularExpressions < 0)
-								{
-									pattern = Regex.Escape(pattern);
-
-									// VS seems to only apply the "Whole word" option when "Regular expressions" isn't used, so
-									// we'll do the same.  Otherwise, VS would return lines that we couldn't highlight a match in!
-									if (wholeWord1 >= 0 || wholeWord2 >= 0)
-									{
-										const string WholeWordBoundary = @"\b";
-										pattern = WholeWordBoundary + pattern + WholeWordBoundary;
-									}
-								}
-
-								// We don't want to spend too much time searching each line.
-								TimeSpan timeout = TimeSpan.FromMilliseconds(100);
-								result.MatchExpression = new Regex(pattern, matchCase >= 0 ? RegexOptions.None : RegexOptions.IgnoreCase, timeout);
-							}
-							catch (ArgumentException)
-							{
-								// We did our best to parse out the pattern and build a suitable regex.  But it's possible that the
-								// parsed pattern was wrong (e.g., if it contained an unescaped ", " substring).  So if Regex
-								// throws an ArgumentException, we just can't highlight this time.
-								result = null;
-							}
-						}
+						// We don't want to spend too much time searching each line.
+						TimeSpan timeout = TimeSpan.FromMilliseconds(100);
+						result.MatchExpression = new Regex(pattern, matchCase >= 0 ? RegexOptions.None : RegexOptions.IgnoreCase, timeout);
+					}
+					catch (ArgumentException)
+					{
+						// We did our best to parse out the pattern and build a suitable regex.  But it's possible that the
+						// parsed pattern was wrong (e.g., if it contained an unescaped ", " substring).  So if Regex
+						// throws an ArgumentException, we just can't highlight this time.
+						result = null;
 					}
 				}
 

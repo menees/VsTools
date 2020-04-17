@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Menees VS Tools 2019" Version="2019.0.4" Language="en-US" Publisher="Bill Menees" />
+        <Identity Id="Menees VS Tools 2019" Version="2019.0.5" Language="en-US" Publisher="Bill Menees" />
         <DisplayName>Menees VS Tools 2019</DisplayName>
         <Description xml:space="preserve">Provides several new commands such as Sort, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, and ExpandAllRegions. Also, provides colorized text in the Output and Find Results windows.</Description>
         <MoreInfo>https://github.com/menees/VsTools</MoreInfo>
