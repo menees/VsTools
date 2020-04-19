@@ -62,11 +62,16 @@
 			Current accelerator characters (indicated with an &amp; prefix per
 			http://msdn.microsoft.com/en-us/library/cc826040.aspx):
 			S		Sort Lines
+			M	Sort Members
 			T		Trim
 			A		Statistics
+			E		Stream Text
+			K		Check Spelling
 			G		Generate GUID
 			X		Execute Text
 			F		Execute File
+			L		Toggle Files
+			R		Toggle Read-Only
 			D		Add Region
 			C		Collapse All Regions
 			P		Expand All Regions
@@ -74,6 +79,7 @@
 			U		Uncomment Selection (2)
 			N		Add TODO Comment
 			B		Base Converter
+			I		List All Project Properties
 			-->
 			<Button guid="CommandSet" id="SortLines" priority="0x0100" type="Button">
 				<Icon guid="Images" id="SortLines" />
@@ -85,6 +91,18 @@
 					<ToolTipText>Sorts the selected lines of text</ToolTipText>
 					<CanonicalName>Menees.VsTools.SortLines</CanonicalName>
 					<LocCanonicalName>Menees.VsTools.SortLines</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="SortMembers" priority="0x0101" type="Button">
+				<Icon guid="Images" id="SortMembers" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Sort &amp;Members</ButtonText>
+					<ToolTipText>Sorts the selected members in a type.</ToolTipText>
+					<CanonicalName>Menees.VsTools.SortMembers</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.SortMembers</LocCanonicalName>
 				</Strings>
 			</Button>
 			<Button guid="CommandSet" id="Trim" priority="0x0102" type="Button">
@@ -109,6 +127,30 @@
 					<ToolTipText>Calculates some basic statistics for the selected lines of text</ToolTipText>
 					<CanonicalName>Menees.VsTools.Statistics</CanonicalName>
 					<LocCanonicalName>Menees.VsTools.Statistics</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="StreamText" priority="0x0104" type="Button">
+				<Icon guid="Images" id="StreamText" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Str&amp;eam Text</ButtonText>
+					<ToolTipText>Converts text with hard linebreaks into unbroken paragraphs</ToolTipText>
+					<CanonicalName>Menees.VsTools.StreamText</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.StreamText</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CheckSpelling" priority="0x0105" type="Button">
+				<Icon guid="Images" id="CheckSpelling" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Chec&amp;k Spelling</ButtonText>
+					<ToolTipText>Checks the spelling of the selected text</ToolTipText>
+					<CanonicalName>Menees.VsTools.CheckSpelling</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CheckSpelling</LocCanonicalName>
 				</Strings>
 			</Button>
 			<Button guid="CommandSet" id="GenerateGuid" priority="0x0106" type="Button">
@@ -146,6 +188,30 @@
 					<ToolTipText>Executes the current file with its associated program</ToolTipText>
 					<CanonicalName>Menees.VsTools.ExecuteFile</CanonicalName>
 					<LocCanonicalName>Menees.VsTools.ExecuteFile</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="ToggleFiles" priority="0x0109" type="Button">
+				<Icon guid="Images" id="ToggleFiles" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Toggle Fi&amp;les</ButtonText>
+					<ToolTipText>Switches between related .cpp and .h files</ToolTipText>
+					<CanonicalName>Menees.VsTools.ToggleFiles</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.ToggleFiles</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="ToggleReadOnly" priority="0x0110" type="Button">
+				<Icon guid="Images" id="ToggleReadOnly" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Toggle &amp;Read-Only</ButtonText>
+					<ToolTipText>Toggles the active document's read-only attribute</ToolTipText>
+					<CanonicalName>Menees.VsTools.ToggleReadOnly</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.ToggleReadOnly</LocCanonicalName>
 				</Strings>
 			</Button>
 
@@ -234,6 +300,30 @@
 					<LocCanonicalName>Menees.VsTools.ViewBaseConverter</LocCanonicalName>
 				</Strings>
 			</Button>
+			<Button guid="CommandSet" id="ViewTasks" priority="0x0118" type="Button">
+				<Icon guid="Images" id="ViewTasks" />
+				<Strings>
+					<!--We don't use any CommandFlags here because this command should always be visible and available.
+					According to MSDN, this will allow VS to delay-load our package until this command is clicked.
+					http://technet.microsoft.com/en-us/library/bb165339(v=vs.90).aspx -->
+					<ButtonText>Tasks</ButtonText>
+					<ToolTipText>Displays the Tasks window, which lists TODO comments found in the solution and open source files.</ToolTipText>
+					<CanonicalName>Menees.VsTools.ViewTasks</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.ViewTasks</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="ListAllProjectProperties" priority="0x0119" type="Button">
+				<!--No icon for ListAllProjectProperties-->
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>L&amp;ist All Project Properties</ButtonText>
+					<ToolTipText>Lists all of the selected VSProject's properties.</ToolTipText>
+					<CanonicalName>Menees.VsTools.ListAllProjectProperties</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.ListAllProjectProperties</LocCanonicalName>
+				</Strings>
+			</Button>
 		</Buttons>
 
 		<!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -275,10 +365,19 @@
 		<CommandPlacement guid="CommandSet" id="SortLines" priority="0x0100">
 			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
 		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="SortMembers" priority="0x0101">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="Trim" priority="0x0102">
 			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="Statistics" priority="0x0103">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="StreamText" priority="0x0104">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CheckSpelling" priority="0x0105">
 			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="GenerateGuid" priority="0x0106">
@@ -288,6 +387,12 @@
 			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ExecuteFile" priority="0x0108">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToggleFiles" priority="0x0109">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToggleReadOnly" priority="0x0110">
 			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="AddRegion" priority="0x0111">
@@ -310,6 +415,12 @@
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ViewBaseConverter" priority="0x0117">
 			<Parent guid="CommandSet" id="ToolsSubMenuGroup04" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ViewTasks" priority="0x0118">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup04" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ListAllProjectProperties" priority="0x0119">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup05" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ToolsSubMenuGroup01" priority="0x0101">
 			<Parent guid="CommandSet" id="ToolsSubMenu" />
@@ -357,6 +468,9 @@
 		<CommandPlacement guid="CommandSet" id="ViewBaseConverter" priority="0x9000">
 			<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
 		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ViewTasks" priority="0x9001">
+			<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+		</CommandPlacement>
 
 		<!--Toolbar-->
 		<!--I wanted to have a few commands visible by default and then all the remaining
@@ -369,10 +483,19 @@
 		<CommandPlacement guid="CommandSet" id="SortLines" priority="0x0100">
 			<Parent guid="CommandSet" id="ToolbarGroup1" />
 		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="SortMembers" priority="0x0101">
+			<Parent guid="CommandSet" id="ToolbarGroup1" />
+		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="Trim" priority="0x0102">
 			<Parent guid="CommandSet" id="ToolbarGroup1" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="Statistics" priority="0x0103">
+			<Parent guid="CommandSet" id="ToolbarGroup1" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="StreamText" priority="0x0104">
+			<Parent guid="CommandSet" id="ToolbarGroup1" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CheckSpelling" priority="0x0105">
 			<Parent guid="CommandSet" id="ToolbarGroup1" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="GenerateGuid" priority="0x0106">
@@ -383,6 +506,12 @@
 		</CommandPlacement>
 
 		<CommandPlacement guid="CommandSet" id="ExecuteFile" priority="0x0100">
+			<Parent guid="CommandSet" id="ToolbarGroup2" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToggleFiles" priority="0x0101">
+			<Parent guid="CommandSet" id="ToolbarGroup2" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToggleReadOnly" priority="0x0102">
 			<Parent guid="CommandSet" id="ToolbarGroup2" />
 		</CommandPlacement>
 
@@ -404,6 +533,11 @@
 		<CommandPlacement guid="CommandSet" id="AddToDoComment" priority="0x0105">
 			<Parent guid="CommandSet" id="ToolbarGroup3" />
 		</CommandPlacement>
+		<!--
+		<CommandPlacement guid="CommandSet" id="ViewTasks" priority="0x0106">
+			<Parent guid="CommandSet" id="ToolbarGroup3" />
+		</CommandPlacement>
+		-->
 
 		<CommandPlacement guid="CommandSet" id="ToolbarGroup1" priority="0x0101">
 			<Parent guid="CommandSet" id="Toolbar" />
@@ -431,16 +565,23 @@
 		<VisibilityItem guid="CommandSet" id="SortLines" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="Trim" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="Statistics" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="StreamText" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="CheckSpelling" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="GenerateGuid" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="ExecuteText" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="ExecuteFile" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="ToggleFiles" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="ToggleReadOnly" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="AddRegion" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="CollapseAllRegions" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="ExpandAllRegions" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="CommentSelection" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="UncommentSelection" context="UICONTEXT_CodeWindow" />
+		<VisibilityItem guid="CommandSet" id="SortMembers" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="AddToDoComment" context="UICONTEXT_CodeWindow" />
-		<!--ViewBaseConverter is always visible, so it isn't listed here.-->
+		<!--ViewBaseConverter and ViewTasks are always visible, so they aren't listed here.-->
+		<VisibilityItem guid="CommandSet" id="ListAllProjectProperties" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="ListAllProjectProperties" context="UICONTEXT_SolutionHasMultipleProjects" />
 	</VisibilityConstraints>
 
 	<KeyBindings>
@@ -450,6 +591,9 @@
 		<KeyBinding guid="CommandSet" id="AddRegion" mod1="Control" key1="K" mod2="Control" key2="O" editor="GUID_TextEditorFactory"/>
 		<KeyBinding guid="CommandSet" id="CollapseAllRegions" mod1="Control" key1="M" mod2="Control" key2="K" editor="GUID_TextEditorFactory"/>
 		<KeyBinding guid="CommandSet" id="AddToDoComment" mod1="Control" key1="K" mod2="Control" key2="VK_OEM_COMMA" editor="GUID_TextEditorFactory"/>
+		<!--Use global scope for these bindings, so they will apply when a designer is visible too.-->
+		<KeyBinding guid="CommandSet" id="ToggleFiles" mod1="Control" key1="K" mod2="Control" key2="J" editor="guidVSStd97"/>
+		<KeyBinding guid="CommandSet" id="ViewTasks" mod1="Control" key1="K" mod2="Control" key2="Y" editor="guidVSStd97"/>
 	</KeyBindings>
 
 	<Symbols>
@@ -474,16 +618,23 @@
 			<IDSymbol name="SortLines" value="301" />
 			<IDSymbol name="Trim" value="302" />
 			<IDSymbol name="Statistics" value="303" />
+			<IDSymbol name="StreamText" value="304" />
+			<IDSymbol name="CheckSpelling" value="305" />
 			<IDSymbol name="GenerateGuid" value="306" />
 			<IDSymbol name="ExecuteText" value="307" />
 			<IDSymbol name="ExecuteFile" value="308" />
+			<IDSymbol name="ToggleFiles" value="309" />
+			<IDSymbol name="ToggleReadOnly" value="310" />
 			<IDSymbol name="AddRegion" value="311" />
 			<IDSymbol name="CollapseAllRegions" value="312" />
 			<IDSymbol name="ExpandAllRegions" value="313" />
 			<IDSymbol name="ViewBaseConverter" value="314" />
+			<IDSymbol name="ListAllProjectProperties" value="315" />
 			<IDSymbol name="CommentSelection" value="316" />
 			<IDSymbol name="UncommentSelection" value="317" />
+			<IDSymbol name="SortMembers" value="318" />
 			<IDSymbol name="AddToDoComment" value="319"/>
+			<IDSymbol name="ViewTasks" value="320" />
 		</GuidSymbol>
 
 		<GuidSymbol name="Images" value="{23de3de7-c077-43ea-b7e6-9ce5d7936031}" >

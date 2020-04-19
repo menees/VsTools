@@ -1,0 +1,144 @@
+﻿<UserControl x:Class="Menees.VsTools.Tasks.TasksControl"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+	xmlns:tasks="clr-namespace:Menees.VsTools.Tasks"
+	mc:Ignorable="d" x:ClassModifier="internal"
+	d:DesignHeight="300" d:DesignWidth="300" Loaded="TasksControl_Loaded"
+	d:DataContext="{d:DesignData Source=/Tasks/DesignData.xaml}"
+	FocusManager.FocusedElement="{Binding ElementName=tasks}">
+	<UserControl.Resources>
+		<tasks:PriorityImageConverter x:Key="PriorityImageConverter"/>
+
+		<Style x:Key="defaultStyle">
+			<Setter Property="Control.Background" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}" />
+			<Setter Property="Control.Foreground" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowTextBrushKey}}" />
+		</Style>
+		<Style TargetType="Button" BasedOn="{StaticResource defaultStyle}" />
+		<Style TargetType="TextBlock" BasedOn="{StaticResource defaultStyle}" />
+		<Style x:Key="CommentAttributes" TargetType="TextBlock" BasedOn="{StaticResource defaultStyle}">
+			<Setter Property="FontSize" Value="11"/>
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarTextInactiveBrushKey}}"/>
+		</Style>
+		<Style TargetType="ContextMenu" BasedOn="{StaticResource defaultStyle}">
+			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarMenuBorderBrushKey}}"/>
+		</Style>
+		<Style TargetType="MenuItem" BasedOn="{StaticResource defaultStyle}">
+			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
+			<Setter Property="Padding" Value="-2,-1,-1,-1"/>
+			<Setter Property="Margin" Value="-1,0,0,0"/>
+		</Style>
+		<!-- http://devlicio.us/blogs/christopher_bennage/archive/2008/06/19/styling-separators-in-wpf.aspx -->
+		<Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="{x:Type Separator}">
+			<Setter Property="Margin" Value="-1,0,0,0"/>
+			<Setter Property="OverridesDefaultStyle" Value="true" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Separator}">
+						<Grid Height="3" Style="{StaticResource defaultStyle}">
+							<Rectangle Height="1" Fill="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}"
+								VerticalAlignment="Center"/>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style TargetType="ListBox" BasedOn="{StaticResource defaultStyle}" />
+		<Style TargetType="ListBoxItem" BasedOn="{StaticResource defaultStyle}">
+			<!-- Note: To alternate colors, the ListBox also requires the AlternationCount="2" attribute.
+			<Style.Triggers>
+				<Trigger Property="ListBox.AlternationIndex" Value="1">
+					<Setter Property="Background" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowContentGridBrushKey}}"/>
+				</Trigger>
+			</Style.Triggers>
+			-->
+		</Style>
+		<Style x:Key="TaskBorder" TargetType="Border">
+			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+		</Style>
+		<Style TargetType="Polygon">
+			<Setter Property="Fill" Value="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarMenuGlyphBrushKey}}"/>
+		</Style>
+	</UserControl.Resources>
+	<DockPanel>
+		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Style="{StaticResource defaultStyle}">
+			<!-- Note: Using an embedded Menu makes it so we can't grab the scrollbar until the ToolWindow has focus.
+			WPF's Menu uses "focus stealing", and WPF only provides static properties for changing that behavior.
+			http://blogs.msdn.com/b/visualstudio/archive/2010/03/09/wpf-in-visual-studio-2010-part-3-focus-and-activation.aspx -->
+			<Button x:Name="sort" BorderBrush="{x:Null}" ContextMenuService.Placement="Bottom"
+				Click="Sort_Click" ContextMenuClosing="Sort_ContextMenuClosing">
+				<Button.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="By Pr_iority" Click="SortBy_Click" Tag="Priority"/>
+						<MenuItem Header="By _Comment" Click="SortBy_Click" Tag="Comment"/>
+						<MenuItem Header="By _File Name" Click="SortBy_Click" Tag="FileName"/>
+						<MenuItem Header="By _File Path" Click="SortBy_Click" Tag="FilePath"/>
+						<MenuItem Header="By _Line" Click="SortBy_Click" Tag="Line"/>
+						<MenuItem Header="By Pr_oject" Click="SortBy_Click" Tag="Project"/>
+						<Separator/>
+						<MenuItem x:Name="resetSort" Header="_Reset" Click="ResetSort_Click"/>
+					</ContextMenu>
+				</Button.ContextMenu>
+				<StackPanel Orientation="Horizontal" Margin="2">
+					<TextBlock Text="Sort"/>
+					<Polygon Points="0,0 3,3 6,0" VerticalAlignment="Center" Margin="4,0,0,0"/>
+				</StackPanel>
+			</Button>
+			<TextBlock VerticalAlignment="Center" Text="{Binding Items.Count, ElementName=tasks, Mode=OneWay, StringFormat=Count: \{0\}}" Margin="4,0"/>
+		</StackPanel>
+		<Border x:Name="warningBorder" DockPanel.Dock="Top" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+			<TextBlock x:Name="warning" Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" Padding="6" TextWrapping="Wrap">
+			Task comment scanning is currently disabled (under Tools → Options → Menees VS Tools).
+			</TextBlock>
+		</Border>
+		<!-- We use ScrollViewer.CanContentScroll="False" to allow smooth scrolling instead of item-by-item scrolling. -->
+		<ListBox x:Name="tasks" ItemsSource="{Binding}"
+				HorizontalContentAlignment="Stretch"
+				ScrollViewer.CanContentScroll="False"
+				ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+				KeyDown="Tasks_KeyDown"
+				MouseDoubleClick="Tasks_DoubleClick"
+				TextSearch.TextPath="Comment"
+				ContextMenuOpening="Tasks_ContextMenuOpening">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Border Style="{StaticResource TaskBorder}" BorderThickness="0,0,0,1" Grid.Row="2" BorderBrush="Black" Padding="0,0,0,4">
+						<StackPanel>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition/>
+								</Grid.ColumnDefinitions>
+								<Image Source="{Binding Path=Priority, Converter={StaticResource PriorityImageConverter}}" Stretch="None" Margin="0,0,4,0" />
+								<TextBlock Text="{Binding Comment}" TextWrapping="Wrap" Grid.Column="1" />
+							</Grid>
+							<DockPanel>
+								<TextBlock TextWrapping="Wrap" ToolTip="{Binding FilePath}" DockPanel.Dock="Left" Style="{StaticResource CommentAttributes}">
+									<TextBlock.Text>
+										<MultiBinding StringFormat="{}{0} ({1:N0})">
+											<Binding Path="FileName"/>
+											<Binding Path="Line"/>
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+								<TextBlock Text="{Binding Project}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Right"
+									ToolTip="{Binding Project}" Padding="6,0,0,0" Style="{StaticResource CommentAttributes}"/>
+							</DockPanel>
+						</StackPanel>
+					</Border>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+			<ListBox.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="_Go To" Click="Tasks_GoTo" Tag="SelectedTask"/>
+					<Separator/>
+					<MenuItem Header="Copy _Comment" Click="CopyComment_Click" Tag="SelectedTask"/>
+					<MenuItem Header="Copy _Task" Click="CopyTask_Click" Tag="SelectedTask"/>
+					<MenuItem Header="Copy _All Tasks" Click="CopyAllTasks_Click" Tag="SelectedTask"/>
+				</ContextMenu>
+			</ListBox.ContextMenu>
+		</ListBox>
+	</DockPanel>
+</UserControl>

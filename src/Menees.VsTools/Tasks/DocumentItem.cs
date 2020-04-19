@@ -16,8 +16,71 @@ namespace Menees.VsTools.Tasks
 
 	#endregion
 
-	internal static class DocumentItem
+	internal sealed class DocumentItem
 	{
+		#region Private Data Members
+
+		private readonly ITextDocument textDocument;
+
+		#endregion
+
+		#region Constructors
+
+		public DocumentItem(ITextDocument textDocument)
+		{
+			// Note: textDocument can be null in some situations (e.g., if we know a miscellaneous
+			// file has an document tab visible but the document hasn't been initialized in the running
+			// document table yet so no ITextDocument has been created).
+			this.textDocument = textDocument;
+		}
+
+		#endregion
+
+		#region Public Properties
+
+		public Language Language
+		{
+			get
+			{
+				Language result = Language.Unknown;
+
+				if (this.textDocument != null)
+				{
+					IContentType contentType = this.textDocument.TextBuffer.ContentType;
+					string fileName = this.textDocument.FilePath;
+					result = GetDocumentLanguage(contentType, fileName);
+				}
+
+				return result;
+			}
+		}
+
+		public bool HasTextDocument
+		{
+			get
+			{
+				bool result = this.textDocument != null;
+				return result;
+			}
+		}
+
+		public DateTime? LastModifiedUtc
+		{
+			get
+			{
+				DateTime? result = null;
+
+				if (this.textDocument != null)
+				{
+					result = this.textDocument.LastContentModifiedTime.ToUniversalTime();
+				}
+
+				return result;
+			}
+		}
+
+		#endregion
+
 		#region Public Methods
 
 		public static Language GetLanguage(ITextBuffer buffer)
@@ -42,6 +105,33 @@ namespace Menees.VsTools.Tasks
 			}
 
 			return result;
+		}
+
+		public static ITextDocument GetTextDocument(IVsWindowFrame frame, IVsEditorAdaptersFactoryService adapterFactory)
+		{
+			ITextDocument result = null;
+
+			// http://stackoverflow.com/a/7373385/1882616
+			IVsTextView view = VsShellUtilities.GetTextView(frame);
+			if (view != null && view.GetBuffer(out IVsTextLines lines) == 0 && lines is IVsTextBuffer oldVsBuffer)
+			{
+				ITextBuffer buffer = adapterFactory.GetDataBuffer(oldVsBuffer);
+				result = GetTextDocument(buffer);
+			}
+
+			return result;
+		}
+
+		public IEnumerable<string> GetLines()
+		{
+			if (this.textDocument != null)
+			{
+				ITextSnapshot snapshot = this.textDocument.TextBuffer.CurrentSnapshot;
+				foreach (ITextSnapshotLine line in snapshot.Lines)
+				{
+					yield return line.GetText();
+				}
+			}
 		}
 
 		#endregion

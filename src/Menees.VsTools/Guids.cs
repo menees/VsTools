@@ -17,6 +17,8 @@
 
 		public const string BaseConverterWindowPersistanceString = "a1c0c4ce-9e21-431f-8125-cc3586c65627";
 
+		public const string TasksWindowPersistanceString = "3a9fa221-14d6-42d0-b9b4-b35a7bd2a7bb";
+
 		public const string BaseConverterOptionsString = "247209a3-be9c-48e8-9678-41900e22be4c";
 
 		public const string GeneralOptionsString = "bd511b61-46fe-4997-965b-c5408b6be977";

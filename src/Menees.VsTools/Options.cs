@@ -51,8 +51,13 @@
 			"Private Event Handlers\r\n" +
 			"Private Types";
 
+		private const string DefaultExcludePatterns = @".+\.Designer\.\w+$" + "\r\n" +
+			@"modernizr-\d+\.\d+\.\d+(-vsdoc)?\.js$" + "\r\n" +
+			@"jquery-\d+\.\d+\.\d+(-vsdoc)?\.js$";
+
 		private GuidFormat guidFormat;
 		private List<OutputHighlight> outputHighlights;
+		private string excludeFromCommentScans;
 
 		#endregion
 
@@ -77,6 +82,8 @@
 			this.HighlightFindResultsDetails = true;
 			this.HighlightFindResultsFileNames = true;
 			this.HighlightFindResultsMatches = true;
+			this.EnableCommentScans = true;
+			this.ExcludeFromCommentScans = DefaultExcludePatterns;
 
 			// Other dialog state settings
 			this.TrimEnd = true;
@@ -106,6 +113,13 @@
 		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
 		[DefaultValue(DefaultPredefinedRegions)]
 		public string PredefinedRegions { get; set; }
+
+		[Category("Miscellaneous")]
+		[DisplayName("Additional C++ search directories")]
+		[Description("Additional search directories when using Toggle Files on C++ files.  Enter one directory per line in the drop-down editor.")]
+		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+		[DefaultValue(null)]
+		public string CppSearchDirectories { get; set; }
 
 		[Category("Miscellaneous")]
 		[DisplayName("Only show Trim dialog when shift is pressed")]
@@ -213,6 +227,58 @@
 		[DefaultValue(true)]
 		public bool HighlightFindResultsMatches { get; set; }
 
+		[Category("Miscellaneous")]
+		[DisplayName("Sort Members order")]
+		[Description("A comma-separated list of member properties to order by.  Prefix a property with '-' to order it descending.  " +
+			"The default ordering is: Kind, Access, IsStatic, KindModifier, ConstModifier, OverrideModifier, Name, ParameterCount.")]
+		[DefaultValue(null)]
+		public string SortMembersOrder { get; set; }
+
+		[Category("Miscellaneous")]
+		[DisplayName("Only show Sort Members dialog when shift is pressed")]
+		[Description("Provides a way to suppress the display of the Sort Members dialog unless the Shift key is pressed.  " +
+			"If the dialog is suppressed, then selected members will be sorted.")]
+		[DefaultValue(false)]
+		public bool OnlyShowSortMembersDialogWhenShiftIsPressed { get; set; }
+
+		[Category(nameof(Tasks))]
+		[DisplayName("Enable tasks provider (requires restart)")]
+		[Description("Whether open documents and files referenced by the current solution should be scanned for task comments.")]
+		[DefaultValue(true)]
+		public bool EnableCommentScans { get; set; }
+
+		[Category(nameof(Tasks))]
+		[DisplayName("Exclude file name patterns")]
+		[Description("Regular expressions used to exclude solution items or open documents from being scanned for comments.  " +
+			"Enter one pattern per line.  Each pattern is matched against the fully-qualified file name.")]
+		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+		[DefaultValue(DefaultExcludePatterns)]
+		public string ExcludeFromCommentScans
+		{
+			get
+			{
+				return this.excludeFromCommentScans;
+			}
+
+			set
+			{
+				if (string.IsNullOrEmpty(value))
+				{
+					this.excludeFromCommentScans = DefaultExcludePatterns;
+				}
+				else
+				{
+					this.excludeFromCommentScans = value;
+				}
+			}
+		}
+
+		[Category("Miscellaneous")]
+		[DisplayName("Build timing")]
+		[Description("Whether build timing information should be added to the Build output window.")]
+		[DefaultValue(BuildTiming.None)]
+		public BuildTiming BuildTiming { get; set; }
+
 		#endregion
 
 		#region Public Non-Browsable Properties (for other state persistence)
@@ -264,6 +330,12 @@
 		[DisplayName("Eliminate Duplicates")]
 		[DefaultValue(false)]
 		public bool SortEliminateDuplicates { get; set; }
+
+		[Browsable(false)]
+		[Category(nameof(Tasks))]
+		[DisplayName("Tasks Status Xml")]
+		[DefaultValue(null)]
+		public string TasksStatusXml { get; set; }
 
 		#endregion
 

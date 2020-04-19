@@ -50,6 +50,17 @@
 
 	#endregion
 
+	#region BuildTiming
+
+	internal enum BuildTiming
+	{
+		None,
+		Details,
+		Overall,
+	}
+
+	#endregion
+
 	#region Command
 
 	internal enum Command
@@ -58,16 +69,23 @@
 		SortLines = 301,
 		Trim = 302,
 		Statistics = 303,
+		StreamText = 304,
+		CheckSpelling = 305,
 		GenerateGuid = 306,
 		ExecuteText = 307,
 		ExecuteFile = 308,
+		ToggleFiles = 309,
+		ToggleReadOnly = 310,
 		AddRegion = 311,
 		CollapseAllRegions = 312,
 		ExpandAllRegions = 313,
 		ViewBaseConverter = 314,
+		ListAllProjectProperties = 315,
 		CommentSelection = 316,
 		UncommentSelection = 317,
+		SortMembers = 318,
 		AddToDoComment = 319,
+		ViewTasks = 320,
 	}
 
 	#endregion

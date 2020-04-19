@@ -3,12 +3,14 @@
     <Metadata>
         <Identity Id="Menees VS Tools 2019" Version="2019.0.7" Language="en-US" Publisher="Bill Menees" />
         <DisplayName>Menees VS Tools 2019</DisplayName>
-        <Description xml:space="preserve">Provides several new commands such as Sort, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, and ExpandAllRegions. Also, provides a Base Converter tool window and colorized text in the Output and Find Results windows.</Description>
+        <Description xml:space="preserve">Provides several new commands such as Sort, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, ExpandAllRegions, and ToggleFiles.
+
+Also, provides colorized text in the Output and Find Results windows, an enhanced Task List comment provider (e.g., for TODO comments), and a Base Converter tool window.</Description>
         <MoreInfo>https://github.com/menees/VsTools</MoreInfo>
         <License>Resources\LICENSE</License>
         <Icon>Resources\Package.ico</Icon>
         <PreviewImage>Resources\PreviewImage.png</PreviewImage>
-        <Tags>Sort, Trim, Whitespace, Statistics, Execute, Region, Guid, Base Converter, Collapse, Expand, Comments, TODO</Tags>
+        <Tags>Sort, Trim, Whitespace, Statistics, Execute, Region, Toggle, Guid, Spelling, Read-Only, ReadOnly, Base, Converter, Collapse, Expand, Tools, Task List, Comments, TODO, Members, Tasks</Tags>
     </Metadata>
     <Installation InstalledByMsi="false">
         <!-- http://blogs.msdn.com/b/visualstudio/archive/2013/08/08/update-for-extension-authors-vsix-manifest-version-ranges.aspx -->

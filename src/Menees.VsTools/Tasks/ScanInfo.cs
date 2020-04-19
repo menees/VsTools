@@ -13,6 +13,7 @@ namespace Menees.VsTools.Tasks
 	using System.Text.RegularExpressions;
 	using System.Xml;
 	using System.Xml.Linq;
+	using Microsoft.VisualStudio.Shell;
 	using Microsoft.Win32;
 
 	#endregion
@@ -87,6 +88,53 @@ namespace Menees.VsTools.Tasks
 
 		#region Public Methods
 
+		public static ScanInfo Get(FileItem file)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			Cache cache = LazyCache.Value;
+			string extension = Path.GetExtension(file.FileName);
+			if (cache.TryGet(extension, out ScanInfo result))
+			{
+				// Binary extensions will return the Unscannable instance.
+				if (result.IsScannable)
+				{
+					// If the file is open in a document that is using a language that doesn't match one
+					// associated with its file extension, then we need to include the language's info too.
+					// We won't do this for PlainText because it has no comment delimiter, which can
+					// cause ambiguities and duplicates if it's paired with an extension with known
+					// delimiters.  For example, .bat files have delimiters, but they open as PlainText.
+					Language docLanguage = file.DocumentLanguage;
+					if (docLanguage != Language.Unknown
+						&& docLanguage != Language.PlainText
+						&& !result.languages.Contains(docLanguage))
+					{
+						if (cache.TryGet(docLanguage, out ScanInfo languageScanInfo))
+						{
+							result = ScanInfo.Merge(result, languageScanInfo);
+						}
+					}
+				}
+			}
+			else
+			{
+				// The file's extension is unknown, so try to match it by language if a document is open.
+				// This allows us to handle user-assigned extensions (e.g., .scs for C#).
+				Language docLanguage = file.DocumentLanguage;
+				if (docLanguage != Language.Unknown)
+				{
+					cache.TryGet(docLanguage, out result);
+				}
+
+				if (result == null)
+				{
+					result = Infer(file, cache);
+				}
+			}
+
+			return result ?? Unscannable;
+		}
+
 		public static bool TryGet(Language language, out ScanInfo scanInfo)
 		{
 			scanInfo = null;
@@ -97,6 +145,12 @@ namespace Menees.VsTools.Tasks
 				&& scanInfo != null
 				&& scanInfo.IsScannable;
 
+			return result;
+		}
+
+		public IEnumerable<Regex> GetTokenRegexes(CommentToken token)
+		{
+			IEnumerable<Regex> result = this.GetTokenRegexes(token, false);
 			return result;
 		}
 
@@ -114,6 +168,43 @@ namespace Menees.VsTools.Tasks
 
 		#endregion
 
+		#region Internal Methods
+
+		internal static void ScanLanguageServices(RegistryKey packageUserRoot, Func<string, string, bool> scanLanguage)
+		{
+			string fullName = packageUserRoot.Name;
+			string configName = fullName + @"_Config\Languages\Language Services";
+			const string HivePrefix = @"HKEY_CURRENT_USER\";
+			if (configName.StartsWith(HivePrefix, StringComparison.OrdinalIgnoreCase))
+			{
+				using (RegistryKey languageServicesRoot = Registry.CurrentUser.OpenSubKey(configName.Substring(HivePrefix.Length)))
+				{
+					if (languageServicesRoot != null)
+					{
+						string[] subKeyNames = languageServicesRoot.GetSubKeyNames();
+						foreach (string subKeyName in subKeyNames)
+						{
+							using (RegistryKey languageSubKey = languageServicesRoot.OpenSubKey(subKeyName))
+							{
+								if (languageSubKey != null)
+								{
+									// "Registering a Language Service" explains what the values are for.
+									// https://msdn.microsoft.com/en-us/library/bb166421.aspx
+									string languageLogViewId = (string)languageSubKey.GetValue(string.Empty);
+									if (scanLanguage(subKeyName, languageLogViewId))
+									{
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		#endregion
+
 		#region Private Methods
 
 		private static ScanInfo Merge(ScanInfo scanInfo1, ScanInfo scanInfo2)
@@ -121,6 +212,264 @@ namespace Menees.VsTools.Tasks
 			ScanInfo result = new ScanInfo(
 				scanInfo1.delimiters.Concat(scanInfo2.delimiters),
 				scanInfo1.languages.Concat(scanInfo2.languages));
+			return result;
+		}
+
+		private static ScanInfo Infer(FileItem file, Cache cache)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+			ScanInfo result = Unscannable;
+
+			try
+			{
+				FileInfo fileInfo = new FileInfo(file.FileName);
+
+				// The largest hand-maintained source code file I've ever encountered was almost 900K (in G. Millennium),
+				// and it was over 25000 lines of spaghetti code.  So I'm going to assume any file that's over 1MB
+				// in size is either generated text or a binary file.
+				const long MaxTextFileSize = 1048576;
+				if (fileInfo.Exists && fileInfo.Length > 0 && fileInfo.Length <= MaxTextFileSize)
+				{
+					string extension = fileInfo.Extension;
+					if (TryGetCustomExtensionScanInfo(extension, cache, ref result))
+					{
+						cache.TryAdd(extension, result);
+					}
+					else
+					{
+						byte[] buffer = ReadInitialBlock(file, fileInfo);
+						if (buffer != null && IsTextBuffer(buffer))
+						{
+							// Use Language instead of .xml or .txt extensions here since a user could override those extensions.
+							Language language = IsXmlBuffer(buffer) ? Language.XML : Language.PlainText;
+							result = cache.Get(language);
+
+							// Since we were actually able to read a buffer from the file, we'll save
+							// this ScanInfo for use with other files using the same extension.
+							cache.TryAdd(extension, result);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				if (!FileItem.IsAccessException(ex))
+				{
+					throw;
+				}
+
+				result = Unscannable;
+			}
+
+			return result;
+		}
+
+		private static bool TryGetCustomExtensionScanInfo(string extension, Cache cache, ref ScanInfo scanInfo)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+			bool result = false;
+
+			MainPackage package = MainPackage.Instance;
+			if (package != null && !string.IsNullOrEmpty(extension) && extension.Length > 1 && extension[0] == '.')
+			{
+				using (RegistryKey studioUserRoot = package.UserRegistryRoot)
+				{
+					if (studioUserRoot != null)
+					{
+						// See if this is a custom file extension mapped to a language service.
+						string extLogViewId = null;
+						using (RegistryKey extKey = studioUserRoot.OpenSubKey(@"FileExtensionMapping\" + extension.Substring(1)))
+						{
+							if (extKey != null)
+							{
+								extLogViewId = (string)extKey.GetValue("LogViewID");
+							}
+						}
+
+						// If we found a LogViewID, then find which language service it goes with (if any).
+						if (!string.IsNullOrEmpty(extLogViewId))
+						{
+							ScanInfo matchedScanInfo = null;
+							ScanLanguageServices(
+								studioUserRoot,
+								(langName, langGuid) =>
+								{
+									bool matched = false;
+									if (string.Equals(langGuid, extLogViewId, StringComparison.OrdinalIgnoreCase))
+									{
+										Language language = Utilities.GetLanguage(langName, extension);
+										if (cache.TryGet(language, out ScanInfo languageScanInfo))
+										{
+											matchedScanInfo = languageScanInfo;
+											matched = true;
+										}
+									}
+
+									return matched;
+								});
+
+							if (matchedScanInfo != null)
+							{
+								scanInfo = matchedScanInfo;
+								result = true;
+							}
+						}
+					}
+				}
+			}
+
+			return result;
+		}
+
+		private static byte[] ReadInitialBlock(FileItem file, FileInfo fileInfo)
+		{
+			byte[] buffer = null;
+
+			using (Stream stream = file.TryOpenFileStream())
+			{
+				if (stream != null)
+				{
+					const int MaxBufferLength = 4096;
+					int bufferLength = Math.Min((int)fileInfo.Length, MaxBufferLength);
+					buffer = new byte[bufferLength];
+
+					int offset = 0;
+					while (offset < bufferLength)
+					{
+						int read = stream.Read(buffer, offset, bufferLength - offset);
+						if (read == 0)
+						{
+							// TryOpenFileStream uses a FileShare setting that allows external writes,
+							// so the stream size can shrink to be less than fileInfo.Length.  If we hit
+							// EndOfFile earlier than expected, just shrink the buffer and return it.
+							if (offset > 0)
+							{
+								Array.Resize(ref buffer, offset);
+							}
+							else
+							{
+								buffer = null;
+							}
+
+							break;
+						}
+
+						offset += read;
+					}
+				}
+			}
+
+			return buffer;
+		}
+
+		private static bool IsTextBuffer(byte[] buffer)
+		{
+			bool? result = null;
+
+			using (MemoryStream stream = new MemoryStream(buffer))
+			{
+				using (StreamReader reader = CreateStreamReader(stream))
+				{
+					Encoding initialEncoding = reader.CurrentEncoding;
+					int value;
+					while ((value = reader.Read()) >= 0)
+					{
+						if (initialEncoding != null && reader.CurrentEncoding != initialEncoding)
+						{
+							// If a different encoding was detected via byte-order marks, then it's almost certainly a text file.
+							result = true;
+							break;
+						}
+						else
+						{
+							// We only need to check the encoding after the first read.
+							initialEncoding = null;
+						}
+
+						// Unicode's control characters also include common whitespace like CR and LF,
+						// so we'll exclude them.  http://stackoverflow.com/a/26652983/1882616
+						char ch = (char)value;
+						if (char.IsControl(ch) && !char.IsWhiteSpace(ch))
+						{
+							result = false;
+							break;
+						}
+					}
+
+					if (result == null)
+					{
+						// If we got into the while loop and read anything, then initialEncoding should be null.
+						// Since we finished the loop without an explicit false (or true), then all the chars were text.
+						result = initialEncoding == null;
+					}
+				}
+			}
+
+			return result ?? false;
+		}
+
+		private static bool IsXmlBuffer(byte[] buffer)
+		{
+			bool? result = null;
+
+			using (MemoryStream stream = new MemoryStream(buffer))
+			{
+				using (StreamReader reader = CreateStreamReader(stream))
+				{
+					int value;
+					while (result == null && (value = reader.Read()) >= 0)
+					{
+						char ch = (char)value;
+						switch (ch)
+						{
+							case ' ':
+							case '\t':
+							case '\r':
+							case '\n':
+								// We need to skip leading whitespace and keep reading.
+								break;
+
+							case '<':
+								// This is tentative.  We'll try to validate further below.
+								result = true;
+								break;
+
+							default:
+								result = false;
+								break;
+						}
+					}
+				}
+
+				if (result.GetValueOrDefault())
+				{
+					stream.Seek(0, SeekOrigin.Begin);
+					try
+					{
+						using (XmlReader reader = XmlReader.Create(stream))
+						{
+							// See if the first node (e.g., element, comment, or processing instruction) is valid XML.
+							result = reader.Read();
+						}
+					}
+					catch (XmlException)
+					{
+						result = false;
+					}
+				}
+			}
+
+			return result ?? false;
+		}
+
+		private static StreamReader CreateStreamReader(MemoryStream stream)
+		{
+			StreamReader result = new StreamReader(
+				stream,
+				Encoding.Default,
+				detectEncodingFromByteOrderMarks: true,
+				bufferSize: stream.Capacity,
+				leaveOpen: true);
 			return result;
 		}
 
@@ -196,9 +545,32 @@ namespace Menees.VsTools.Tasks
 
 			#region Public Methods
 
+			public bool TryGet(string extension, out ScanInfo scanInfo)
+			{
+				bool result = this.extensions.TryGetValue(extension, out scanInfo);
+				return result;
+			}
+
 			public bool TryGet(Language language, out ScanInfo scanInfo)
 			{
 				bool result = this.languages.TryGetValue(language, out scanInfo);
+				return result;
+			}
+
+			public bool TryAdd(string extension, ScanInfo scanInfo)
+			{
+				bool result = this.extensions.TryAdd(extension, scanInfo);
+				return result;
+			}
+
+			public ScanInfo Get(Language language)
+			{
+				if (!this.TryGet(language, out ScanInfo result))
+				{
+					// If this is thrown, then the required language isn't in ScanInfo.xml.
+					throw new InvalidOperationException("ScanInfo for a required language wasn't found: " + language);
+				}
+
 				return result;
 			}
 

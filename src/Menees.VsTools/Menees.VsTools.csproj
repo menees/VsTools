@@ -113,6 +113,8 @@
     </Compile>
     <Compile Include="BaseConverter\Window.cs" />
     <Compile Include="BaseConverter\Enumerations.cs" />
+    <Compile Include="BuildTimer.cs" />
+    <Compile Include="CodeMember.cs" />
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="CommentHandler.cs" />
     <Compile Include="Editor\ClassificationFormatBase.cs" />
@@ -146,9 +148,11 @@
     <Compile Include="Editor\MouseWheelZoomListener.cs" />
     <Compile Include="MainPackage.VsAttributes.cs" />
     <Compile Include="MainPackage.Version.cs" />
+    <Compile Include="MemberSorter.cs" />
     <Compile Include="Options.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ProjectHandler.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -168,14 +172,34 @@
     <Compile Include="SortDialog.xaml.cs">
       <DependentUpon>SortDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SortMembersDialog.xaml.cs">
+      <DependentUpon>SortMembersDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StatisticsDialog.xaml.cs">
       <DependentUpon>StatisticsDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tasks\CommentTask.cs" />
+    <Compile Include="Tasks\CommentTaskProvider.cs" />
     <Compile Include="Tasks\CommentToken.cs" />
     <Compile Include="Tasks\DocumentItem.cs" />
+    <Compile Include="Tasks\DocumentMonitor.cs" />
+    <Compile Include="Tasks\Enumerations.cs" />
+    <Compile Include="Tasks\FileItem.cs" />
+    <Compile Include="Tasks\FileItemManager.cs" />
+    <Compile Include="Tasks\FileMonitor.cs" />
+    <Compile Include="Tasks\HierarchyItem.cs" />
+    <Compile Include="Tasks\HierarchyVisitor.cs" />
+    <Compile Include="Tasks\PriorityImageConverter.cs" />
     <Compile Include="Tasks\ScanInfo.cs" />
+    <Compile Include="Tasks\SolutionMonitor.cs" />
+    <Compile Include="Tasks\TasksChangedEventArgs.cs" />
+    <Compile Include="Tasks\TasksControl.xaml.cs">
+      <DependentUpon>TasksControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tasks\TasksWindow.cs" />
     <Compile Include="TextDocumentHandler.cs" />
     <Compile Include="TextLines.cs" />
+    <Compile Include="ToggleFilesHandler.cs" />
     <Compile Include="TrimDialog.xaml.cs">
       <DependentUpon>TrimDialog.xaml</DependentUpon>
     </Compile>
@@ -264,9 +288,21 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SortMembersDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="StatisticsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <DesignData Include="Tasks\DesignData.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </DesignData>
+    <Page Include="Tasks\TasksControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="TrimDialog.xaml">
       <SubType>Designer</SubType>

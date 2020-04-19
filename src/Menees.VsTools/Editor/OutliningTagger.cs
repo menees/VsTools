@@ -22,9 +22,9 @@ namespace Menees.VsTools.Editor
 		#region Private Data Members
 
 		private const string RegionToken = "#region";
-		private static readonly CommentToken StartToken = new CommentToken(RegionToken, false);
-		private static readonly CommentToken EndToken = new CommentToken("#endregion", false);
-		private static readonly CommentToken AltEndToken = new CommentToken("#end region", false);
+		private static readonly CommentToken StartToken = new CommentToken(RegionToken, TaskPriority.Normal, false);
+		private static readonly CommentToken EndToken = new CommentToken("#endregion", TaskPriority.Normal, false);
+		private static readonly CommentToken AltEndToken = new CommentToken("#end region", TaskPriority.Normal, false);
 
 		private readonly ITextBuffer buffer;
 		private readonly IReadOnlyList<Regex> startExpressions;

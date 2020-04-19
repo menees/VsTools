@@ -11,14 +11,15 @@ namespace Menees.VsTools.Tasks
 
 	#endregion
 
-	[DebuggerDisplay("{Text}")]
+	[DebuggerDisplay("{Text}, {Priority}")]
 	internal sealed class CommentToken
 	{
 		#region Constructors
 
-		public CommentToken(string text, bool isCaseSensitive)
+		public CommentToken(string text, TaskPriority priority, bool isCaseSensitive)
 		{
 			this.Text = text;
+			this.Priority = priority;
 			this.IsCaseSensitive = isCaseSensitive;
 		}
 
@@ -27,6 +28,8 @@ namespace Menees.VsTools.Tasks
 		#region Public Properties
 
 		public string Text { get; }
+
+		public TaskPriority Priority { get; }
 
 		public bool IsCaseSensitive { get; }
 

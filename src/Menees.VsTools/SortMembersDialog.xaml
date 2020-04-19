@@ -1,0 +1,92 @@
+﻿<ui:DialogWindow x:Class="Menees.VsTools.SortMembersDialog"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+		xmlns:m="clr-namespace:Menees.VsTools"
+		Title="Sort Members" MinWidth="640" MinHeight="180" Width="720" Height="640" x:ClassModifier="internal" WindowStartupLocation="CenterOwner"
+			FocusManager.FocusedElement="{Binding ElementName=list}" ResizeMode="CanResizeWithGrip" ShowInTaskbar="False">
+	<ui:DialogWindow.Resources>
+		<m:ImageNameToSourceConverter x:Key="imageNameConverter"/>
+	</ui:DialogWindow.Resources>
+	<DockPanel>
+		<CheckBox x:Name="onlyShowWhenShiftIsPressed" Content="_Only show when Shift is pressed"
+				HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Bottom" Margin="6" TabIndex="5"/>
+		<DockPanel DockPanel.Dock="Bottom">
+			<DockPanel.Resources>
+				<Style TargetType="Button">
+					<Setter Property="VerticalAlignment" Value="Center"/>
+					<Setter Property="MinWidth" Value="75"/>
+					<Setter Property="Margin" Value="6,0"/>
+ 				</Style>
+			</DockPanel.Resources>
+			<Button Content="_Sort" DockPanel.Dock="Left" Click="Sort_Click" TabIndex="2"/>
+			<Label DockPanel.Dock="Left">Drag members within each type to manually change their order.</Label>
+			<Button Content="Cancel" IsCancel="True" DockPanel.Dock="Right" TabIndex="4"/>
+			<Button x:Name="okayButton" Content="OK" IsDefault="True" Click="OkayButton_Click" DockPanel.Dock="Right" TabIndex="3"/>
+			<TextBlock/>
+		</DockPanel>
+		<ListView x:Name="list" Margin="6" SelectionMode="Extended" TabIndex="0" AllowDrop="True"
+			PreviewMouseLeftButtonDown="List_PreviewMouseLeftButtonDown" MouseLeftButtonUp="List_MouseLeftButtonUp"
+			MouseMove="List_MouseMove" DragOver="List_DragOver" Drop="List_Drop">
+			<ListView.View>
+				<GridView>
+					<GridViewColumn Header="Member">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal">
+									<Image Source="{Binding ImageName, Converter={StaticResource imageNameConverter}}" Margin="6,0" />
+									<TextBlock Text="{Binding Name}"/>
+								</StackPanel>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+					</GridViewColumn>
+					<GridViewColumn Header="Modifiers" DisplayMemberBinding="{Binding ModifiersDescription}"/>
+					<GridViewColumn Header="Parameters" DisplayMemberBinding="{Binding ParametersDescription}"/>
+				</GridView>
+			</ListView.View>
+
+			<!-- http://www.wpf-tutorial.com/listview-control/listview-grouping/ -->
+			<!-- The group header bound to WPF's GroupItem.Name.  The TypeDescription property is set as the group name in code.  -->
+			<!-- Note: We can't easily make the Expander fill the whole header area because the Expander's Template sets its ContentPresenter's
+		HorizontalAlignment to Left (instead of Stretch or any content property), which collapses any extra space.  We could replace the template
+		(via PropertyGrid, select Expander.Template property, click "square button", select "Convert to New Resource..."), but that adds hundreds of
+		lines of XAML to this file when we only really want to change one property.  See the following post for more info:
+		https://social.msdn.microsoft.com/Forums/vstudio/en-US/8089d8ac-298d-499a-a075-9d0ae7de8741/listview-grouping-stretch-textblock-in-header-template?forum=wpf
+		I tried changing it programmatically (via VisualTreeHelper) in the Loaded event, and it worked at first.  But when groups were recreated (which
+		happens implicitly during some Sorts), the Expanders would revert back to their templated alignments.  That also required using a Grid with
+		Auto and * columns instead of a horizontal StackPanel in the header.
+		-->
+			<ListView.GroupStyle>
+				<GroupStyle>
+					<GroupStyle.ContainerStyle>
+						<Style TargetType="{x:Type GroupItem}">
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate>
+										<Expander IsExpanded="True">
+											<Expander.Header>
+												<Border BorderThickness="1.5" CornerRadius="3" BorderBrush="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" Padding="6">
+													<Border.Background>
+														<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+															<GradientStop Color="{DynamicResource {x:Static SystemColors.InactiveCaptionColorKey}}" Offset="0"/>
+															<GradientStop Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}" Offset="1"/>
+														</LinearGradientBrush>
+													</Border.Background>
+													<StackPanel Orientation="Horizontal">
+														<Image Source="{Binding Name, Converter={StaticResource imageNameConverter}}" Margin="0,0,6,0"/>
+														<TextBlock Text="{Binding Name}" FontStyle="Italic" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"/>
+													</StackPanel>
+												</Border>
+											</Expander.Header>
+											<ItemsPresenter />
+										</Expander>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</GroupStyle.ContainerStyle>
+				</GroupStyle>
+			</ListView.GroupStyle>
+		</ListView>
+	</DockPanel>
+</ui:DialogWindow>

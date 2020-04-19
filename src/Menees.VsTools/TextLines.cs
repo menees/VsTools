@@ -29,6 +29,26 @@
 
 		#endregion
 
+		#region Public Properties
+
+		public IEnumerable<string> Lines
+		{
+			get
+			{
+				foreach (string line in this.lines)
+				{
+					yield return line;
+				}
+
+				if (this.endsInHardReturn)
+				{
+					yield return string.Empty;
+				}
+			}
+		}
+
+		#endregion
+
 		#region Public Methods
 
 		public override string ToString()
@@ -107,6 +127,49 @@
 			}
 		}
 
+		public string Stream()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			int numLines = this.lines.Length;
+			bool startOfLine = true;
+			for (int i = 0; i < numLines; i++)
+			{
+				string line = this.lines[i];
+				RemoveLinePrefix(ref line);
+
+				if (string.IsNullOrEmpty(line))
+				{
+					sb.Append("\r\n");
+					startOfLine = true;
+				}
+				else
+				{
+					if (startOfLine)
+					{
+						if (sb.Length > 0)
+						{
+							sb.Append("\r\n");
+						}
+					}
+					else
+					{
+						sb.Append(" ");
+					}
+
+					sb.Append(line);
+					startOfLine = false;
+				}
+			}
+
+			if (this.endsInHardReturn)
+			{
+				sb.Append("\r\n");
+			}
+
+			return sb.ToString();
+		}
+
 		public void Comment(bool comment, string delimiter)
 		{
 			int numLines = this.lines.Length;
@@ -178,6 +241,20 @@
 		#endregion
 
 		#region Private Methods
+		private static void RemoveLinePrefix(ref string line)
+		{
+			if (!string.IsNullOrEmpty(line))
+			{
+				// Strip outer whitespace first
+				line = line.Trim();
+
+				// Trim off any leading > chars that stupid email software puts in replies
+				while (line.Length > 0 && line[0] == '>')
+				{
+					line = line.Substring(1).TrimStart();
+				}
+			}
+		}
 
 		private static bool RemoveFirst(ref string line, string remove)
 		{

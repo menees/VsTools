@@ -20,15 +20,18 @@
 
 	#endregion
 
-	public sealed partial class MainPackage : AsyncPackage
+	public sealed partial class MainPackage : AsyncPackage, IDisposable
 	{
 		#region Private Data Members
 
+		private static MainPackage instance;
 		private static Options generalOptions;
 		private static BaseConverter.Options baseConverterOptions;
 
 		private CommandProcessor processor;
 		private ClassificationFormatManager formatManager;
+		private CommentTaskProvider commentTaskProvider;
+		private BuildTimer buildTimer;
 
 		#endregion
 
@@ -49,6 +52,21 @@
 		#endregion
 
 		#region Internal Properties
+
+		internal static MainPackage Instance
+		{
+			get
+			{
+				ThreadHelper.ThrowIfNotOnUIThread();
+
+				if (instance == null)
+				{
+					ForceLoad();
+				}
+
+				return instance;
+			}
+		}
 
 		internal static Options GeneralOptions
 		{
@@ -80,11 +98,18 @@
 			}
 		}
 
+		internal CommentTaskProvider TaskProvider => this.commentTaskProvider;
+
 		internal System.IServiceProvider ServiceProvider => this;
 
 		#endregion
 
 		#region Public Methods
+
+		public void Dispose()
+		{
+			this.Dispose(true);
+		}
 
 		public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
 		{
@@ -171,6 +196,7 @@
 				LogMessage(string.Format("After {0}'s base.Initialize()", this.ToString()));
 
 				await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+				instance = this;
 
 				// Ryan Molden from Microsoft says that GetDialogPage caches the result, so we're going to cache it too.
 				// I've also verified GetDialogPage's caching implementation in VS11 by looking at it with Reflector.
@@ -202,6 +228,16 @@
 				// (e.g., Output) we have to hook some old-school TextManager COM events.
 				this.formatManager = new ClassificationFormatManager(this.ServiceProvider);
 				this.formatManager.UpdateFormats();
+
+				// This option requires a restart if changed because the CommentTaskProvider and various
+				// XxxMonitor classes attach to too many events and register too many things to easily
+				// detach/unregister and clean them all up if this is toggled interactively.
+				if (GeneralOptions.EnableCommentScans)
+				{
+					this.commentTaskProvider = new CommentTaskProvider(this);
+				}
+
+				this.buildTimer = new BuildTimer(this);
 			}
 			catch (Exception ex)
 			{
@@ -210,6 +246,13 @@
 			}
 
 			LogMessage(string.Format("Exiting {0}.Initialize()", this.ToString()));
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			this.commentTaskProvider?.Dispose();
+			this.buildTimer?.Dispose();
+			base.Dispose(disposing);
 		}
 
 		protected override string GetToolWindowTitle(Type toolWindowType, int id)

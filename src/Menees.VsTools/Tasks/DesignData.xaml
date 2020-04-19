@@ -1,0 +1,9 @@
+﻿<!-- http://blogs.msdn.com/b/wpfsldesigner/archive/2010/06/30/sample-data-in-the-wpf-and-silverlight-designer.aspx -->
+<coll:ArrayList xmlns:coll="clr-namespace:System.Collections;assembly=mscorlib" xmlns:m="clr-namespace:Menees.VsTools.Tasks">
+	<m:CommentTask Priority="High" Project="Test 1" FilePath="C:\Test\Testing.cs" Line="123"
+		Comment="TODO: This is a test." FileName="Testing.cs"/>
+	<m:CommentTask Priority="Normal" Project="Test 2" FilePath="C:\Test\Another.cs" Line="456"
+		Comment="TODO: Finish this testing by tomorrow. [BTM, 7/6/15]" FileName="Another.cs"/>
+	<m:CommentTask Priority="Low" Project="Test 3, Test 4, Test 5, Test 6, Test 7, Test 8" FilePath="C:\Program Files\Microsoft Visual Studio\Test\Still Testing With A Long File Name.cs" Line="1234"
+		Comment="TODO: We're still testing things." FileName="Still Testing With A Long File Name.cs"/>
+</coll:ArrayList>

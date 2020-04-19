@@ -44,7 +44,7 @@ namespace Menees.VsTools.Editor
 		{
 			// When the TextView closes, we need to detach all buffer classifiers from the various OptionsChanged
 			// events they've advised on in order for everything to clean up properly.  Otherwise, global objects like
-			// MainPackage.Instance.Options would end up with event handler references that would keep every
+			// MainPackage.GeneralOptions would end up with event handler references that would keep every
 			// ClassifierBase alive for the life of the process.
 			if (reason == ConnectionReason.TextViewLifetime)
 			{
