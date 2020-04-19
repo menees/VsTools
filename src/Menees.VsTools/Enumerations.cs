@@ -64,6 +64,7 @@
 		AddRegion = 311,
 		CollapseAllRegions = 312,
 		ExpandAllRegions = 313,
+		ViewBaseConverter = 314,
 		CommentSelection = 316,
 		UncommentSelection = 317,
 		AddToDoComment = 319,

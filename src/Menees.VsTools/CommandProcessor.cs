@@ -98,6 +98,10 @@
 							result = new TextDocumentHandler(this.dte).CanSetSelectedText;
 							break;
 
+						case Command.ViewBaseConverter:
+							result = true;
+							break;
+
 						case Command.AddToDoComment:
 							result = CommentHandler.CanAddToDoComment(this.dte);
 							break;
@@ -123,7 +127,7 @@
 					switch (command)
 					{
 						case Command.AddRegion:
-							RegionHandler.AddRegion(this.dte, Options.SplitValues(MainPackage.Options.PredefinedRegions));
+							RegionHandler.AddRegion(this.dte, Options.SplitValues(MainPackage.GeneralOptions.PredefinedRegions));
 							break;
 
 						case Command.CollapseAllRegions:
@@ -161,6 +165,10 @@
 
 						case Command.Trim:
 							this.Trim();
+							break;
+
+						case Command.ViewBaseConverter:
+							this.ViewToolWindow(typeof(BaseConverter.Window));
 							break;
 
 						case Command.AddToDoComment:
@@ -201,7 +209,7 @@
 			ThreadHelper.ThrowIfNotOnUIThread();
 			bool performExecute = true;
 			Documents allDocs = this.dte.Documents;
-			if (allDocs != null && MainPackage.Options.SaveAllBeforeExecuteFile)
+			if (allDocs != null && MainPackage.GeneralOptions.SaveAllBeforeExecuteFile)
 			{
 				try
 				{
@@ -249,7 +257,7 @@
 			if (handler.CanSetSelectedText)
 			{
 				Guid guid = Guid.NewGuid();
-				Options options = MainPackage.Options;
+				Options options = MainPackage.GeneralOptions;
 
 				string format;
 				switch (options.GuidFormat)
@@ -292,7 +300,7 @@
 			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
-				Options options = MainPackage.Options;
+				Options options = MainPackage.GeneralOptions;
 
 				SortDialog dialog = new SortDialog();
 				if (dialog.Execute(options))
@@ -335,7 +343,7 @@
 			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
-				Options options = MainPackage.Options;
+				Options options = MainPackage.GeneralOptions;
 
 				bool execute = true;
 				if (!options.OnlyShowTrimDialogWhenShiftIsPressed || Utilities.IsShiftPressed)
@@ -353,6 +361,25 @@
 					handler.SetSelectedTextIfUnchanged(trimmedText, nameof(this.Trim));
 				}
 			}
+		}
+
+		private void ViewToolWindow(Type toolWindowPaneType)
+		{
+			// From https://github.com/Microsoft/VSSDK-Analyzers/blob/master/doc/VSSDK003.md
+			this.package.JoinableTaskFactory.RunAsync(async () =>
+			{
+				// Get instance number 0 of this tool window. It's single instance so that's the only one.
+				// The last flag is set to true so that if the tool window does not exist it will be created.
+				ToolWindowPane window = await this.package.ShowToolWindowAsync(toolWindowPaneType, 0, true, this.package.DisposalToken).ConfigureAwait(true);
+				if ((window == null) || (window.Frame == null))
+				{
+					throw new NotSupportedException("Cannot create tool window.");
+				}
+
+				await this.package.JoinableTaskFactory.SwitchToMainThreadAsync();
+				IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+				ErrorHandler.ThrowOnFailure(windowFrame.Show());
+			});
 		}
 
 		#endregion

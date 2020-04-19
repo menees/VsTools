@@ -72,7 +72,7 @@ namespace Menees.VsTools
 				Language language = handler.Language;
 				bool useVsIndentation = GetCommentStyle(
 					language,
-					MainPackage.Options.UseVsStyleCommentIndentation,
+					MainPackage.GeneralOptions.UseVsStyleCommentIndentation,
 					false,
 					out string beginDelimiter,
 					out string endDelimiter);

@@ -104,6 +104,15 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="BaseConverter\Converter.cs" />
+    <Compile Include="BaseConverter\ConverterControl.xaml.cs">
+      <DependentUpon>ConverterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BaseConverter\Options.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BaseConverter\Window.cs" />
+    <Compile Include="BaseConverter\Enumerations.cs" />
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="CommentHandler.cs" />
     <Compile Include="Editor\ClassificationFormatBase.cs" />
@@ -243,6 +252,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BaseConverter\ConverterControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ListDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -17,7 +17,9 @@
 
 		public const string BaseConverterWindowPersistanceString = "a1c0c4ce-9e21-431f-8125-cc3586c65627";
 
-		public const string OptionsString = "bd511b61-46fe-4997-965b-c5408b6be977";
+		public const string BaseConverterOptionsString = "247209a3-be9c-48e8-9678-41900e22be4c";
+
+		public const string GeneralOptionsString = "bd511b61-46fe-4997-965b-c5408b6be977";
 
 		public static readonly Guid MeneesVsToolsPackage = new Guid(MeneesVsToolsPackageString);
 

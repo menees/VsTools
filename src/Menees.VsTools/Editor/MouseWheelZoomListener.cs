@@ -24,7 +24,7 @@ namespace Menees.VsTools.Editor
 		public void TextViewCreated(IWpfTextView textView)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			bool enable = MainPackage.Options.IsMouseWheelZoomEnabled;
+			bool enable = MainPackage.GeneralOptions.IsMouseWheelZoomEnabled;
 			textView.Options.SetOptionValue(DefaultWpfViewOptions.EnableMouseWheelZoomId, enable);
 		}
 

@@ -24,7 +24,8 @@
 	{
 		#region Private Data Members
 
-		private static Options options;
+		private static Options generalOptions;
+		private static BaseConverter.Options baseConverterOptions;
 
 		private CommandProcessor processor;
 		private ClassificationFormatManager formatManager;
@@ -49,27 +50,58 @@
 
 		#region Internal Properties
 
-		internal static Options Options
+		internal static Options GeneralOptions
 		{
 			get
 			{
 				ThreadHelper.ThrowIfNotOnUIThread();
 
-				// Ryan Molden from Microsoft says that GetDialogPage caches the result,
-				// so we're going to cache it too and make it into a strongly-typed property.
-				// I've also verified GetDialogPage's caching implementation in VS11 by looking
-				// at it with Reflector.
-				// http://social.msdn.microsoft.com/Forums/eu/vsx/thread/303fce01-dfc0-43b3-a578-8b3258c0b83f
-				if (options == null)
+				if (generalOptions == null)
 				{
 					ForceLoad();
 				}
 
-				return options;
+				return generalOptions;
+			}
+		}
+
+		internal static BaseConverter.Options BaseConverterOptions
+		{
+			get
+			{
+				ThreadHelper.ThrowIfNotOnUIThread();
+
+				if (baseConverterOptions == null)
+				{
+					ForceLoad();
+				}
+
+				return baseConverterOptions;
 			}
 		}
 
 		internal System.IServiceProvider ServiceProvider => this;
+
+		#endregion
+
+		#region Public Methods
+
+		public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			IVsAsyncToolWindowFactory result;
+			if (toolWindowType == typeof(BaseConverter.Window).GUID)
+			{
+				result = this;
+			}
+			else
+			{
+				result = base.GetAsyncToolWindowFactory(toolWindowType);
+			}
+
+			return result;
+		}
 
 		#endregion
 
@@ -140,8 +172,12 @@
 
 				await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
+				// Ryan Molden from Microsoft says that GetDialogPage caches the result, so we're going to cache it too.
+				// I've also verified GetDialogPage's caching implementation in VS11 by looking at it with Reflector.
+				// http://social.msdn.microsoft.com/Forums/eu/vsx/thread/303fce01-dfc0-43b3-a578-8b3258c0b83f
 				// From http://msdn.microsoft.com/en-us/library/bb165039.aspx
-				options = this.GetDialogPage(typeof(Options)) as Options;
+				generalOptions = this.GetDialogPage(typeof(Options)) as Options;
+				baseConverterOptions = this.GetDialogPage(typeof(BaseConverter.Options)) as BaseConverter.Options;
 
 				this.processor = new CommandProcessor(this);
 
@@ -175,6 +211,27 @@
 
 			LogMessage(string.Format("Exiting {0}.Initialize()", this.ToString()));
 		}
+
+		protected override string GetToolWindowTitle(Type toolWindowType, int id)
+		{
+			string result;
+
+			const string LoadingSuffix = " Loading...";
+			if (toolWindowType == typeof(BaseConverter.Window))
+			{
+				result = BaseConverter.Window.DefaultCaption + LoadingSuffix;
+			}
+			else
+			{
+				result = base.GetToolWindowTitle(toolWindowType, id);
+			}
+
+			return result;
+		}
+
+		protected override Task<object> InitializeToolWindowAsync(Type toolWindowType, int id, CancellationToken cancellationToken)
+			/* This dummy value is passed to each ToolWindow's Window(string) constructor. */
+			=> System.Threading.Tasks.Task.FromResult<object>("unused");
 
 		#endregion
 

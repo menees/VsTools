@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="Menees.VsTools.BaseConverter.ConverterControl"
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+			mc:Ignorable="d" x:ClassModifier="internal"
+			d:DesignHeight="300" d:DesignWidth="300"
+			Loaded="BaseConverterControl_Loaded"
+			Background="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}">
+	<UserControl.Resources>
+		<Style x:Key="defaultStyle">
+			<!--http://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.vsbrushes.aspx-->
+			<Setter Property="Control.Background" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}" />
+			<Setter Property="Control.Foreground" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowTextBrushKey}}" />
+		</Style>
+		<Style TargetType="{x:Type Label}" BasedOn="{StaticResource defaultStyle}" />
+		<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource defaultStyle}" />
+		<Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource defaultStyle}">
+			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static vs:EnvironmentColors.ComboBoxPopupBorderBrushKey}}"/>
+		</Style>
+		<!-- I tried styling ComboBox (using ComboBoxTextBrushKey and ComboBoxBackgroundBrushKey),
+		but it doesn't work correctly in the Dark theme.  It becomes unreadable with white text on a silver
+		background (the embedded ToggleButton?).  So I'm just going to leave the default Windows styling. -->
+	</UserControl.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition/>
+		</Grid.ColumnDefinitions>
+		<Label Content="Byte Order:" />
+		<ComboBox x:Name="byteOrder" Grid.Column="1" Margin="4" SelectedIndex="0" SelectionChanged="ByteOrder_SelectionChanged" >
+			<!--These items must match the order of the fields in the ByteOrder enum.-->
+			<ComboBoxItem Content="Numeric (Big Endian, Left 0-Pad)"/>
+			<ComboBoxItem Content="Little Endian"/>
+			<ComboBoxItem Content="Big Endian"/>
+		</ComboBox>
+		<Label Content="Data Type:" Grid.Row="1" />
+		<ComboBox x:Name="numberType" Grid.Column="1" Grid.Row="1" Margin="4" SelectedIndex="4" SelectionChanged="DataType_SelectionChanged">
+			<!--These items must match the order of the fields in the NumberType enum.-->
+			<ComboBoxItem Content="SByte - 1 byte"/>
+			<ComboBoxItem Content="Byte - 1 byte"/>
+			<ComboBoxItem Content="Int16 - 2 bytes"/>
+			<ComboBoxItem Content="UInt16 - 2 bytes"/>
+			<ComboBoxItem Content="Int32 - 4 bytes"/>
+			<ComboBoxItem Content="UInt32 - 4 bytes"/>
+			<ComboBoxItem Content="Int64 - 8 bytes"/>
+			<ComboBoxItem Content="UInt64 - 8 bytes"/>
+			<ComboBoxItem Content="Single - 4 bytes"/>
+			<ComboBoxItem Content="Double - 8 bytes"/>
+			<ComboBoxItem Content="Decimal - 16 bytes"/>
+		</ComboBox>
+		<Label Content="Hex:" Grid.Row="2" />
+		<TextBox x:Name="hexEdit" Grid.Column="1" Grid.Row="2" Margin="4" TextChanged="TextBox_TextChanged" />
+		<Label Content="Decimal:" Grid.Row="3" />
+		<TextBox x:Name="decimalEdit" Grid.Column="1" Grid.Row="3" Margin="4" TextChanged="TextBox_TextChanged" />
+		<Label Content="Binary:" Grid.Row="4" />
+		<TextBox x:Name="binaryEdit" Grid.Column="1" Grid.Row="4" Margin="4" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" TextChanged="TextBox_TextChanged" />
+	</Grid>
+</UserControl>

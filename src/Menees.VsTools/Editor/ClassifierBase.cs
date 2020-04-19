@@ -29,7 +29,7 @@ namespace Menees.VsTools.Editor
 			buffer.ContentTypeChanged += this.TextBuffer_ContentTypeChanged;
 
 			// Indicate that we need to re-classify everything when our VSTools options change (specifically the highlighting options).
-			MainPackage.Options.Applied += this.PackageOptionsApplied;
+			MainPackage.GeneralOptions.Applied += this.PackageOptionsApplied;
 		}
 
 		#endregion
@@ -58,7 +58,7 @@ namespace Menees.VsTools.Editor
 			ThreadHelper.ThrowIfNotOnUIThread();
 			if (span.Length > 0)
 			{
-				this.GetClassificationSpans(result, span, MainPackage.Options);
+				this.GetClassificationSpans(result, span, MainPackage.GeneralOptions);
 			}
 
 			return result;
@@ -100,7 +100,7 @@ namespace Menees.VsTools.Editor
 			if (disposing)
 			{
 				this.buffer.ContentTypeChanged -= this.TextBuffer_ContentTypeChanged;
-				MainPackage.Options.Applied -= this.PackageOptionsApplied;
+				MainPackage.GeneralOptions.Applied -= this.PackageOptionsApplied;
 			}
 		}
 

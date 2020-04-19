@@ -20,7 +20,7 @@ namespace Menees.VsTools
 		//
 		// Note: When the version changes (major, minor, build, or revision), also update:
 		// - source.extension.vsixmanifest: <Identity Version="*"/>
-		internal const string Version = "2019.0.6";
+		internal const string Version = "2019.0.7";
 
 		internal const string Title = "Menees VS Tools";
 

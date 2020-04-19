@@ -28,7 +28,7 @@
 	// http://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.dialogpage(v=vs.110).aspx
 	// http://msdn.microsoft.com/en-us/library/bb162586(v=vs.110).aspx
 	// http://bloggingabout.net/blogs/perikles/archive/2006/11/22/How-to-dynamically-Import_2F00_Export-setting-in-Visual-Studio-2005_2E00_.aspx
-	[Guid(Guids.OptionsString)]
+	[Guid(Guids.GeneralOptionsString)]
 	[DefaultProperty(nameof(IsMouseWheelZoomEnabled))] // Make this get focus in the PropertyGrid first since its category is alphabetically first.
 	[SuppressMessage("Internal class never created.", "CA1812", Justification = "Created via reflection by VS.")]
 	internal class Options : DialogPage

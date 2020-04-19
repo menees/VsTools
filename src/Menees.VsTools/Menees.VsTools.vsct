@@ -39,10 +39,14 @@
 		<Groups>
 			<Group guid="CommandSet" id="ToolbarGroup1" priority="0x0100"/>
 			<Group guid="CommandSet" id="ToolbarGroup2" priority="0x0100"/>
+			<Group guid="CommandSet" id="ToolbarGroup3" priority="0x0100"/>
 			<Group guid="CommandSet" id="EditOutliningGroup" priority="0x0100"/>
 			<Group guid="CommandSet" id="ToolsMenuGroup" priority="0x0100"/>
 			<Group guid="CommandSet" id="ToolsSubMenuGroup01" priority="0x0101"/>
 			<Group guid="CommandSet" id="ToolsSubMenuGroup02" priority="0x0102"/>
+			<Group guid="CommandSet" id="ToolsSubMenuGroup03" priority="0x0103"/>
+			<Group guid="CommandSet" id="ToolsSubMenuGroup04" priority="0x0104"/>
+			<Group guid="CommandSet" id="ToolsSubMenuGroup05" priority="0x0105"/>
 		</Groups>
 
 		<!--Buttons section. -->
@@ -69,6 +73,7 @@
 			O	Comment Selection (2)
 			U		Uncomment Selection (2)
 			N		Add TODO Comment
+			B		Base Converter
 			-->
 			<Button guid="CommandSet" id="SortLines" priority="0x0100" type="Button">
 				<Icon guid="Images" id="SortLines" />
@@ -216,6 +221,19 @@
 					<LocCanonicalName>Menees.VsTools.AddToDoComment</LocCanonicalName>
 				</Strings>
 			</Button>
+
+			<Button guid="CommandSet" id="ViewBaseConverter" priority="0x0117" type="Button">
+				<Icon guid="Images" id="ViewBaseConverter" />
+				<Strings>
+					<!--We don't use any CommandFlags here because this command should always be visible and available.
+					According to MSDN, this will allow VS to delay-load our package until this command is clicked.
+					http://technet.microsoft.com/en-us/library/bb165339(v=vs.90).aspx -->
+					<ButtonText>&amp;Base Converter</ButtonText>
+					<ToolTipText>Displays the Base Converter tool for binary, decimal, and hexadecimal conversions.</ToolTipText>
+					<CanonicalName>Menees.VsTools.ViewBaseConverter</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.ViewBaseConverter</LocCanonicalName>
+				</Strings>
+			</Button>
 		</Buttons>
 
 		<!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -225,7 +243,7 @@
 						bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
 						inside a button definition. An important aspect of this declaration is that the element id
 						must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-			<Bitmap guid="Images" href="Resources\Images.png" usedList="SortLines, Trim, Statistics, ExecuteText, ExecuteFile, GenerateGuid, AddRegion, ExpandAllRegions, CollapseAllRegions, CommentSelection, UncommentSelection, AddToDoComment"/>
+			<Bitmap guid="Images" href="Resources\Images.png" usedList="SortLines, Trim, Statistics, StreamText, CheckSpelling, ExecuteText, ExecuteFile, GenerateGuid, ToggleFiles, ToggleReadOnly, ViewBaseConverter, AddRegion, ExpandAllRegions, CollapseAllRegions, CommentSelection, UncommentSelection, SortMembers, AddToDoComment, ViewTasks"/>
 		</Bitmaps>
 
 		<Menus>
@@ -270,30 +288,42 @@
 			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ExecuteFile" priority="0x0108">
-			<Parent guid="CommandSet" id="ToolsSubMenuGroup01" />
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="AddRegion" priority="0x0111">
-			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup03" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="CollapseAllRegions" priority="0x0112">
-			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup03" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ExpandAllRegions" priority="0x0113">
-			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup03" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="CommentSelection" priority="0x0114">
-			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup03" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="UncommentSelection" priority="0x0115">
-			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup03" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="AddToDoComment" priority="0x0116">
-			<Parent guid="CommandSet" id="ToolsSubMenuGroup02" />
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup03" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ViewBaseConverter" priority="0x0117">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup04" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ToolsSubMenuGroup01" priority="0x0101">
 			<Parent guid="CommandSet" id="ToolsSubMenu" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ToolsSubMenuGroup02" priority="0x0102">
+			<Parent guid="CommandSet" id="ToolsSubMenu" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToolsSubMenuGroup03" priority="0x0103">
+			<Parent guid="CommandSet" id="ToolsSubMenu" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToolsSubMenuGroup04" priority="0x0104">
+			<Parent guid="CommandSet" id="ToolsSubMenu" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToolsSubMenuGroup05" priority="0x0105">
 			<Parent guid="CommandSet" id="ToolsSubMenu" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ToolsSubMenu" priority="0x0100">
@@ -323,6 +353,11 @@
 			<Parent guid="guidStdEditor" id="IDM_VS_EDITOR_CSCD_OUTLINING_MENU"/>
 		</CommandPlacement>
 
+		<!--View -> Other Windows-->
+		<CommandPlacement guid="CommandSet" id="ViewBaseConverter" priority="0x9000">
+			<Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+		</CommandPlacement>
+
 		<!--Toolbar-->
 		<!--I wanted to have a few commands visible by default and then all the remaining
 		commands available in the toolbar's spillover section.  However, according to Ryan Molden
@@ -346,27 +381,28 @@
 		<CommandPlacement guid="CommandSet" id="ExecuteText" priority="0x0107">
 			<Parent guid="CommandSet" id="ToolbarGroup1" />
 		</CommandPlacement>
-		<CommandPlacement guid="CommandSet" id="ExecuteFile" priority="0x0108">
-			<Parent guid="CommandSet" id="ToolbarGroup1" />
+
+		<CommandPlacement guid="CommandSet" id="ExecuteFile" priority="0x0100">
+			<Parent guid="CommandSet" id="ToolbarGroup2" />
 		</CommandPlacement>
 
 		<CommandPlacement guid="CommandSet" id="AddRegion" priority="0x0100">
-			<Parent guid="CommandSet" id="ToolbarGroup2" />
+			<Parent guid="CommandSet" id="ToolbarGroup3" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="CollapseAllRegions" priority="0x0101">
-			<Parent guid="CommandSet" id="ToolbarGroup2" />
+			<Parent guid="CommandSet" id="ToolbarGroup3" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ExpandAllRegions" priority="0x0102">
-			<Parent guid="CommandSet" id="ToolbarGroup2" />
+			<Parent guid="CommandSet" id="ToolbarGroup3" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="CommentSelection" priority="0x0103">
-			<Parent guid="CommandSet" id="ToolbarGroup2" />
+			<Parent guid="CommandSet" id="ToolbarGroup3" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="UncommentSelection" priority="0x0104">
-			<Parent guid="CommandSet" id="ToolbarGroup2" />
+			<Parent guid="CommandSet" id="ToolbarGroup3" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="AddToDoComment" priority="0x0105">
-			<Parent guid="CommandSet" id="ToolbarGroup2" />
+			<Parent guid="CommandSet" id="ToolbarGroup3" />
 		</CommandPlacement>
 
 		<CommandPlacement guid="CommandSet" id="ToolbarGroup1" priority="0x0101">
@@ -375,11 +411,14 @@
 		<CommandPlacement guid="CommandSet" id="ToolbarGroup2" priority="0x0102">
 			<Parent guid="CommandSet" id="Toolbar" />
 		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ToolbarGroup3" priority="0x0103">
+			<Parent guid="CommandSet" id="Toolbar" />
+		</CommandPlacement>
 	</CommandPlacements>
 
 	<VisibilityConstraints>
 		<!--VS delay-loads packages so it can start up faster.  It won't load our package until the
-		first visible command is clicked or until one of the UICONTEXTs
+		first visible command is clicked (e.g., "ViewBaseConverter") or until one of the UICONTEXTs
 		in our package's [ProvideAutoLoad(UICONTEXT_*)] attributes occurs.  Those need to list
 		the same UICONTEXTs as in the visibility constraints below.  These contraints are only
 		applied once our package is loaded, so the same UICONTEXTs need to be used in both places.
@@ -401,6 +440,7 @@
 		<VisibilityItem guid="CommandSet" id="CommentSelection" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="UncommentSelection" context="UICONTEXT_CodeWindow" />
 		<VisibilityItem guid="CommandSet" id="AddToDoComment" context="UICONTEXT_CodeWindow" />
+		<!--ViewBaseConverter is always visible, so it isn't listed here.-->
 	</VisibilityConstraints>
 
 	<KeyBindings>
@@ -425,7 +465,11 @@
 			<IDSymbol name="ToolsSubMenu" value="0x1024" />
 			<IDSymbol name="ToolsSubMenuGroup01" value="0x1026"/>
 			<IDSymbol name="ToolsSubMenuGroup02" value="0x1027"/>
+			<IDSymbol name="ToolsSubMenuGroup03" value="0x1028"/>
+			<IDSymbol name="ToolsSubMenuGroup04" value="0x1029"/>
+			<IDSymbol name="ToolsSubMenuGroup05" value="0x1030"/>
 			<IDSymbol name="ToolbarGroup2" value="0x1031" />
+			<IDSymbol name="ToolbarGroup3" value="0x1032" />
 
 			<IDSymbol name="SortLines" value="301" />
 			<IDSymbol name="Trim" value="302" />
@@ -436,6 +480,7 @@
 			<IDSymbol name="AddRegion" value="311" />
 			<IDSymbol name="CollapseAllRegions" value="312" />
 			<IDSymbol name="ExpandAllRegions" value="313" />
+			<IDSymbol name="ViewBaseConverter" value="314" />
 			<IDSymbol name="CommentSelection" value="316" />
 			<IDSymbol name="UncommentSelection" value="317" />
 			<IDSymbol name="AddToDoComment" value="319"/>
@@ -445,15 +490,22 @@
 			<IDSymbol name="SortLines" value="1" />
 			<IDSymbol name="Trim" value="2" />
 			<IDSymbol name="Statistics" value="3" />
-			<IDSymbol name="ExecuteText" value="4" />
-			<IDSymbol name="ExecuteFile" value="5" />
-			<IDSymbol name="GenerateGuid" value="6" />
-			<IDSymbol name="AddRegion" value="7" />
-			<IDSymbol name="ExpandAllRegions" value="8" />
-			<IDSymbol name="CollapseAllRegions" value="9" />
-			<IDSymbol name="CommentSelection" value="10" />
-			<IDSymbol name="UncommentSelection" value="11" />
-			<IDSymbol name="AddToDoComment" value="12"/>
+			<IDSymbol name="StreamText" value="4" />
+			<IDSymbol name="CheckSpelling" value="5" />
+			<IDSymbol name="ExecuteText" value="6" />
+			<IDSymbol name="ExecuteFile" value="7" />
+			<IDSymbol name="GenerateGuid" value="8" />
+			<IDSymbol name="ToggleFiles" value="9" />
+			<IDSymbol name="ToggleReadOnly" value="10" />
+			<IDSymbol name="ViewBaseConverter" value="11" />
+			<IDSymbol name="AddRegion" value="12" />
+			<IDSymbol name="ExpandAllRegions" value="13" />
+			<IDSymbol name="CollapseAllRegions" value="14" />
+			<IDSymbol name="CommentSelection" value="15" />
+			<IDSymbol name="UncommentSelection" value="16" />
+			<IDSymbol name="SortMembers" value="17" />
+			<IDSymbol name="AddToDoComment" value="18"/>
+			<IDSymbol name="ViewTasks" value="19"/>
 		</GuidSymbol>
 	</Symbols>
 
