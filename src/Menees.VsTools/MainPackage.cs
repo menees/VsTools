@@ -1,11 +1,4 @@
-﻿[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage(
-	"Microsoft.Design",
-	"CA1020:AvoidNamespacesWithFewTypes",
-	Scope = "namespace",
-	Target = "Menees.VsTools",
-	Justification = "VS extension assemblies only need to expose one public type.")]
-
-namespace Menees.VsTools
+﻿namespace Menees.VsTools
 {
 	#region Using Directives
 
@@ -27,59 +20,13 @@ namespace Menees.VsTools
 
 	#endregion
 
-#pragma warning disable SA1515
-	/// <summary>
-	/// This is the class that implements the package exposed by this assembly.
-	///
-	/// The minimum requirement for a class to be considered a valid package for Visual Studio
-	/// is to implement the IVsPackage interface and register itself with the shell.
-	/// This package uses the helper classes defined inside the Managed Package Framework (MPF)
-	/// to do it: it derives from the Package class that provides the implementation of the
-	/// IVsPackage interface and uses the registration attributes defined in the framework to
-	/// register itself and its components with the shell.
-	/// </summary>
-	[PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-		// Tells the PkgDef creation utility (CreatePkgDef.exe) that this class is a package.
-	[InstalledProductRegistration("#110", "#111", MainPackage.Version, IconResourceID = 400)] // Registers the information needed to show this package in the
-	// Help/About dialog of Visual Studio.
-	[ProvideMenuResource("Menus.ctmenu", 1)] // This attribute is needed to let the shell know that this package exposes some menus.
-	[ProvideOptionPage(
-		typeof(Options),
-		categoryName: MainPackage.Title,
-		pageName: "General",
-		categoryResourceID: 113,
-		pageNameResourceID: 112,
-		supportsAutomation: false,
-		SupportsProfiles = true,
-		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
-	[ProvideProfile(
-		typeof(Options),
-		categoryName: MainPackage.Title,
-		objectName: MainPackage.Title,
-		categoryResourceID: 113,
-		objectNameResourceID: 113,
-		isToolsOptionPage: true,
-		DescriptionResourceID = 114,
-		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence.
-		// Affects Import/Export Settings.
-	[ProvideAutoLoad(VSConstants.UICONTEXT.CodeWindow_string, PackageAutoLoadFlags.BackgroundLoad)] // See comments in Menees.VsTools.vsct
-	[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionHasSingleProject_string, PackageAutoLoadFlags.BackgroundLoad)]
-	[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionHasMultipleProjects_string, PackageAutoLoadFlags.BackgroundLoad)]
-	// Note: UICONTEXT.CodeWindow_string doesn't work as I expected it to in VS 2012, so
-	// I also added Empty and NoSolution contexts to get the package to load correctly.  :-(
-	[ProvideAutoLoad(VSConstants.UICONTEXT.EmptySolution_string, PackageAutoLoadFlags.BackgroundLoad)]
-	[ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
-	[Guid(Guids.MeneesVsToolsPackageString)]
-	[CLSCompliant(false)]
-#pragma warning disable SA1515
 	public sealed partial class MainPackage : AsyncPackage
 	{
 		#region Private Data Members
 
+		private static Options options;
+
 		private CommandProcessor processor;
-#pragma warning disable CA2213 // Disposable member not disposed because VS owns it not MainPackage.
-		private Options options;
-#pragma warning restore CA2213
 		private ClassificationFormatManager formatManager;
 
 		#endregion
@@ -102,44 +49,27 @@ namespace Menees.VsTools
 
 		#region Internal Properties
 
-		internal static MainPackage Instance { get; private set; }
-
-		internal Options Options
+		internal static Options Options
 		{
 			get
 			{
+				ThreadHelper.ThrowIfNotOnUIThread();
+
 				// Ryan Molden from Microsoft says that GetDialogPage caches the result,
 				// so we're going to cache it too and make it into a strongly-typed property.
 				// I've also verified GetDialogPage's caching implementation in VS11 by looking
 				// at it with Reflector.
 				// http://social.msdn.microsoft.com/Forums/eu/vsx/thread/303fce01-dfc0-43b3-a578-8b3258c0b83f
-				//
-				// Note: This is also important because the Base Converter control will attach
-				// to change notification events on this cached object instance.
-				if (this.options == null)
+				if (options == null)
 				{
-					// From http://msdn.microsoft.com/en-us/library/bb165039.aspx
-					this.options = this.GetDialogPage(typeof(Options)) as Options;
+					ForceLoad();
 				}
 
-				return this.options;
+				return options;
 			}
 		}
 
-		internal System.IServiceProvider ServiceProvider
-		{
-			get
-			{
-				// This convoluted code forces a dynamic cast rather than using a simple static cast because starting with
-				// VS 2017 Update 3, Microsoft added a package interface that's not in any public assembly.  That causes
-				// a compile-time error if a static cast is used on "this" to directly get an IServiceProvider:
-				// error CS1748: Cannot find the interop type that matches the embedded interop type
-				//    'Microsoft.VisualStudio.Shell.Interop.IVsToolboxItemProvider2'. Are you missing an assembly reference?
-				object temp = this;
-				var result = temp as System.IServiceProvider;
-				return result;
-			}
-		}
+		internal System.IServiceProvider ServiceProvider => this;
 
 		#endregion
 
@@ -156,7 +86,7 @@ namespace Menees.VsTools
 		{
 			if (ex != null)
 			{
-				string activityLogMessage = string.IsNullOrEmpty(message) ? ex.ToString() : message + "\r\n" + ex.ToString();
+				string activityLogMessage = string.IsNullOrEmpty(message) ? ex.ToString() : message + "\r\n" + ex;
 				ActivityLog.LogError(typeof(MainPackage).FullName, activityLogMessage);
 				Log.Error(typeof(MainPackage), message, ex);
 			}
@@ -208,16 +138,17 @@ namespace Menees.VsTools
 
 				LogMessage(string.Format("After {0}'s base.Initialize()", this.ToString()));
 
-				// Set a static instance, so anything later (e.g., editor extensions) can get to this package and its options.
-				Instance = this;
-
 				await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+				// From http://msdn.microsoft.com/en-us/library/bb165039.aspx
+				options = this.GetDialogPage(typeof(Options)) as Options;
+
 				this.processor = new CommandProcessor(this);
 
 				// Add our command handlers.  Commands must exist in the .vsct file.
-#pragma warning disable VSSDK006 // Check services exist
+#pragma warning disable VSSDK006 // Check whether the result of GetService is null
 				if (await this.GetServiceAsync(typeof(IMenuCommandService)).ConfigureAwait(true) is OleMenuCommandService mcs)
-#pragma warning restore VSSDK006 // Check services exist
+#pragma warning restore VSSDK006 // Check whether the result of GetService is null
 				{
 					foreach (Command id in Enum.GetValues(typeof(Command)))
 					{
@@ -243,6 +174,23 @@ namespace Menees.VsTools
 			}
 
 			LogMessage(string.Format("Exiting {0}.Initialize()", this.ToString()));
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		// From https://github.com/madskristensen/TrailingWhitespace/blob/master/src/VSPackage.cs
+		// See also: https://docs.microsoft.com/en-us/visualstudio/extensibility/loading-vspackages?view=vs-2019#force-a-vspackage-to-load
+		private static void ForceLoad()
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			var shell = Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider.GetService(typeof(SVsShell)) as IVsShell;
+			Assumes.Present(shell);
+
+			Guid loadPackage = Guids.MeneesVsToolsPackage;
+			shell.LoadPackage(ref loadPackage, out _);
 		}
 
 		#endregion

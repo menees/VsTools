@@ -7,6 +7,7 @@ namespace Menees.VsTools.Editor
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Text;
+	using Microsoft.VisualStudio.Shell;
 	using Microsoft.VisualStudio.Text;
 	using Microsoft.VisualStudio.Text.Classification;
 
@@ -28,11 +29,7 @@ namespace Menees.VsTools.Editor
 			buffer.ContentTypeChanged += this.TextBuffer_ContentTypeChanged;
 
 			// Indicate that we need to re-classify everything when our VSTools options change (specifically the highlighting options).
-			MainPackage package = MainPackage.Instance;
-			if (package != null)
-			{
-				package.Options.Applied += this.PackageOptionsApplied;
-			}
+			MainPackage.Options.Applied += this.PackageOptionsApplied;
 		}
 
 		#endregion
@@ -52,17 +49,16 @@ namespace Menees.VsTools.Editor
 		/// This method scans the given SnapshotSpan for potential matches for this classification.
 		/// In this instance, it classifies everything and returns each span as a new ClassificationSpan.
 		/// </summary>
-		/// <param name="trackingSpan">The span currently being classified</param>
+		/// <param name="span">The span currently being classified</param>
 		/// <returns>A list of ClassificationSpans that represent spans identified to be of this classification</returns>
 		public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
 		{
 			List<ClassificationSpan> result = new List<ClassificationSpan>();
 
-			MainPackage package = MainPackage.Instance;
-			if (span.Length > 0 && package != null)
+			ThreadHelper.ThrowIfNotOnUIThread();
+			if (span.Length > 0)
 			{
-				Options options = package.Options;
-				this.GetClassificationSpans(result, span, options);
+				this.GetClassificationSpans(result, span, MainPackage.Options);
 			}
 
 			return result;
@@ -104,12 +100,7 @@ namespace Menees.VsTools.Editor
 			if (disposing)
 			{
 				this.buffer.ContentTypeChanged -= this.TextBuffer_ContentTypeChanged;
-
-				MainPackage package = MainPackage.Instance;
-				if (package != null)
-				{
-					package.Options.Applied -= this.PackageOptionsApplied;
-				}
+				MainPackage.Options.Applied -= this.PackageOptionsApplied;
 			}
 		}
 

@@ -36,7 +36,6 @@ namespace Menees.VsTools.Editor
 		private static IClassificationType detailType;
 
 		private FindArgs findArgs;
-
 		#endregion
 
 		#region Constructors
@@ -72,20 +71,16 @@ namespace Menees.VsTools.Editor
 					string text = line.GetText();
 					if (!string.IsNullOrEmpty(text))
 					{
-						// The first line in the window always contains the Find arguments, so we parse and highlight it specially.
+						// The first line in the window may contain the Find arguments, so we parse and highlight it specially.
+						// In VS 2019 16.5 the Find All References results List View will not contain the Find arguments though.
 						bool firstLine = line.LineNumber == 0;
 						if (firstLine)
 						{
+							// We have to store this in a member variable because VS may call us for multiple consecutive spans in one window.
 							this.findArgs = FindArgs.TryParse(text);
 						}
 
-						// If we couldn't parse the find args (on this or an earlier call), then we don't need to iterate through the rest of the lines.
-						if (this.findArgs == null)
-						{
-							break;
-						}
-
-						if (firstLine)
+						if (firstLine && this.findArgs != null)
 						{
 							if (showMatches)
 							{
@@ -94,7 +89,8 @@ namespace Menees.VsTools.Editor
 						}
 						else
 						{
-							this.HighlightResultLine(result, line, text, showFileNames, showMatches, showDetails);
+							// If we couldn't parse any findArgs (e.g., for Find All References), then we shouldn't do detail highlighting.
+							HighlightResultLine(result, line, text, showFileNames, showMatches, showDetails && this.findArgs != null, this.findArgs);
 						}
 					}
 				}
@@ -114,17 +110,18 @@ namespace Menees.VsTools.Editor
 			result.Add(classificationSpan);
 		}
 
-		private void HighlightResultLine(
+		private static void HighlightResultLine(
 			List<ClassificationSpan> result,
 			ITextSnapshotLine line,
 			string text,
 			bool showFileNames,
 			bool showMatches,
-			bool showDetails)
+			bool showDetails,
+			FindArgs findArgs)
 		{
 			try
 			{
-				if (this.findArgs.ListFileNamesOnly)
+				if (findArgs?.ListFileNamesOnly ?? false)
 				{
 					if (showFileNames && FilenameOnlyRegex.IsMatch(text))
 					{
@@ -143,8 +140,8 @@ namespace Menees.VsTools.Editor
 
 						// Note: If a match line has no leading whitespace, then there's no space between the 'file(num):' and the match line text.
 						int start = fileNameMatch.Index + fileNameMatch.Length;
-						Match patternMatch = this.findArgs.MatchExpression.Match(text, start);
-						while (patternMatch.Success)
+						Match patternMatch = findArgs?.MatchExpression.Match(text, start);
+						while (patternMatch?.Success ?? false)
 						{
 							if (showDetails && start < patternMatch.Index)
 							{

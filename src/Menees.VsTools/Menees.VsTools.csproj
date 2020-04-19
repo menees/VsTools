@@ -135,6 +135,7 @@
       <DependentUpon>ListDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Editor\MouseWheelZoomListener.cs" />
+    <Compile Include="MainPackage.VsAttributes.cs" />
     <Compile Include="MainPackage.Version.cs" />
     <Compile Include="Options.cs">
       <SubType>Component</SubType>

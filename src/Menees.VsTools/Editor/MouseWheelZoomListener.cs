@@ -8,6 +8,7 @@ namespace Menees.VsTools.Editor
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Text;
+	using Microsoft.VisualStudio.Shell;
 	using Microsoft.VisualStudio.Text.Editor;
 	using Microsoft.VisualStudio.Utilities;
 
@@ -22,7 +23,8 @@ namespace Menees.VsTools.Editor
 
 		public void TextViewCreated(IWpfTextView textView)
 		{
-			bool enable = MainPackage.Instance?.Options.IsMouseWheelZoomEnabled ?? false;
+			ThreadHelper.ThrowIfNotOnUIThread();
+			bool enable = MainPackage.Options.IsMouseWheelZoomEnabled;
 			textView.Options.SetOptionValue(DefaultWpfViewOptions.EnableMouseWheelZoomId, enable);
 		}
 

@@ -19,6 +19,8 @@
 
 		public const string OptionsString = "bd511b61-46fe-4997-965b-c5408b6be977";
 
+		public static readonly Guid MeneesVsToolsPackage = new Guid(MeneesVsToolsPackageString);
+
 		public static readonly Guid MeneesVsToolsCommandSet = new Guid(MeneesVsToolsCommandSetString);
 
 		#endregion

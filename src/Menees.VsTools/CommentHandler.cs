@@ -63,7 +63,7 @@ namespace Menees.VsTools
 			return result;
 		}
 
-		public static void CommentSelection(DTE dte, MainPackage package, bool comment)
+		public static void CommentSelection(DTE dte, bool comment)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 			TextDocumentHandler handler = new TextDocumentHandler(dte);
@@ -72,7 +72,7 @@ namespace Menees.VsTools
 				Language language = handler.Language;
 				bool useVsIndentation = GetCommentStyle(
 					language,
-					package.Options.UseVsStyleCommentIndentation,
+					MainPackage.Options.UseVsStyleCommentIndentation,
 					false,
 					out string beginDelimiter,
 					out string endDelimiter);

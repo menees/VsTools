@@ -71,7 +71,7 @@
 			this.SaveAllBeforeExecuteFile = true;
 			this.PredefinedRegions = DefaultPredefinedRegions;
 			this.UppercaseGuids = true;
-			this.IsMouseWheelZoomEnabled = false;
+			this.IsMouseWheelZoomEnabled = true;
 			this.HighlightOutputText = true;
 			this.OutputHighlights = CreateDefaultOutputHighlights();
 			this.HighlightFindResultsDetails = true;
@@ -146,7 +146,7 @@
 		}
 
 		[Category("Miscellaneous")]
-		[DisplayName("Uppercase GUIDs")]
+		[DisplayName("GUID uppercase")]
 		[Description("Whether generated GUIDs should use uppercase hexadecimal characters.")]
 		[DefaultValue(true)]
 		public bool UppercaseGuids { get; set; }
@@ -160,7 +160,7 @@
 		[Category(nameof(Editor))]
 		[DisplayName("Enable mouse wheel zoom in new text windows")]
 		[Description("Whether Ctrl+MouseWheel should affect the zoom level for new text windows.")]
-		[DefaultValue(false)]
+		[DefaultValue(true)]
 		public bool IsMouseWheelZoomEnabled { get; set; }
 
 		[Category("Output and Find Windows")]
@@ -264,12 +264,6 @@
 		[DisplayName("Eliminate Duplicates")]
 		[DefaultValue(false)]
 		public bool SortEliminateDuplicates { get; set; }
-
-		// At some point VS 2019 started adding a read-only Mode property as a custom property descriptor. This should hide it.
-		[Browsable(false)]
-#pragma warning disable CA1822 // Mode has to be instance-level (not static) to be used as a property descriptor.
-		public int Mode => 2; // I don't know what the value of 2 means, but that's what VS always showed.
-#pragma warning restore CA1822
 
 		#endregion
 

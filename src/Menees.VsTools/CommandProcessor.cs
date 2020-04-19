@@ -123,7 +123,7 @@
 					switch (command)
 					{
 						case Command.AddRegion:
-							RegionHandler.AddRegion(this.dte, Options.SplitValues(this.package.Options.PredefinedRegions));
+							RegionHandler.AddRegion(this.dte, Options.SplitValues(MainPackage.Options.PredefinedRegions));
 							break;
 
 						case Command.CollapseAllRegions:
@@ -132,7 +132,7 @@
 
 						case Command.CommentSelection:
 						case Command.UncommentSelection:
-							CommentHandler.CommentSelection(this.dte, this.package, command == Command.CommentSelection);
+							CommentHandler.CommentSelection(this.dte, command == Command.CommentSelection);
 							break;
 
 						case Command.ExecuteFile:
@@ -201,7 +201,7 @@
 			ThreadHelper.ThrowIfNotOnUIThread();
 			bool performExecute = true;
 			Documents allDocs = this.dte.Documents;
-			if (allDocs != null && this.package.Options.SaveAllBeforeExecuteFile)
+			if (allDocs != null && MainPackage.Options.SaveAllBeforeExecuteFile)
 			{
 				try
 				{
@@ -249,7 +249,7 @@
 			if (handler.CanSetSelectedText)
 			{
 				Guid guid = Guid.NewGuid();
-				Options options = this.package.Options;
+				Options options = MainPackage.Options;
 
 				string format;
 				switch (options.GuidFormat)
@@ -292,7 +292,7 @@
 			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
-				Options options = this.package.Options;
+				Options options = MainPackage.Options;
 
 				SortDialog dialog = new SortDialog();
 				if (dialog.Execute(options))
@@ -335,7 +335,7 @@
 			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
-				Options options = this.package.Options;
+				Options options = MainPackage.Options;
 
 				bool execute = true;
 				if (!options.OnlyShowTrimDialogWhenShiftIsPressed || Utilities.IsShiftPressed)
