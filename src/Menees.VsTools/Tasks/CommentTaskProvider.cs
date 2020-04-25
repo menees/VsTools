@@ -65,7 +65,7 @@ namespace Menees.VsTools.Tasks
 			}
 			else
 			{
-				Options options = MainPackage.GeneralOptions;
+				Options options = MainPackage.TasksOptions;
 				options.Applied += this.Options_Applied;
 				this.backgroundOptions.Update(options);
 
@@ -257,6 +257,13 @@ namespace Menees.VsTools.Tasks
 					// then a RCW might get separated from its COM object before this.disposed is set.
 				}
 #pragma warning restore CC0004 // Catch block cannot be empty
+#pragma warning disable CA1031 // Do not catch general exception types. Background timer exceptions would end the process.
+				catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
+				{
+					// If any exception escapes a background timer thread, it will end the process, which sucks.
+					MainPackage.LogException(ex);
+				}
 				finally
 				{
 					Interlocked.Exchange(ref this.isBackgroundTimerExecuting, 0);
@@ -336,7 +343,7 @@ namespace Menees.VsTools.Tasks
 		private void Options_Applied(object sender, EventArgs e)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			if (this.backgroundOptions.Update(MainPackage.GeneralOptions))
+			if (this.backgroundOptions.Update(MainPackage.TasksOptions))
 			{
 				this.appliedOptionsPending = true;
 			}

@@ -128,6 +128,9 @@
     <Compile Include="Editor\FindResultsClassifierProvider.cs" />
     <Compile Include="Editor\FindResultsFormats.cs" />
     <Compile Include="Editor\FindResultsTextViewListener.cs" />
+    <Compile Include="Editor\HighlightOptions.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Editor\OutliningTagger.cs" />
     <Compile Include="Editor\OutliningTaggerProvider.cs" />
     <Compile Include="Editor\OutputHighlightListTypeConverter.cs" />
@@ -150,6 +153,9 @@
     <Compile Include="MainPackage.Version.cs" />
     <Compile Include="MemberSorter.cs" />
     <Compile Include="Options.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsBase.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ProjectHandler.cs" />
@@ -188,6 +194,9 @@
     <Compile Include="Tasks\FileItem.cs" />
     <Compile Include="Tasks\FileItemManager.cs" />
     <Compile Include="Tasks\FileMonitor.cs" />
+    <Compile Include="Tasks\Options.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Tasks\HierarchyItem.cs" />
     <Compile Include="Tasks\HierarchyVisitor.cs" />
     <Compile Include="Tasks\PriorityImageConverter.cs" />

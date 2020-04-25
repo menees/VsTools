@@ -17,9 +17,9 @@
 					<Setter Property="VerticalAlignment" Value="Center"/>
 					<Setter Property="MinWidth" Value="75"/>
 					<Setter Property="Margin" Value="6,0"/>
- 				</Style>
+				</Style>
 			</DockPanel.Resources>
-			<Button Content="_Sort" DockPanel.Dock="Left" Click="Sort_Click" TabIndex="2"/>
+			<Button x:Name="sortButton" Content="_Sort" DockPanel.Dock="Left" Click="Sort_Click" TabIndex="2"/>
 			<Label DockPanel.Dock="Left">Drag members within each type to manually change their order.</Label>
 			<Button Content="Cancel" IsCancel="True" DockPanel.Dock="Right" TabIndex="4"/>
 			<Button x:Name="okayButton" Content="OK" IsDefault="True" Click="OkayButton_Click" DockPanel.Dock="Right" TabIndex="3"/>
@@ -27,7 +27,7 @@
 		</DockPanel>
 		<ListView x:Name="list" Margin="6" SelectionMode="Extended" TabIndex="0" AllowDrop="True"
 			PreviewMouseLeftButtonDown="List_PreviewMouseLeftButtonDown" MouseLeftButtonUp="List_MouseLeftButtonUp"
-			MouseMove="List_MouseMove" DragOver="List_DragOver" Drop="List_Drop">
+			MouseMove="List_MouseMove" DragOver="List_DragOver" Drop="List_Drop" SelectionChanged="List_SelectionChanged">
 			<ListView.View>
 				<GridView>
 					<GridViewColumn Header="Member">

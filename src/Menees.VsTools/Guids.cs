@@ -23,6 +23,10 @@
 
 		public const string GeneralOptionsString = "bd511b61-46fe-4997-965b-c5408b6be977";
 
+		public const string HighlightOptionsString = "47c7cdc7-44c2-4107-8aa0-a0cb73b468a0";
+
+		public const string TasksOptionsString = "3e8cab32-2743-4c91-9826-62e717281ea8";
+
 		public static readonly Guid MeneesVsToolsPackage = new Guid(MeneesVsToolsPackageString);
 
 		public static readonly Guid MeneesVsToolsCommandSet = new Guid(MeneesVsToolsCommandSetString);

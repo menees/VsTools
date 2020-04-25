@@ -53,7 +53,7 @@ namespace Menees.VsTools.Editor
 
 		#region Protected Methods
 
-		protected override void GetClassificationSpans(List<ClassificationSpan> result, SnapshotSpan span, Options options)
+		protected override void GetClassificationSpans(List<ClassificationSpan> result, SnapshotSpan span, HighlightOptions options)
 		{
 			if (this.CacheHighlights(options))
 			{
@@ -96,7 +96,7 @@ namespace Menees.VsTools.Editor
 
 		#region Private Methods
 
-		private bool CacheHighlights(Options options)
+		private bool CacheHighlights(HighlightOptions options)
 		{
 			bool result = options != null && options.HighlightOutputText;
 

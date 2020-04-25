@@ -58,7 +58,7 @@ namespace Menees.VsTools.Editor
 
 		#region Protected Methods
 
-		protected override void GetClassificationSpans(List<ClassificationSpan> result, SnapshotSpan span, Options options)
+		protected override void GetClassificationSpans(List<ClassificationSpan> result, SnapshotSpan span, HighlightOptions options)
 		{
 			bool showFileNames = options.HighlightFindResultsFileNames;
 			bool showMatches = options.HighlightFindResultsMatches;

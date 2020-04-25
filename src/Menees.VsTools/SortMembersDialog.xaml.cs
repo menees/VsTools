@@ -38,6 +38,7 @@
 		public SortMembersDialog()
 		{
 			this.InitializeComponent();
+			this.UpdateControlStates();
 		}
 
 		#endregion
@@ -190,6 +191,11 @@
 				AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this.list);
 				adornerLayer.Remove(adorner);
 			}
+		}
+
+		private void UpdateControlStates()
+		{
+			this.sortButton.IsEnabled = this.list.SelectedItems.Count >= 2;
 		}
 
 		#endregion
@@ -377,6 +383,11 @@
 					}
 				}
 			}
+		}
+
+		private void List_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			this.UpdateControlStates();
 		}
 
 		#endregion

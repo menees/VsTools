@@ -31,7 +31,7 @@
 	[Guid(Guids.BaseConverterOptionsString)]
 	[DefaultProperty(nameof(TrimLeadingZerosEndian))] // Make this get focus in the PropertyGrid first since its category is alphabetically first.
 	[SuppressMessage("Internal class never created.", "CA1812", Justification = "Created via reflection by VS.")]
-	internal class Options : DialogPage
+	internal class Options : OptionsBase
 	{
 		#region Constructors
 
@@ -41,12 +41,6 @@
 			this.UseGroupDelimiterForDecimal = true;
 			this.BaseConverterNumberType = NumberType.Int32;
 		}
-
-		#endregion
-
-		#region Public Events
-
-		public event EventHandler Applied;
 
 		#endregion
 
@@ -91,23 +85,6 @@
 		[DisplayName("Number Type")]
 		[DefaultValue(NumberType.Int32)]
 		public NumberType BaseConverterNumberType { get; set; }
-
-		#endregion
-
-		#region Protected Methods
-
-		protected override void OnApply(PageApplyEventArgs e)
-		{
-			base.OnApply(e);
-
-			// Raise an event so non-modal windows like BaseConverterControl
-			// can get a notification that they may need to update.
-			if (e.ApplyBehavior == ApplyKind.Apply && this.Applied != null)
-			{
-				EventHandler eh = this.Applied;
-				eh(this, e);
-			}
-		}
 
 		#endregion
 	}

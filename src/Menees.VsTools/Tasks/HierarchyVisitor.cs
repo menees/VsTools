@@ -34,8 +34,6 @@ namespace Menees.VsTools.Tasks
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			// TODO: Switch to old DTE.Solution.Projects model instead of IVsHierarchy. [Bill, 4/19/2020]
-			// TODO: Get all tasks from VS provider. Then only manually search other open docs. [Bill, 4/19/2020]
 			// Note: This uses IVsHierarchy instead of the old DTE.Solution.Projects API because several "unmodeled" projects
 			// don't support the old Automation API (e.g., Setup/Deployment projects and some Database projects).
 			if (hierarchy != null)
@@ -340,35 +338,33 @@ namespace Menees.VsTools.Tasks
 			/// <returns>Item Id of the concerned node</returns>
 			private static uint GetItemId(object pvar)
 			{
-				uint result;
+				uint result = VSConstants.VSITEMID_NIL;
 
-				if (pvar == null)
+				switch (pvar)
 				{
-					result = VSConstants.VSITEMID_NIL;
-				}
-				else if (pvar is int)
-				{
-					result = (uint)(int)pvar;
-				}
-				else if (pvar is uint)
-				{
-					result = (uint)pvar;
-				}
-				else if (pvar is short)
-				{
-					result = (uint)(short)pvar;
-				}
-				else if (pvar is ushort)
-				{
-					result = (uint)(ushort)pvar;
-				}
-				else if (pvar is long)
-				{
-					result = (uint)(long)pvar;
-				}
-				else
-				{
-					result = VSConstants.VSITEMID_NIL;
+					case int intValue:
+						result = unchecked((uint)intValue);
+						break;
+
+					case uint uintValue:
+						result = uintValue;
+						break;
+
+					case short shortValue:
+						result = unchecked((uint)shortValue);
+						break;
+
+					case ushort ushortValue:
+						result = ushortValue;
+						break;
+
+					case long longValue:
+						if (longValue >= int.MinValue && longValue <= int.MaxValue)
+						{
+							result = unchecked((uint)longValue);
+						}
+
+						break;
 				}
 
 				return result;

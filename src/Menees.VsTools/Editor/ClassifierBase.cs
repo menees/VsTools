@@ -58,7 +58,7 @@ namespace Menees.VsTools.Editor
 			ThreadHelper.ThrowIfNotOnUIThread();
 			if (span.Length > 0)
 			{
-				this.GetClassificationSpans(result, span, MainPackage.GeneralOptions);
+				this.GetClassificationSpans(result, span, MainPackage.HighlightOptions);
 			}
 
 			return result;
@@ -104,7 +104,7 @@ namespace Menees.VsTools.Editor
 			}
 		}
 
-		protected abstract void GetClassificationSpans(List<ClassificationSpan> result, SnapshotSpan span, Options options);
+		protected abstract void GetClassificationSpans(List<ClassificationSpan> result, SnapshotSpan span, HighlightOptions options);
 
 		// If we're passed a specific option ID, then return false because we can't read it here to tell if it changed.
 		// If we're passed null or empty, then return true as if something changed.

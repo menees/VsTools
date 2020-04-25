@@ -26,6 +26,8 @@
 
 		private static Options generalOptions;
 		private static BaseConverter.Options baseConverterOptions;
+		private static Tasks.Options tasksOptions;
+		private static HighlightOptions highlightOptions;
 
 		private CommandProcessor processor;
 		private ClassificationFormatManager formatManager;
@@ -52,6 +54,21 @@
 
 		#region Internal Properties
 
+		internal static BaseConverter.Options BaseConverterOptions
+		{
+			get
+			{
+				ThreadHelper.ThrowIfNotOnUIThread();
+
+				if (baseConverterOptions == null)
+				{
+					ForceLoad();
+				}
+
+				return baseConverterOptions;
+			}
+		}
+
 		internal static Options GeneralOptions
 		{
 			get
@@ -67,18 +84,33 @@
 			}
 		}
 
-		internal static BaseConverter.Options BaseConverterOptions
+		internal static HighlightOptions HighlightOptions
 		{
 			get
 			{
 				ThreadHelper.ThrowIfNotOnUIThread();
 
-				if (baseConverterOptions == null)
+				if (highlightOptions == null)
 				{
 					ForceLoad();
 				}
 
-				return baseConverterOptions;
+				return highlightOptions;
+			}
+		}
+
+		internal static Tasks.Options TasksOptions
+		{
+			get
+			{
+				ThreadHelper.ThrowIfNotOnUIThread();
+
+				if (tasksOptions == null)
+				{
+					ForceLoad();
+				}
+
+				return tasksOptions;
 			}
 		}
 
@@ -188,6 +220,8 @@
 				// From http://msdn.microsoft.com/en-us/library/bb165039.aspx
 				generalOptions = this.GetDialogPage(typeof(Options)) as Options;
 				baseConverterOptions = this.GetDialogPage(typeof(BaseConverter.Options)) as BaseConverter.Options;
+				tasksOptions = this.GetDialogPage(typeof(Tasks.Options)) as Tasks.Options;
+				highlightOptions = this.GetDialogPage(typeof(HighlightOptions)) as HighlightOptions;
 
 				this.processor = new CommandProcessor(this);
 
@@ -216,7 +250,7 @@
 				// This option requires a restart if changed because the CommentTaskProvider and various
 				// XxxMonitor classes attach to too many events and register too many things to easily
 				// detach/unregister and clean them all up if this is toggled interactively.
-				if (GeneralOptions.EnableCommentScans)
+				if (TasksOptions.EnableCommentScans)
 				{
 					this.commentTaskProvider = new CommentTaskProvider(this);
 				}

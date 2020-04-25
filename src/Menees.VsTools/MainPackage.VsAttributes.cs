@@ -20,7 +20,7 @@
 
 	#endregion
 
-#pragma warning disable SA1515
+#pragma warning disable SA1515 // SingleLineCommentsMustBePrecededByBlankLine
 	[PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
 	// Tells the PkgDef creation utility (CreatePkgDef.exe) that this class is a package.
 	// Registers the information needed to show this package in the Help/About dialog of Visual Studio.
@@ -68,6 +68,42 @@
 		objectName: BaseConverter.Window.DefaultCaption,
 		categoryResourceID: 113,
 		objectNameResourceID: 115,
+		isToolsOptionPage: true,
+		DescriptionResourceID = 114,
+		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
+	[ProvideOptionPage(
+		typeof(Tasks.Options),
+		categoryName: Title,
+		pageName: TasksWindow.DefaultCaption,
+		categoryResourceID: 113,
+		pageNameResourceID: 116,
+		supportsAutomation: false,
+		SupportsProfiles = true,
+		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
+	[ProvideProfile(
+		typeof(Tasks.Options),
+		categoryName: Title,
+		objectName: TasksWindow.DefaultCaption,
+		categoryResourceID: 113,
+		objectNameResourceID: 116,
+		isToolsOptionPage: true,
+		DescriptionResourceID = 114,
+		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
+	[ProvideOptionPage(
+		typeof(HighlightOptions),
+		categoryName: Title,
+		pageName: HighlightOptions.DefaultCaption,
+		categoryResourceID: 113,
+		pageNameResourceID: 117,
+		supportsAutomation: false,
+		SupportsProfiles = true,
+		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
+	[ProvideProfile(
+		typeof(HighlightOptions),
+		categoryName: Title,
+		objectName: HighlightOptions.DefaultCaption,
+		categoryResourceID: 113,
+		objectNameResourceID: 117,
 		isToolsOptionPage: true,
 		DescriptionResourceID = 114,
 		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
