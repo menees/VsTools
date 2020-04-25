@@ -109,7 +109,7 @@
 		public bool OnlyShowTrimDialogWhenShiftIsPressed { get; set; }
 
 		// See comments in the setter for why this is a string property.
-		[Category("Miscellaneous")]
+		[Category(nameof(Guids))]
 		[DisplayName("GUID format")]
 		[Description("The format to use for generated GUIDs.")]
 		[DefaultValue(GuidFormatStringConverter.DefaultFormatText)]
@@ -140,7 +140,7 @@
 			}
 		}
 
-		[Category("Miscellaneous")]
+		[Category(nameof(Guids))]
 		[DisplayName("GUID uppercase")]
 		[Description("Whether generated GUIDs should use uppercase hexadecimal characters.")]
 		[DefaultValue(true)]
@@ -158,16 +158,16 @@
 		[DefaultValue(true)]
 		public bool IsMouseWheelZoomEnabled { get; set; }
 
-		[Category("Miscellaneous")]
+		[Category("Sort Members")]
 		[DisplayName("Sort Members order")]
-		[Description("A comma-separated list of member properties to order by.  Prefix a property with '-' to order it descending.  " +
+		[Description("A comma-separated list of member properties to order by.  Prefix a property with '-' to order it descending. " +
 			"The default ordering is: Kind, Access, IsStatic, KindModifier, ConstModifier, OverrideModifier, Name, ParameterCount.")]
 		[DefaultValue(null)]
 		public string SortMembersOrder { get; set; }
 
-		[Category("Miscellaneous")]
+		[Category("Sort Members")]
 		[DisplayName("Only show Sort Members dialog when shift is pressed")]
-		[Description("Provides a way to suppress the display of the Sort Members dialog unless the Shift key is pressed.  " +
+		[Description("Provides a way to suppress the display of the Sort Members dialog unless the Shift key is pressed. " +
 			"If the dialog is suppressed, then selected members will be sorted.")]
 		[DefaultValue(false)]
 		public bool OnlyShowSortMembersDialogWhenShiftIsPressed { get; set; }
@@ -183,51 +183,27 @@
 		#region Public Non-Browsable Properties (for other state persistence)
 
 		[Browsable(false)]
-		[Category("Trim")]
-		[DisplayName("Trim Start")]
-		[DefaultValue(false)]
 		public bool TrimStart { get; set; }
 
 		[Browsable(false)]
-		[Category("Trim")]
-		[DisplayName("Trim End")]
-		[DefaultValue(true)]
 		public bool TrimEnd { get; set; }
 
 		[Browsable(false)]
-		[Category("Sort Lines")]
-		[DisplayName("Case sensitive")]
-		[DefaultValue(false)]
 		public bool SortCaseSensitive { get; set; }
 
 		[Browsable(false)]
-		[Category("Sort Lines")]
-		[DisplayName("Compare by ordinal")]
-		[DefaultValue(false)]
 		public bool SortCompareByOrdinal { get; set; }
 
 		[Browsable(false)]
-		[Category("Sort Lines")]
-		[DisplayName("Ascending")]
-		[DefaultValue(true)]
 		public bool SortAscending { get; set; }
 
 		[Browsable(false)]
-		[Category("Sort Lines")]
-		[DisplayName("Ignore leading and trailing whitespace")]
-		[DefaultValue(true)]
 		public bool SortIgnoreWhitespace { get; set; }
 
 		[Browsable(false)]
-		[Category("Sort Lines")]
-		[DisplayName("Ignore punctuation")]
-		[DefaultValue(false)]
 		public bool SortIgnorePunctuation { get; set; }
 
 		[Browsable(false)]
-		[Category("Sort Lines")]
-		[DisplayName("Eliminate Duplicates")]
-		[DefaultValue(false)]
 		public bool SortEliminateDuplicates { get; set; }
 
 		#endregion

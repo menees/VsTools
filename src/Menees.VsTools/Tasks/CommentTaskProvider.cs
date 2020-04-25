@@ -122,6 +122,8 @@ namespace Menees.VsTools.Tasks
 
 		public IReadOnlyList<CommentToken> BackgroundTokens => this.backgroundTokens;
 
+		public BackgroundOptions Options => this.backgroundOptions;
+
 		#endregion
 
 		#region IVsTaskListEvents Methods

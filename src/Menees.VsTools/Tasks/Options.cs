@@ -11,6 +11,7 @@
 	using System.Linq;
 	using System.Runtime.InteropServices;
 	using System.Text;
+	using System.Text.RegularExpressions;
 	using System.Threading.Tasks;
 	using Microsoft.VisualStudio.Shell;
 
@@ -28,11 +29,14 @@
 	{
 		#region Private Data Members
 
-		private const string DefaultExcludePatterns = @".+\.Designer\.\w+$" + "\r\n" +
+		private const string DefaultExcludeFilesPatterns = @".+\.Designer\.\w+$" + "\r\n" +
 			@"modernizr-\d+\.\d+\.\d+(-vsdoc)?\.js$" + "\r\n" +
 			@"jquery-\d+\.\d+\.\d+(-vsdoc)?\.js$";
 
-		private string excludeFromCommentScans;
+		private const string DefaultExcludeProjectsPatterns = @".+\.(sql|vc|vcx)proj$";
+
+		private string excludeFilesPatterns;
+		private string excludeProjectsPatterns;
 
 		#endregion
 
@@ -40,42 +44,65 @@
 
 		public Options()
 		{
-			this.ExcludeFromCommentScans = DefaultExcludePatterns;
+			this.ExcludeFilesPatterns = DefaultExcludeFilesPatterns;
+			this.ExcludeProjectsPatterns = DefaultExcludeProjectsPatterns;
 		}
 
 		#endregion
 
 		#region Public Browsable Properties (for Options page)
 
-		[Category(nameof(Tasks))]
-		[DisplayName("Enable tasks provider (requires restart)")]
+		[Category("Common")]
+		[DisplayName("Enable task scanning (requires restart)")]
 		[Description("Whether open documents and files referenced by the current solution should be scanned for task comments.")]
 		[DefaultValue(false)] // Off by default since it can have a serious CPU impact on large solutions.
 		public bool EnableCommentScans { get; set; }
 
-		[Category(nameof(Tasks))]
+		[Category("Common")]
+		[DisplayName("Max degree of parallelism")]
+		[Description("The maximum number of concurrent file scans to perform. If blank, then 25% of your logical CPU count will be used.")]
+		[DefaultValue(null)]
+		public int? MaxDegreeOfParallelism { get; set; }
+
+		[Category("Exclude")]
 		[DisplayName("Exclude file name patterns")]
-		[Description("Regular expressions used to exclude solution items or open documents from being scanned for comments.  " +
-			"Enter one pattern per line.  Each pattern is matched against the fully-qualified file name.")]
+		[Description("Regular expressions used to exclude solution items or open documents from being scanned for comments. " +
+			"Enter one pattern per line. Each pattern is matched against the fully-qualified file name.")]
 		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
-		[DefaultValue(DefaultExcludePatterns)]
-		public string ExcludeFromCommentScans
+		[DefaultValue(DefaultExcludeFilesPatterns)]
+		public string ExcludeFilesPatterns
 		{
 			get
 			{
-				return this.excludeFromCommentScans;
+				return this.excludeFilesPatterns;
 			}
 
 			set
 			{
-				if (string.IsNullOrEmpty(value))
-				{
-					this.excludeFromCommentScans = DefaultExcludePatterns;
-				}
-				else
-				{
-					this.excludeFromCommentScans = value;
-				}
+				string patterns = string.IsNullOrEmpty(value) ? DefaultExcludeFilesPatterns : value;
+				this.ExcludeFilesExpressions = SplitPatterns(patterns);
+				this.excludeFilesPatterns = patterns;
+			}
+		}
+
+		[Category("Exclude")]
+		[DisplayName("Exclude project name patterns")]
+		[Description("Regular expressions used to exclude projects from being recursively scanned for files. " +
+			"Enter one pattern per line. Each pattern is matched against the fully-qualified project file path.")]
+		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+		[DefaultValue(DefaultExcludeProjectsPatterns)]
+		public string ExcludeProjectsPatterns
+		{
+			get
+			{
+				return this.excludeProjectsPatterns;
+			}
+
+			set
+			{
+				string patterns = string.IsNullOrEmpty(value) ? DefaultExcludeProjectsPatterns : value;
+				this.ExcludeProjectsExpressions = SplitPatterns(patterns);
+				this.excludeProjectsPatterns = patterns;
 			}
 		}
 
@@ -84,10 +111,30 @@
 		#region Public Non-Browsable Properties (for other state persistence)
 
 		[Browsable(false)]
-		[Category(nameof(Tasks))]
-		[DisplayName("Tasks Status Xml")]
-		[DefaultValue(null)]
+		public IReadOnlyList<Regex> ExcludeFilesExpressions { get; private set; }
+
+		[Browsable(false)]
+		public IReadOnlyList<Regex> ExcludeProjectsExpressions { get; private set; }
+
+		[Browsable(false)]
 		public string TasksStatusXml { get; set; }
+
+		#endregion
+
+		#region Private Methods
+
+		private static IReadOnlyList<Regex> SplitPatterns(string patterns)
+		{
+			TextLines lines = new TextLines(patterns);
+
+			// If they enter an invalid regular expression, then this will throw an ArgumentException.
+			List<Regex> result = lines.Lines.Where(line => !string.IsNullOrEmpty(line))
+				.Distinct()
+				.Select(line => new Regex(line, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant))
+				.ToList();
+
+			return result;
+		}
 
 		#endregion
 	}

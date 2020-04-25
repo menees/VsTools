@@ -55,6 +55,8 @@ namespace Menees.VsTools.Tasks
 			ErrorHandler.ThrowOnFailure(hr);
 			this.projectEventsCookie = cookie;
 
+			this.provider.Options.Updated += (s, e) => { this.RequireScan(); };
+
 			this.RequireScan();
 		}
 
@@ -339,7 +341,7 @@ namespace Menees.VsTools.Tasks
 
 			if (this.isScanRequired)
 			{
-				HierarchyVisitor visitor = new HierarchyVisitor(this.SolutionHierarchy);
+				HierarchyVisitor visitor = new HierarchyVisitor(this.SolutionHierarchy, this.provider.Options);
 				result = visitor.Items;
 				this.RequireScan(false);
 			}

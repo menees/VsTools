@@ -52,14 +52,14 @@
 
 		#region Public Browsable Properties (for Options page)
 
-		[Category("Output Windows")]
+		[Category("Output")]
 		[DisplayName("Highlight output window text")]
 		[Description("Whether pattern-matched lines in output windows should be highlighted.")]
 		[DefaultValue(true)]
 		public bool HighlightOutputText { get; set; }
 
-		[Category("Output Windows")]
-		[DisplayName("Output patterns to highlight")]
+		[Category("Output")]
+		[DisplayName("Highlight output patterns")]
 		[Description("Defines regular expressions used to highlight lines in output windows.")]
 		[TypeConverter(typeof(OutputHighlightListTypeConverter))]
 		[Editor(typeof(CollectionEditor), typeof(UITypeEditor))]
@@ -84,19 +84,19 @@
 			}
 		}
 
-		[Category("Find Windows")]
+		[Category("Find")]
 		[DisplayName("Highlight Find Results details")]
 		[Description("Whether non-matched details in Find Results windows should be highlighted.")]
 		[DefaultValue(true)]
 		public bool HighlightFindResultsDetails { get; set; }
 
-		[Category("Find Windows")]
+		[Category("Find")]
 		[DisplayName("Highlight Find Results file names")]
 		[Description("Whether file names in Find Results windows should be highlighted.")]
 		[DefaultValue(true)]
 		public bool HighlightFindResultsFileNames { get; set; }
 
-		[Category("Find Windows")]
+		[Category("Find")]
 		[DisplayName("Highlight Find Results matches")]
 		[Description("Whether search term/expression matches in Find Results windows should be highlighted.")]
 		[DefaultValue(true)]

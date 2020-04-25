@@ -6,6 +6,7 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Text;
+	using System.Text.RegularExpressions;
 	using System.Threading.Tasks;
 
 	#endregion
@@ -28,7 +29,11 @@
 
 		public bool EnableCommentScans { get; private set; }
 
-		public string ExcludeFromCommentScans { get; private set; }
+		public IReadOnlyList<Regex> ExcludeFilesExpressions { get; private set; }
+
+		public IReadOnlyList<Regex> ExcludeProjectsExpressions { get; private set; }
+
+		public int? MaxDegreeOfParallelism { get; private set; }
 
 		#endregion
 
@@ -46,9 +51,21 @@
 					updated = true;
 				}
 
-				if (this.ExcludeFromCommentScans != options.ExcludeFromCommentScans)
+				if (this.ExcludeFilesExpressions != options.ExcludeFilesExpressions)
 				{
-					this.ExcludeFromCommentScans = options.ExcludeFromCommentScans;
+					this.ExcludeFilesExpressions = options.ExcludeFilesExpressions;
+					updated = true;
+				}
+
+				if (this.ExcludeProjectsExpressions != options.ExcludeProjectsExpressions)
+				{
+					this.ExcludeProjectsExpressions = options.ExcludeProjectsExpressions;
+					updated = true;
+				}
+
+				if (this.MaxDegreeOfParallelism != options.MaxDegreeOfParallelism)
+				{
+					this.MaxDegreeOfParallelism = options.MaxDegreeOfParallelism;
 					updated = true;
 				}
 			}

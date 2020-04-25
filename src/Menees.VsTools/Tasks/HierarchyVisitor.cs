@@ -25,14 +25,16 @@ namespace Menees.VsTools.Tasks
 		private readonly Stack<HierarchyItem> ancestors = new Stack<HierarchyItem>();
 		private readonly List<HierarchyItem> items = new List<HierarchyItem>();
 		private readonly HashSet<string> visitedProjects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		private readonly BackgroundOptions options;
 
 		#endregion
 
 		#region Constructors
 
-		public HierarchyVisitor(IVsHierarchy hierarchy)
+		public HierarchyVisitor(IVsHierarchy hierarchy, BackgroundOptions options)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
+			this.options = options;
 
 			// Note: This uses IVsHierarchy instead of the old DTE.Solution.Projects API because several "unmodeled" projects
 			// don't support the old Automation API (e.g., Setup/Deployment projects and some Database projects).
@@ -94,10 +96,10 @@ namespace Menees.VsTools.Tasks
 				// in the solution), which may not be visible in the Solution Explorer.
 				//
 				// Note: currentItem can be null if we're visiting a physical folder (e.g., a Properties folder), a
-				// virtual folder (e.g., Solution Items or Miscellaneous Files), or some other node type that is
-				// not a solution, project or file type.
-				HierarchyItem currentItem = this.VisitHierarchyNode(node);
+				// virtual folder (e.g., Solution Items or Miscellaneous Files), a project excluded by a regex,
+				// or some other node type that is not a solution, project or file type.
 				bool visitChildren = true;
+				HierarchyItem currentItem = this.VisitHierarchyNode(node, ref visitChildren);
 				if (currentItem != null)
 				{
 					visitChildren = currentItem.ItemType != HierarchyItemType.Project || !this.visitedProjects.Contains(currentItem.FileName);
@@ -142,7 +144,7 @@ namespace Menees.VsTools.Tasks
 			}
 		}
 
-		private HierarchyItem VisitHierarchyNode(HierarchyNode node)
+		private HierarchyItem VisitHierarchyNode(HierarchyNode node, ref bool visitChildren)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -159,28 +161,26 @@ namespace Menees.VsTools.Tasks
 					result = this.CreateItem(canonicalName, HierarchyItemType.File, node);
 				}
 			}
-			else
+			else if (hierarchy is IVsSolution solution)
 			{
-				if (hierarchy is IVsSolution solution)
+				int hr = solution.GetSolutionInfo(out string directory, out string file, out _);
+				if (ErrorHandler.Succeeded(hr) && !string.IsNullOrEmpty(directory) && !string.IsNullOrEmpty(file))
 				{
-					int hr = solution.GetSolutionInfo(out string directory, out string file, out _);
-					if (ErrorHandler.Succeeded(hr) && !string.IsNullOrEmpty(directory) && !string.IsNullOrEmpty(file))
-					{
-						result = this.CreateItem(Path.Combine(directory, file), HierarchyItemType.Solution, node);
-					}
+					result = this.CreateItem(Path.Combine(directory, file), HierarchyItemType.Solution, node);
 				}
-				else
+			}
+			else if (hierarchy is IVsProject project)
+			{
+				// For some reason, physical folders (like Properties) also implement IVsProject.
+				if (itemType != VSConstants.GUID_ItemType_PhysicalFolder)
 				{
-					if (hierarchy is IVsProject project)
+					int hr = project.GetMkDocument(node.ItemId, out string projectFile);
+					if (ErrorHandler.Succeeded(hr))
 					{
-						// For some reason, physical folders (like Properties) also implement IVsProject.
-						if (itemType != VSConstants.GUID_ItemType_PhysicalFolder)
+						visitChildren = !this.options.ExcludeProjectsExpressions.Any(regex => regex.IsMatch(projectFile));
+						if (visitChildren)
 						{
-							int hr = project.GetMkDocument(node.ItemId, out string projectFile);
-							if (ErrorHandler.Succeeded(hr))
-							{
-								result = this.CreateItem(projectFile, HierarchyItemType.Project, node);
-							}
+							result = this.CreateItem(projectFile, HierarchyItemType.Project, node);
 						}
 					}
 				}

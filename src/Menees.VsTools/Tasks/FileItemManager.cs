@@ -24,7 +24,6 @@ namespace Menees.VsTools.Tasks
 		private readonly HashSet<FileItem> changedItems = new HashSet<FileItem>();
 		private readonly Dictionary<CommentTask, bool> changedTasks = new Dictionary<CommentTask, bool>();
 		private readonly BackgroundOptions options;
-		private readonly Dictionary<string, Regex> excludePatternsCache = new Dictionary<string, Regex>();
 		private readonly List<Regex> backgroundExcludePatterns = new List<Regex>();
 
 		#endregion
@@ -182,7 +181,8 @@ namespace Menees.VsTools.Tasks
 				const int MinParallelism = 1;
 				const int MaxParallelism = 8;
 				const int ProcessorScaleFactor = 4;
-				int maxParallelism = Math.Max(MinParallelism, Math.Min(Environment.ProcessorCount / ProcessorScaleFactor, MaxParallelism));
+				int maxParallelism = this.options.MaxDegreeOfParallelism
+					?? Math.Max(MinParallelism, Math.Min(Environment.ProcessorCount / ProcessorScaleFactor, MaxParallelism));
 				try
 				{
 					RefreshAction generalAction = updateAll ? RefreshAction.Always : RefreshAction.IfNeeded;
@@ -302,35 +302,10 @@ namespace Menees.VsTools.Tasks
 
 		private void RefreshExcludePatterns()
 		{
-			TextLines excludeFromScans = new TextLines(this.options.ExcludeFromCommentScans);
-
-			List<Regex> currentPatterns = new List<Regex>();
-			foreach (string pattern in excludeFromScans.Lines.Where(line => !string.IsNullOrEmpty(line)).Distinct())
-			{
-				if (!this.excludePatternsCache.TryGetValue(pattern, out Regex regex))
-				{
-					try
-					{
-						regex = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-						this.excludePatternsCache.Add(pattern, regex);
-					}
-					catch (ArgumentException ex)
-					{
-						// The pattern isn't a valid regular expression.
-						MainPackage.LogException(ex);
-					}
-				}
-
-				if (regex != null)
-				{
-					currentPatterns.Add(regex);
-				}
-			}
-
 			lock (this.backgroundExcludePatterns)
 			{
 				this.backgroundExcludePatterns.Clear();
-				this.backgroundExcludePatterns.AddRange(currentPatterns);
+				this.backgroundExcludePatterns.AddRange(this.options.ExcludeFilesExpressions);
 			}
 		}
 
