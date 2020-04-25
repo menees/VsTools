@@ -75,6 +75,8 @@ namespace Menees.VsTools.Tasks
 
 		#region Public Properties
 
+		public static Func<RegistryKey> GetUserRegistryRoot { get; set; }
+
 		public bool IsScannable
 		{
 			get
@@ -90,8 +92,6 @@ namespace Menees.VsTools.Tasks
 
 		public static ScanInfo Get(FileItem file)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
-
 			Cache cache = LazyCache.Value;
 			string extension = Path.GetExtension(file.FileName);
 			if (cache.TryGet(extension, out ScanInfo result))
@@ -217,7 +217,6 @@ namespace Menees.VsTools.Tasks
 
 		private static ScanInfo Infer(FileItem file, Cache cache)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
 			ScanInfo result = Unscannable;
 
 			try
@@ -266,13 +265,11 @@ namespace Menees.VsTools.Tasks
 
 		private static bool TryGetCustomExtensionScanInfo(string extension, Cache cache, ref ScanInfo scanInfo)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
 			bool result = false;
 
-			MainPackage package = MainPackage.Instance;
-			if (package != null && !string.IsNullOrEmpty(extension) && extension.Length > 1 && extension[0] == '.')
+			if (!string.IsNullOrEmpty(extension) && extension.Length > 1 && extension[0] == '.')
 			{
-				using (RegistryKey studioUserRoot = package.UserRegistryRoot)
+				using (RegistryKey studioUserRoot = GetUserRegistryRoot?.Invoke())
 				{
 					if (studioUserRoot != null)
 					{

@@ -23,7 +23,7 @@ namespace Menees.VsTools.Tasks
 		private readonly Dictionary<string, FileItem> files = new Dictionary<string, FileItem>(StringComparer.OrdinalIgnoreCase);
 		private readonly HashSet<FileItem> changedItems = new HashSet<FileItem>();
 		private readonly Dictionary<CommentTask, bool> changedTasks = new Dictionary<CommentTask, bool>();
-		private readonly Options options;
+		private readonly BackgroundOptions options;
 		private readonly Dictionary<string, Regex> excludePatternsCache = new Dictionary<string, Regex>();
 		private readonly List<Regex> backgroundExcludePatterns = new List<Regex>();
 
@@ -31,13 +31,12 @@ namespace Menees.VsTools.Tasks
 
 		#region Constructors
 
-		public FileItemManager(CommentTaskProvider provider, FileMonitor monitor, Options options)
+		public FileItemManager(CommentTaskProvider provider, FileMonitor monitor, BackgroundOptions options)
 		{
 			this.provider = provider;
 			this.monitor = monitor;
-
 			this.options = options;
-			this.options.Applied += this.Options_Applied;
+			this.options.Updated += this.Options_Updated;
 			this.RefreshExcludePatterns();
 		}
 
@@ -296,7 +295,7 @@ namespace Menees.VsTools.Tasks
 			}
 		}
 
-		private void Options_Applied(object sender, EventArgs e)
+		private void Options_Updated(object sender, EventArgs e)
 		{
 			this.RefreshExcludePatterns();
 		}

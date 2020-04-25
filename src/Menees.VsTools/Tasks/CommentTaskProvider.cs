@@ -20,6 +20,7 @@ namespace Menees.VsTools.Tasks
 	using Microsoft.VisualStudio.Shell.Interop;
 	using Microsoft.VisualStudio.Text;
 	using Microsoft.VisualStudio.TextManager.Interop;
+	using Sys = System.Threading.Tasks;
 
 	#endregion
 
@@ -38,6 +39,7 @@ namespace Menees.VsTools.Tasks
 		private readonly FileMonitor fileMonitor;
 		private readonly FileItemManager manager;
 		private readonly List<CommentToken> foregroundTokens = new List<CommentToken>();
+		private readonly BackgroundOptions backgroundOptions = new BackgroundOptions();
 
 		private bool disposed;
 		private int isBackgroundTimerExecuting;
@@ -55,7 +57,6 @@ namespace Menees.VsTools.Tasks
 			ThreadHelper.ThrowIfNotOnUIThread();
 
 			this.ServiceProvider = package.ServiceProvider;
-			MainPackage.GeneralOptions.Applied += this.Options_Applied;
 
 			// In some cases the task list may not be available (e.g., during devenv.exe /build).
 			if (!(this.ServiceProvider.GetService(typeof(SVsTaskList)) is IVsTaskList taskList))
@@ -64,6 +65,10 @@ namespace Menees.VsTools.Tasks
 			}
 			else
 			{
+				Options options = MainPackage.GeneralOptions;
+				options.Applied += this.Options_Applied;
+				this.backgroundOptions.Update(options);
+
 				// Register a custom category so Visual Studio will invoke our IVsTaskListEvents callbacks.
 				VSTASKCATEGORY[] assignedCategory = new VSTASKCATEGORY[1];
 				int hr = this.VsTaskList.RegisterCustomCategory(CategoryId, (uint)TaskCategory.Comments + 1, assignedCategory);
@@ -90,7 +95,7 @@ namespace Menees.VsTools.Tasks
 				this.solutionMonitor = new SolutionMonitor(this);
 				this.documentMonitor = new DocumentMonitor(this);
 				this.fileMonitor = new FileMonitor(this);
-				this.manager = new FileItemManager(this, this.fileMonitor, MainPackage.GeneralOptions);
+				this.manager = new FileItemManager(this, this.fileMonitor, this.backgroundOptions);
 
 				// Enable the timers last.  The BackgroundTimerCallback will fire after ScanDelay (on a worker thread),
 				// so we have to ensure that everything is initialized before its first callback.
@@ -206,27 +211,11 @@ namespace Menees.VsTools.Tasks
 		{
 			if (Interlocked.CompareExchange(ref this.isBackgroundTimerExecuting, 1, 0) == 0)
 			{
-				// TODO: Get rid of these nested if blocks that are just here to get things to compile. [Bill, 4/19/2020]
-				if (this.appliedOptionsPending)
-				{
-					this.appliedOptionsPending = false;
-					if (this.foregroundTokensChanged)
-					{
-						this.foregroundTokensChanged = false;
-						if (this.backgroundTokens == null)
-						{
-							this.backgroundTokens = new List<CommentToken>();
-						}
-					}
-				}
-
-#if TODO // TODO: Rewrite this to work from a background thread. [Bill, 4/19/2020]
-			// Make sure only one thread at a time is running (in case this handler takes longer than the timer's interval).
+				// Make sure only one thread at a time is running (in case this handler takes longer than the timer's interval).
 				try
 				{
-					// TODO: Switch to UI thread (from BackgroundTimerCallback)? [Bill, 4/19/2020]
 					// If the user disables this in Options, then immediately stop scanning (without waiting for a restart).
-					if (MainPackage.GeneralOptions.EnableCommentScans)
+					if (this.backgroundOptions.EnableCommentScans)
 					{
 						bool updateAll = this.appliedOptionsPending;
 						this.appliedOptionsPending = false;
@@ -242,22 +231,10 @@ namespace Menees.VsTools.Tasks
 
 						if (this.backgroundTokens.Count > 0 || updateAll)
 						{
-							IEnumerable<HierarchyItem> allHierarchyItems = this.solutionMonitor.GetChangedHierarchy();
-							if (allHierarchyItems != null)
-							{
-								Debug("Updating Hierarchy ({0})", allHierarchyItems.Count());
-								this.manager.UpdateHierarchy(allHierarchyItems);
-							}
-
-							IReadOnlyDictionary<string, DocumentItem> changedDocuments = this.documentMonitor.GetChangedDocuments();
-							if (changedDocuments != null)
-							{
-								Debug(
-									"Updating Documents ({0}): {1}",
-									changedDocuments.Count,
-									string.Join(", ", changedDocuments.Select(pair => Path.GetFileName(pair.Key) + '=' + (pair.Value != null))));
-								this.manager.UpdateDocuments(changedDocuments);
-							}
+							var foregroundUpdate = ThreadHelper.JoinableTaskFactory.RunAsync(this.ForegroundUpdateAsync);
+#pragma warning disable VSTHRD102 // Implement internal logic asynchronously. Some of the VS calls must be made from the foreground thread.
+							foregroundUpdate.Join();
+#pragma warning restore VSTHRD102 // Implement internal logic asynchronously
 
 							IReadOnlyDictionary<string, bool> changedFiles = this.fileMonitor.GetChangedFiles();
 							if (changedFiles != null)
@@ -284,7 +261,28 @@ namespace Menees.VsTools.Tasks
 				{
 					Interlocked.Exchange(ref this.isBackgroundTimerExecuting, 0);
 				}
-#endif
+			}
+		}
+
+		private async Sys.Task ForegroundUpdateAsync()
+		{
+			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+			IEnumerable<HierarchyItem> allHierarchyItems = this.solutionMonitor.GetChangedHierarchy();
+			if (allHierarchyItems != null)
+			{
+				Debug("Updating Hierarchy ({0})", allHierarchyItems.Count());
+				this.manager.UpdateHierarchy(allHierarchyItems);
+			}
+
+			IReadOnlyDictionary<string, DocumentItem> changedDocuments = this.documentMonitor.GetChangedDocuments();
+			if (changedDocuments != null)
+			{
+				Debug(
+					"Updating Documents ({0}): {1}",
+					changedDocuments.Count,
+					string.Join(", ", changedDocuments.Select(pair => Path.GetFileName(pair.Key) + '=' + (pair.Value != null))));
+				this.manager.UpdateDocuments(changedDocuments);
 			}
 		}
 
@@ -337,9 +335,13 @@ namespace Menees.VsTools.Tasks
 
 		private void Options_Applied(object sender, EventArgs e)
 		{
-			this.appliedOptionsPending = true;
+			ThreadHelper.ThrowIfNotOnUIThread();
+			if (this.backgroundOptions.Update(MainPackage.GeneralOptions))
+			{
+				this.appliedOptionsPending = true;
+			}
 		}
 
-#endregion
+		#endregion
 	}
 }

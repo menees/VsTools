@@ -178,6 +178,7 @@
     <Compile Include="StatisticsDialog.xaml.cs">
       <DependentUpon>StatisticsDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tasks\BackgroundOptions.cs" />
     <Compile Include="Tasks\CommentTask.cs" />
     <Compile Include="Tasks\CommentTaskProvider.cs" />
     <Compile Include="Tasks\CommentToken.cs" />

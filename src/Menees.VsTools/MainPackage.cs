@@ -24,7 +24,6 @@
 	{
 		#region Private Data Members
 
-		private static MainPackage instance;
 		private static Options generalOptions;
 		private static BaseConverter.Options baseConverterOptions;
 
@@ -52,21 +51,6 @@
 		#endregion
 
 		#region Internal Properties
-
-		internal static MainPackage Instance
-		{
-			get
-			{
-				ThreadHelper.ThrowIfNotOnUIThread();
-
-				if (instance == null)
-				{
-					ForceLoad();
-				}
-
-				return instance;
-			}
-		}
 
 		internal static Options GeneralOptions
 		{
@@ -196,7 +180,7 @@
 				LogMessage(string.Format("After {0}'s base.Initialize()", this.ToString()));
 
 				await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-				instance = this;
+				ScanInfo.GetUserRegistryRoot = () => this.UserRegistryRoot;
 
 				// Ryan Molden from Microsoft says that GetDialogPage caches the result, so we're going to cache it too.
 				// I've also verified GetDialogPage's caching implementation in VS11 by looking at it with Reflector.

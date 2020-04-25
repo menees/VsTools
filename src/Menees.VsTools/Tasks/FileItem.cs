@@ -41,8 +41,6 @@ namespace Menees.VsTools.Tasks
 
 		internal FileItem(CommentTaskProvider provider, string fileName)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
-
 			// Note: The caller should check FileUtility.IsValidPath(fileName) before invoking this constructor.
 			this.provider = provider;
 			this.FileName = fileName;
@@ -85,8 +83,6 @@ namespace Menees.VsTools.Tasks
 
 			set
 			{
-				ThreadHelper.ThrowIfNotOnUIThread();
-
 				if (this.document != value)
 				{
 					this.document = value;
