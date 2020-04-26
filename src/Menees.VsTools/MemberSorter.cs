@@ -203,7 +203,7 @@ namespace Menees.VsTools
 
 						if (!Enum.TryParse<MemberProperty>(propertyName, out MemberProperty property))
 						{
-							string message = "Unsupported sort property: " + propertyName + ".  Supported properties: "
+							string message = "Unsupported sort property: " + propertyName + ". Supported properties: "
 								+ string.Join(", ", Enum.GetNames(typeof(MemberProperty)).OrderBy(n => n));
 							throw new NotSupportedException(message);
 						}

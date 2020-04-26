@@ -197,7 +197,7 @@ namespace Menees.VsTools.Tasks
 			if (FileUtility.IsValidPath(filePath, ValidPathOptions.None))
 			{
 				CommentTaskProvider.Debug(
-					"AddChangedDocument: {0}.  HasDoc: {1}  HasTextDoc: {2}",
+					"AddChangedDocument: {0}. HasDoc: {1}. HasTextDoc: {2}.",
 					filePath,
 					document != null,
 					document != null && document.HasTextDocument);

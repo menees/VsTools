@@ -33,7 +33,7 @@
 
 		public IReadOnlyList<Regex> ExcludeProjectsExpressions { get; private set; }
 
-		public int? MaxDegreeOfParallelism { get; private set; }
+		public int MaxDegreeOfParallelism { get; private set; }
 
 		#endregion
 

@@ -166,6 +166,14 @@ namespace Menees.VsTools.Tasks
 			}
 		}
 
+		public string TryGetSingleLineCommentDelimiter() => this.delimiters.FirstOrDefault(d => d.IsSingleLine)?.Begin;
+
+		public (string Begin, string End) TryGetMultiLineCommentDelimiters()
+		{
+			Delimiter delimiter = this.delimiters.FirstOrDefault(d => !d.IsSingleLine);
+			return (delimiter?.Begin, delimiter?.End);
+		}
+
 		#endregion
 
 		#region Internal Methods
@@ -643,9 +651,6 @@ namespace Menees.VsTools.Tasks
 			#region Private Data Members
 
 			private static readonly ConcurrentDictionary<string, Regex> RegexCache = new ConcurrentDictionary<string, Regex>();
-
-			private readonly string begin;
-			private readonly string end;
 			private readonly string id;
 
 			#endregion
@@ -654,24 +659,28 @@ namespace Menees.VsTools.Tasks
 
 			public Delimiter(string singleLineDelimiter)
 			{
-				this.begin = singleLineDelimiter;
-				this.id = this.begin;
+				this.Begin = singleLineDelimiter;
+				this.id = this.Begin;
 			}
 
 			public Delimiter(string begin, string end)
 			{
-				this.begin = begin;
-				this.end = end;
+				this.Begin = begin;
+				this.End = end;
 
 				// No begin or end delimiter has a space in it, so we can use that as a valid separator.
-				this.id = this.begin + " " + this.end;
+				this.id = this.Begin + " " + this.End;
 			}
 
 			#endregion
 
 			#region Public Properties
 
-			public bool IsSingleLine => string.IsNullOrEmpty(this.end);
+			public bool IsSingleLine => string.IsNullOrEmpty(this.End);
+
+			public string Begin { get; }
+
+			public string End { get; }
 
 			#endregion
 
@@ -707,10 +716,10 @@ namespace Menees.VsTools.Tasks
 			private Regex CreateRegex(CommentToken token)
 			{
 				StringBuilder sb = new StringBuilder();
-				if (!string.IsNullOrEmpty(this.begin))
+				if (!string.IsNullOrEmpty(this.Begin))
 				{
 					// Allow optional whitespace after the comment begins.
-					sb.Append(Regex.Escape(this.begin)).Append(@"[ \t]*");
+					sb.Append(Regex.Escape(this.Begin)).Append(@"[ \t]*");
 				}
 				else
 				{
@@ -736,7 +745,7 @@ namespace Menees.VsTools.Tasks
 				// Support an optional colon, space, or tab followed by any sequence of characters.
 				// But we also have to support simple comments like "-- TODO" or "(* TODO *)".
 				const string SeparatorPattern = @"[: \t]+.*";
-				if (string.IsNullOrEmpty(this.end))
+				if (string.IsNullOrEmpty(this.End))
 				{
 					// Close the optional separator and the named group then match to the end of the string.
 					sb.Append("(").Append(SeparatorPattern).Append(")?)$");
@@ -747,7 +756,7 @@ namespace Menees.VsTools.Tasks
 					// to the end of the string if the end delimiter is matched first.  Then close the optional separator
 					// and the named group and then match to the end of the string or to the end delimiter.
 					// http://stackoverflow.com/a/6738624/1882616 and http://www.regular-expressions.info/repeat.html
-					sb.Append(@"(").Append(SeparatorPattern).Append("?)?)($|").Append(Regex.Escape(this.end)).Append(")");
+					sb.Append(@"(").Append(SeparatorPattern).Append("?)?)($|").Append(Regex.Escape(this.End)).Append(")");
 				}
 
 				// Ignore case overall because even in case-sensitive languages, most tokens need to be match case-insensitively.

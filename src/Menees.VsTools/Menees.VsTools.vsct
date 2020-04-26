@@ -147,8 +147,8 @@
 				<CommandFlag>DefaultInvisible</CommandFlag>
 				<CommandFlag>DynamicVisibility</CommandFlag>
 				<Strings>
-					<ButtonText>Chec&amp;k Spelling</ButtonText>
-					<ToolTipText>Checks the spelling of the selected text</ToolTipText>
+					<ButtonText>Chec&amp;k Spelling With MS Word</ButtonText>
+					<ToolTipText>Checks the spelling of the selected text using Microsoft Word</ToolTipText>
 					<CanonicalName>Menees.VsTools.CheckSpelling</CanonicalName>
 					<LocCanonicalName>Menees.VsTools.CheckSpelling</LocCanonicalName>
 				</Strings>

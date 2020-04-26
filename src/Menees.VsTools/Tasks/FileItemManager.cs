@@ -177,18 +177,12 @@ namespace Menees.VsTools.Tasks
 					localExcludePatterns = new List<Regex>(this.backgroundExcludePatterns);
 				}
 
-				// Try to use a fourth of the processors, but stay in the 1 to 8 range.
-				const int MinParallelism = 1;
-				const int MaxParallelism = 8;
-				const int ProcessorScaleFactor = 4;
-				int maxParallelism = this.options.MaxDegreeOfParallelism
-					?? Math.Max(MinParallelism, Math.Min(Environment.ProcessorCount / ProcessorScaleFactor, MaxParallelism));
 				try
 				{
 					RefreshAction generalAction = updateAll ? RefreshAction.Always : RefreshAction.IfNeeded;
 					Parallel.ForEach(
 						items.ToArray(), // Copy before iterating through it.
-						new ParallelOptions { MaxDegreeOfParallelism = maxParallelism },
+						new ParallelOptions { MaxDegreeOfParallelism = this.options.MaxDegreeOfParallelism },
 						item =>
 								{
 									RefreshAction itemAction;

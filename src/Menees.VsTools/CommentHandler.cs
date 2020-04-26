@@ -10,6 +10,7 @@ namespace Menees.VsTools
 	using System.Text;
 	using EnvDTE;
 	using EnvDTE80;
+	using Menees.VsTools.Tasks;
 	using Microsoft.VisualStudio.Shell;
 
 	#endregion
@@ -216,97 +217,38 @@ namespace Menees.VsTools
 			beginDelimiter = null;
 			endDelimiter = null;
 
+			if (ScanInfo.TryGet(language, out ScanInfo scanInfo))
+			{
+				if (preferEndDelimited)
+				{
+					(beginDelimiter, endDelimiter) = scanInfo.TryGetMultiLineCommentDelimiters();
+				}
+
+				// If multiLine was preferred but missing (e.g., VB), then we have to return the singleLine.
+				if (string.IsNullOrEmpty(beginDelimiter))
+				{
+					beginDelimiter = scanInfo.TryGetSingleLineCommentDelimiter();
+				}
+
+				// If singleLine was preferred but missing (e.g., HTML, XML), then we have to return the multiLine.
+				if (!preferEndDelimited && string.IsNullOrEmpty(beginDelimiter))
+				{
+					(beginDelimiter, endDelimiter) = scanInfo.TryGetMultiLineCommentDelimiters();
+				}
+			}
+
 			switch (language)
 			{
-				case Language.CPlusPlus:
-				case Language.CSharp:
-				case Language.IDL:
-				case Language.JavaScript:
-				case Language.TypeScript:
-					if (preferEndDelimited)
-					{
-						beginDelimiter = "/*";
-						endDelimiter = "*/";
-					}
-					else
-					{
-						beginDelimiter = "//";
-					}
-
-					break;
-
-				case Language.FSharp:
-					if (preferEndDelimited)
-					{
-						beginDelimiter = "(*";
-						endDelimiter = "*)";
-					}
-					else
-					{
-						beginDelimiter = "//";
-					}
-
-					break;
-
 				case Language.VB:
 					// VB's auto-formatter throws out leading indentation and indents all comments to
 					// one level under their parent.  So I won't use my default indentation style for it.
 					useVsIndentation = true;
-					beginDelimiter = "'";
 					break;
 
 				case Language.VBScript:
 					// In VS 2012, the VBScript language service has selection bugs when commenting
 					// and uncommenting, so I'll always use my indentation style for it.
 					useVsIndentation = false;
-					beginDelimiter = "'";
-					break;
-
-				case Language.HTML:
-				case Language.XML:
-					beginDelimiter = "<!--";
-					endDelimiter = "-->";
-					break;
-
-				case Language.CSS:
-					beginDelimiter = "/*";
-					endDelimiter = "*/";
-					break;
-
-				case Language.SQL:
-					if (preferEndDelimited)
-					{
-						beginDelimiter = "/*";
-						endDelimiter = "*/";
-					}
-					else
-					{
-						beginDelimiter = "--";
-					}
-
-					break;
-
-				case Language.PowerShell:
-					if (preferEndDelimited)
-					{
-						beginDelimiter = "<#";
-						endDelimiter = "#>";
-					}
-					else
-					{
-						beginDelimiter = "#";
-					}
-
-					break;
-
-				case Language.Python:
-					// Note: Python supports ''' or """ for docstrings, but they're not true multiline comments.
-					// They can only be used at certain syntactically valid points in the code, and they are
-					// still parsed as strings not comments (e.g., so escape characters must be valid).
-					// If they're used inside pairs, lists, or tuples, then they can cause errors.  So we won't
-					// treat them as multiline comment delimiters.  Only '#' is always parsed as a comment in Python.
-					// https://twitter.com/gvanrossum/status/112670605505077248 and http://stackoverflow.com/a/38100436
-					beginDelimiter = "#";
 					break;
 			}
 

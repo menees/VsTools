@@ -146,6 +146,10 @@
 							RegionHandler.AddRegion(this.dte, Options.SplitValues(MainPackage.GeneralOptions.PredefinedRegions));
 							break;
 
+						case Command.CheckSpelling:
+							this.CheckSpelling();
+							break;
+
 						case Command.CollapseAllRegions:
 							RegionHandler.CollapseAllRegions(this.dte, this.ActiveLanguage, this.package);
 							break;
@@ -292,7 +296,7 @@
 						newText = newText.Replace("\r", "\r\n");
 					}
 
-					handler.SetSelectedTextIfUnchanged(newText, "Check Spelling");
+					handler.SetSelectedTextIfUnchanged(newText, "Check Spelling With MS Word");
 
 					// Tell the doc and Word to go away.
 					object saveChanges = false;
@@ -471,7 +475,7 @@
 			{
 				string text = handler.SelectedText;
 				TextLines lines = new TextLines(text);
-				string streamedText = lines.Stream();
+				string streamedText = lines.Stream(handler.Language);
 				handler.SetSelectedTextIfUnchanged(streamedText, "Stream Text");
 			}
 		}

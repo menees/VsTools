@@ -35,8 +35,14 @@
 
 		private const string DefaultExcludeProjectsPatterns = @".+\.(sql|vc|vcx)proj$";
 
+		private const int MinParallelism = 1;
+		private const int MaxParallelism = 8;
+		private const int ProcessorScaleFactor = 4;
+		private const string ProcessorScaleFactorPercent = "25%";
+
 		private string excludeFilesPatterns;
 		private string excludeProjectsPatterns;
+		private int? requestedMaxDegreeOfParallelism;
 
 		#endregion
 
@@ -60,9 +66,26 @@
 
 		[Category("Common")]
 		[DisplayName("Max degree of parallelism")]
-		[Description("The maximum number of concurrent file scans to perform. If blank, then 25% of your logical CPU count will be used.")]
+		[Description("The maximum number of concurrent file scans to perform. If blank, then "
+			+ ProcessorScaleFactorPercent + " of your logical CPU count will be used.")]
 		[DefaultValue(null)]
-		public int? MaxDegreeOfParallelism { get; set; }
+		public int? RequestedMaxDegreeOfParallelism
+		{
+			get
+			{
+				return this.requestedMaxDegreeOfParallelism;
+			}
+
+			set
+			{
+				if (value != null && (value.Value < MinParallelism || value.Value > MaxParallelism))
+				{
+					throw new ArgumentException($"Value must be between {MinParallelism} and {MaxParallelism}.");
+				}
+
+				this.requestedMaxDegreeOfParallelism = value;
+			}
+		}
 
 		[Category("Exclude")]
 		[DisplayName("Exclude file name patterns")]
@@ -118,6 +141,17 @@
 
 		[Browsable(false)]
 		public string TasksStatusXml { get; set; }
+
+		[Browsable(false)]
+		public int MaxDegreeOfParallelism
+		{
+			get
+			{
+				int result = this.requestedMaxDegreeOfParallelism
+					?? Math.Max(MinParallelism, Math.Min(Environment.ProcessorCount / ProcessorScaleFactor, MaxParallelism));
+				return result;
+			}
+		}
 
 		#endregion
 

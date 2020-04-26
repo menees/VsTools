@@ -90,14 +90,14 @@
 
 		[Category(nameof(Editor))]
 		[DisplayName("Predefined #regions")]
-		[Description("Defines the entries to include in the Add Region dialog.  Enter one region name per line in the drop-down editor.")]
+		[Description("Defines the entries to include in the Add Region dialog. Enter one region name per line in the drop-down editor.")]
 		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
 		[DefaultValue(DefaultPredefinedRegions)]
 		public string PredefinedRegions { get; set; }
 
 		[Category("Miscellaneous")]
 		[DisplayName("Additional C++ search directories")]
-		[Description("Additional search directories when using Toggle Files on C++ files.  Enter one directory per line in the drop-down editor.")]
+		[Description("Additional search directories when using Toggle Files on C++ files. Enter one directory per line in the drop-down editor.")]
 		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
 		[DefaultValue(null)]
 		public string CppSearchDirectories { get; set; }
@@ -160,7 +160,7 @@
 
 		[Category("Sort Members")]
 		[DisplayName("Sort Members order")]
-		[Description("A comma-separated list of member properties to order by.  Prefix a property with '-' to order it descending. " +
+		[Description("A comma-separated list of member properties to order by. Prefix a property with '-' to order it descending. " +
 			"The default ordering is: Kind, Access, IsStatic, KindModifier, ConstModifier, OverrideModifier, Name, ParameterCount.")]
 		[DefaultValue(null)]
 		public string SortMembersOrder { get; set; }

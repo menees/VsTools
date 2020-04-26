@@ -7,6 +7,7 @@
 	using System.Linq;
 	using System.Text;
 	using System.Threading.Tasks;
+	using Menees.VsTools.Tasks;
 
 	#endregion
 
@@ -127,8 +128,14 @@
 			}
 		}
 
-		public string Stream()
+		public string Stream(Language language)
 		{
+			string singleLineCommentDelimiter = null;
+			if (ScanInfo.TryGet(language, out ScanInfo scanInfo))
+			{
+				singleLineCommentDelimiter = scanInfo.TryGetSingleLineCommentDelimiter();
+			}
+
 			StringBuilder sb = new StringBuilder();
 
 			int numLines = this.lines.Length;
@@ -136,7 +143,7 @@
 			for (int i = 0; i < numLines; i++)
 			{
 				string line = this.lines[i];
-				RemoveLinePrefix(ref line);
+				RemoveLinePrefix(ref line, singleLineCommentDelimiter);
 
 				if (string.IsNullOrEmpty(line))
 				{
@@ -241,7 +248,8 @@
 		#endregion
 
 		#region Private Methods
-		private static void RemoveLinePrefix(ref string line)
+
+		private static void RemoveLinePrefix(ref string line, string singleLineCommentDelimiter)
 		{
 			if (!string.IsNullOrEmpty(line))
 			{
@@ -252,6 +260,15 @@
 				while (line.Length > 0 && line[0] == '>')
 				{
 					line = line.Substring(1).TrimStart();
+				}
+
+				// Trim off any leading single line comment delimiters
+				if (!string.IsNullOrWhiteSpace(singleLineCommentDelimiter))
+				{
+					while (line.Length > 0 && line.StartsWith(singleLineCommentDelimiter))
+					{
+						line = line.Substring(singleLineCommentDelimiter.Length).TrimStart();
+					}
 				}
 			}
 		}
