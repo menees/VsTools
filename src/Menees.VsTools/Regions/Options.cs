@@ -54,6 +54,7 @@
 		public Options()
 		{
 			this.PredefinedRegions = DefaultPredefinedRegions;
+			this.AddInnerBlankLines = true;
 		}
 
 		#endregion
@@ -67,16 +68,28 @@
 		[DefaultValue(DefaultPredefinedRegions)]
 		public string PredefinedRegions { get; set; }
 
+		[Category("Add")]
+		[DisplayName("Add inner blank lines")]
+		[Description("Whether to add one blank line after #region and one before #endregion.")]
+		[DefaultValue(true)]
+		public bool AddInnerBlankLines { get; set; }
+
+		[Category("Add")]
+		[DisplayName("Add name after end")]
+		[Description("Whether to add the region name after the #endregion tag.")]
+		[DefaultValue(false)]
+		public bool AddNameAfterEnd { get; set; }
+
 		[Category(nameof(Language))]
 		[DisplayName("Support HTML Web Forms regions")]
 		[Description("Whether to support <!-- #region --> outlining in HTML files opened in the Web Forms editor.")]
-		[DefaultValue(false)]
+		[DefaultValue(true)]
 		public bool SupportHtmlRegions { get => this.IsSupported(Language.HTML); set => this.SetSupported(Language.HTML, value); }
 
 		[Category(nameof(Language))]
 		[DisplayName("Support SQL regions")]
 		[Description("Whether to support -- #region outlining in SQL files.")]
-		[DefaultValue(false)]
+		[DefaultValue(true)]
 		public bool SupportSqlRegions { get => this.IsSupported(Language.SQL); set => this.SetSupported(Language.SQL, value); }
 
 		[Category(nameof(Language))]

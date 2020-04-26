@@ -27,6 +27,17 @@
 
 		#endregion
 
+		#region Public Methods
+
+		public static string[] SplitValues(string multiLineValue)
+		{
+			string lines = multiLineValue ?? string.Empty;
+			string[] result = lines.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			return result;
+		}
+
+		#endregion
+
 		#region Protected Methods
 
 		protected override void OnApply(PageApplyEventArgs e)

@@ -123,7 +123,7 @@
 					{
 						// Now try looking on disk for a file with a preferred extension.
 						string path = Path.GetDirectoryName(fullName);
-						string[] otherPaths = Options.SplitValues(MainPackage.GeneralOptions.CppSearchDirectories);
+						string[] otherPaths = OptionsBase.SplitValues(MainPackage.GeneralOptions.CppSearchDirectories);
 						this.OpenFileWithExtension(name, extensions, path, otherPaths);
 					}
 				}

@@ -55,8 +55,10 @@ namespace Menees.VsTools.Regions
 			return result;
 		}
 
-		public static void AddRegion(DTE dte, string[] predefinedRegions)
+		public static void AddRegion(DTE dte, Options options)
 		{
+			string[] predefinedRegions = OptionsBase.SplitValues(options.PredefinedRegions);
+
 			ThreadHelper.ThrowIfNotOnUIThread();
 			Document doc = dte.ActiveDocument;
 			Language language = Utilities.GetLanguage(doc);
@@ -89,7 +91,7 @@ namespace Menees.VsTools.Regions
 					try
 					{
 						string padding = GetPadding(startpoint, hasSelection);
-						MakeRegion(doc, regionName, startpoint, endpoint, padding, language, hasSelection);
+						MakeRegion(doc, regionName, startpoint, endpoint, padding, language, hasSelection, options);
 					}
 					finally
 					{
@@ -342,7 +344,8 @@ namespace Menees.VsTools.Regions
 			EditPoint endPoint,
 			string padding,
 			Language language,
-			bool hasSelection)
+			bool hasSelection,
+			Options options)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -410,19 +413,20 @@ namespace Menees.VsTools.Regions
 				}
 			}
 
-			const string StartRegionFormat = "{0}{5}#{3} {4}{1}{4}{6}{2}{2}";
-			string endRegionFormat;
+			string regionEndName = options.AddNameAfterEnd ? (" " + regionName) : string.Empty;
+			string startRegionFormat = "{0}{5}#{3} {4}{1}{4}{6}{2}" + (options.AddInnerBlankLines ? "{2}" : string.Empty);
+			string endRegionFormat = options.AddInnerBlankLines ? "{1}" : string.Empty;
 			if (!endPoint.AtStartOfLine || !hasSelection)
 			{
-				endRegionFormat = "{1}{1}{0}{3}#{2}{4}";
+				endRegionFormat += "{1}{0}{3}#{2}{4}{5}";
 			}
 			else
 			{
-				endRegionFormat = "{1}{0}{3}#{2}{4}{1}";
+				endRegionFormat += "{0}{3}#{2}{4}{5}{1}";
 			}
 
 			EditPoint restoreEndPoint = endPoint.CreateEditPoint();
-			string startRegionText = string.Format(StartRegionFormat, padding, regionName, "\r\n", beginRegionToken, regionNameQuote, tokenPrefix, tokenSuffix);
+			string startRegionText = string.Format(startRegionFormat, padding, regionName, "\r\n", beginRegionToken, regionNameQuote, tokenPrefix, tokenSuffix);
 			startPoint.Insert(startRegionText);
 			EditPoint restoreStartPoint = startPoint.CreateEditPoint();
 
@@ -435,7 +439,8 @@ namespace Menees.VsTools.Regions
 				restoreEndPoint = restoreStartPoint;
 			}
 
-			endPoint.Insert(string.Format(endRegionFormat, padding, "\r\n", endRegionToken, tokenPrefix, tokenSuffix));
+			string endRegionText = string.Format(endRegionFormat, padding, "\r\n", endRegionToken, tokenPrefix, tokenSuffix, regionEndName);
+			endPoint.Insert(endRegionText);
 
 			// Restore the selection or caret position to the same logical area inside the new region.
 			TextSelection selection = (TextSelection)doc.Selection;

@@ -145,7 +145,7 @@
 					switch (command)
 					{
 						case Command.AddRegion:
-							RegionHandler.AddRegion(this.dte, Options.SplitValues(MainPackage.RegionOptions.PredefinedRegions));
+							RegionHandler.AddRegion(this.dte, MainPackage.RegionOptions);
 							break;
 
 						case Command.CheckSpelling:
