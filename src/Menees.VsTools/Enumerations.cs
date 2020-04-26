@@ -110,6 +110,7 @@
 		TypeScript,
 		PowerShell,
 		Python,
+		XAML,
 
 		// Note: When you add a language here, also add it to Tasks\ScanInfo.xml
 		// (e.g., as a new <Languages> node under an existing <Style>).

@@ -65,7 +65,7 @@ namespace Menees.VsTools.Tasks
 			}
 			else
 			{
-				Options options = MainPackage.TasksOptions;
+				Options options = MainPackage.TaskOptions;
 				options.Applied += this.Options_Applied;
 				this.backgroundOptions.Update(options);
 
@@ -345,7 +345,7 @@ namespace Menees.VsTools.Tasks
 		private void Options_Applied(object sender, EventArgs e)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			if (this.backgroundOptions.Update(MainPackage.TasksOptions))
+			if (this.backgroundOptions.Update(MainPackage.TaskOptions))
 			{
 				this.appliedOptionsPending = true;
 			}

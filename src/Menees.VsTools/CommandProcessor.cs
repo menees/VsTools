@@ -13,6 +13,7 @@
 	using System.Text;
 	using System.Threading.Tasks;
 	using EnvDTE;
+	using Menees.VsTools.Regions;
 	using Menees.VsTools.Sort;
 	using Microsoft.VisualStudio;
 	using Microsoft.VisualStudio.Shell;
@@ -144,7 +145,7 @@
 					switch (command)
 					{
 						case Command.AddRegion:
-							RegionHandler.AddRegion(this.dte, Options.SplitValues(MainPackage.GeneralOptions.PredefinedRegions));
+							RegionHandler.AddRegion(this.dte, Options.SplitValues(MainPackage.RegionOptions.PredefinedRegions));
 							break;
 
 						case Command.CheckSpelling:

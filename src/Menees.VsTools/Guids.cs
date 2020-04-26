@@ -25,9 +25,11 @@
 
 		public const string HighlightOptionsString = "47c7cdc7-44c2-4107-8aa0-a0cb73b468a0";
 
+		public const string RegionOptionsString = "e3749e00-12de-44ec-8afa-dd27f39b8671";
+
 		public const string SortOptionsString = "194fd247-b9d7-43d6-b374-c6f94f338f6e";
 
-		public const string TasksOptionsString = "3e8cab32-2743-4c91-9826-62e717281ea8";
+		public const string TaskOptionsString = "3e8cab32-2743-4c91-9826-62e717281ea8";
 
 		public static readonly Guid MeneesVsToolsPackage = new Guid(MeneesVsToolsPackageString);
 

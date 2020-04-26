@@ -1,4 +1,13 @@
-﻿namespace Menees.VsTools
+﻿#region Using Directives
+
+// If EnvDTE is used inside the namespace, then its EnvDTE.Language interface is used before VsTools.Language enum.
+#pragma warning disable SA1200 // Using directives should be placed correctly
+using EnvDTE;
+#pragma warning restore SA1200 // Using directives should be placed correctly
+
+#endregion
+
+namespace Menees.VsTools.Regions
 {
 	#region Using Directives
 
@@ -11,7 +20,6 @@
 	using System.Text;
 	using System.Text.RegularExpressions;
 	using System.Threading.Tasks;
-	using EnvDTE;
 	using Microsoft.VisualStudio.Shell;
 
 	#endregion
@@ -20,18 +28,18 @@
 	{
 		#region Private Data Members
 
-		private static readonly HashSet<Language> SupportsRegions = new HashSet<Language>
+		private static readonly HashSet<Language> VsBuiltInRegionSupport = new HashSet<Language>
 		{
 			Language.CSharp,
 			Language.VB,
 			Language.CPlusPlus,
-			Language.JavaScript,
-			Language.TypeScript,
-			Language.XML,
-			Language.SQL,
-			Language.HTML,
-			Language.PowerShell,
-			Language.Python,
+			Language.JavaScript, // VS 2017 supported
+			Language.TypeScript, // VS 2017 supported
+			Language.HTML, // VS 2013 update 4 supported in new htmlx editor (but not old HTML web forms editor).
+			Language.PowerShell, // VS 2015 supported
+			Language.Python, // VS 2015 supported
+			Language.XML, // VS 2017 supported (with no name or tooltip showing)
+			Language.XAML, // VS 2017 supported (if tags have no spaces around them)
 		};
 
 		#endregion
@@ -40,8 +48,10 @@
 
 		public static bool IsSupportedLanguage(Language language)
 		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
 			// This method needs to be blazing fast because it's called by the UI constantly to update toolbar button states.
-			bool result = SupportsRegions.Contains(language);
+			bool result = VsBuiltInRegionSupport.Contains(language) || MainPackage.RegionOptions.IsSupported(language);
 			return result;
 		}
 
@@ -370,6 +380,7 @@
 					break;
 
 				case Language.XML:
+				case Language.XAML:
 				case Language.HTML:
 					beginRegionToken = "region";
 					endRegionToken = "endregion";
@@ -459,6 +470,7 @@
 					break;
 
 				case Language.XML:
+				case Language.XAML:
 				case Language.HTML:
 					// Must begin with '<!--' comment and then optional whitespace and an optional '#'.
 					result = @"\<\!\-\-\s*\#?region";

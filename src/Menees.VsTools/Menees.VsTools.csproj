@@ -114,6 +114,8 @@
     <Compile Include="BaseConverter\Window.cs" />
     <Compile Include="BaseConverter\Enumerations.cs" />
     <Compile Include="BuildTimer.cs" />
+    <Compile Include="Regions\NonOutliningTagger.cs" />
+    <Compile Include="Regions\Options.cs" />
     <Compile Include="Sort\CodeMember.cs" />
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="CommentHandler.cs" />
@@ -131,8 +133,8 @@
     <Compile Include="Editor\HighlightOptions.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Editor\OutliningTagger.cs" />
-    <Compile Include="Editor\OutliningTaggerProvider.cs" />
+    <Compile Include="Regions\OutliningTagger.cs" />
+    <Compile Include="Regions\OutliningTaggerProvider.cs" />
     <Compile Include="Editor\OutputHighlightListTypeConverter.cs" />
     <Compile Include="Editor\OutputClassifier.cs" />
     <Compile Include="Editor\OutputClassifierProvider.cs" />
@@ -174,7 +176,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="UnusedCode.cs" />
-    <Compile Include="RegionHandler.cs" />
+    <Compile Include="Regions\RegionHandler.cs" />
     <Compile Include="Sort\Options.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -23,7 +23,7 @@
 	<Style Name="XML/HTML">
 		<MultiLineDelimiter Begin="&lt;!--" End="--&gt;"/>
 		<!-- Note: ScanInfo.Infer treats XML as a required language. -->
-		<Languages>XML, HTML</Languages>
+		<Languages>XML, HTML, XAML</Languages>
 		<Extensions>
 			xml, xaml, xoml, htm, html, config, settings, xsd, wsdl, resx, csproj, vbproj, vcxproj,
 			xsl, xslt, edmx, dbml, cshtml, vbhtml, aspx, ascx, master, ps1xml, xhtml, svg, myapp

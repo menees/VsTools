@@ -93,9 +93,12 @@
 					break;
 
 				case "XML":
+					result = Language.XML;
+					break;
+
 				case "XAML":
 				case "XOML":
-					result = Language.XML;
+					result = Language.XAML;
 					break;
 
 				case "Basic":

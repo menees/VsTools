@@ -266,7 +266,7 @@
 
 				if (!this.isLoading)
 				{
-					Options options = MainPackage.TasksOptions;
+					Options options = MainPackage.TaskOptions;
 					options.TasksStatusXml = status.ToString();
 					options.SaveSettingsToStorage();
 				}
@@ -387,7 +387,7 @@
 					throw new InvalidOperationException("The tasks control can't be loaded without its associated package.");
 				}
 
-				Options options = MainPackage.TasksOptions;
+				Options options = MainPackage.TaskOptions;
 				if (options == null)
 				{
 					throw new InvalidOperationException("The tasks control can't be loaded without its associated options.");

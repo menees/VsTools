@@ -30,25 +30,9 @@
 	[Guid(Guids.GeneralOptionsString)]
 	[DefaultProperty(nameof(IsMouseWheelZoomEnabled))] // Make this get focus in the PropertyGrid first since its category is alphabetically first.
 	[SuppressMessage("Internal class never created.", "CA1812", Justification = "Created via reflection by VS.")]
-	internal class Options : OptionsBase
+	internal sealed class Options : OptionsBase
 	{
 		#region Private Data Members
-
-		private const string DefaultPredefinedRegions =
-			"Using Directives\r\n" +
-			"Private Data Members\r\n" +
-			"Constructors\r\n" +
-			"Public Properties\r\n" +
-			"Internal Properties\r\n" +
-			"Protected Properties\r\n" +
-			"Private Properties\r\n" +
-			"Public Methods\r\n" +
-			"Public Events\r\n" +
-			"Internal Methods\r\n" +
-			"Protected Methods\r\n" +
-			"Private Methods\r\n" +
-			"Private Event Handlers\r\n" +
-			"Private Types";
 
 		private GuidFormat guidFormat;
 
@@ -67,7 +51,6 @@
 			// are initialized where VS's standard behavior is retained.  I'll manually change those option
 			// values in environments where I want to suppress the standard behavior.
 			this.SaveAllBeforeExecuteFile = true;
-			this.PredefinedRegions = DefaultPredefinedRegions;
 			this.UppercaseGuids = true;
 			this.IsMouseWheelZoomEnabled = true;
 
@@ -84,13 +67,6 @@
 		[Description("Whether the Execute File command should save all open documents first.")]
 		[DefaultValue(true)]
 		public bool SaveAllBeforeExecuteFile { get; set; }
-
-		[Category(nameof(Editor))]
-		[DisplayName("Predefined #regions")]
-		[Description("Defines the entries to include in the Add Region dialog. Enter one region name per line in the drop-down editor.")]
-		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
-		[DefaultValue(DefaultPredefinedRegions)]
-		public string PredefinedRegions { get; set; }
 
 		[Category("Miscellaneous")]
 		[DisplayName("Additional C++ search directories")]
@@ -183,8 +159,8 @@
 
 		public static string[] SplitValues(string multiLineValue)
 		{
-			string regions = multiLineValue ?? string.Empty;
-			string[] result = regions.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			string lines = multiLineValue ?? string.Empty;
+			string[] result = lines.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 			return result;
 		}
 

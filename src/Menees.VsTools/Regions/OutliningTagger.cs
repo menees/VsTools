@@ -1,4 +1,4 @@
-namespace Menees.VsTools.Editor
+namespace Menees.VsTools.Regions
 {
 	#region Using Directives
 
@@ -41,19 +41,10 @@ namespace Menees.VsTools.Editor
 		{
 			this.buffer = buffer;
 
-			if (scanInfo != null)
-			{
-				// Our RegionHandler's GetRegionBeginRegex only looks for single line comment tokens
-				// when doing Collapse/ExpandAllRegions, so we'll use the same restriction here.
-				this.startExpressions = scanInfo.GetTokenRegexes(StartToken, true).ToList();
-				this.endExpressions = scanInfo.GetTokenRegexes(EndToken, true).Concat(scanInfo.GetTokenRegexes(AltEndToken, true)).ToList();
-			}
-			else
-			{
-				// If we don't have scan info, then we can't provide tags.
-				this.startExpressions = CollectionUtility.EmptyArray<Regex>();
-				this.endExpressions = CollectionUtility.EmptyArray<Regex>();
-			}
+			// Our RegionHandler's GetRegionBeginRegex only looks for single line comment tokens
+			// when doing Collapse/ExpandAllRegions, so we'll use the same restriction here.
+			this.startExpressions = scanInfo.GetTokenRegexes(StartToken, true).ToList();
+			this.endExpressions = scanInfo.GetTokenRegexes(EndToken, true).Concat(scanInfo.GetTokenRegexes(AltEndToken, true)).ToList();
 
 			this.snapshotRegions = new SnapshotRegions(buffer.CurrentSnapshot, CollectionUtility.EmptyArray<Region>());
 			this.buffer.Changed += this.BufferChanged;

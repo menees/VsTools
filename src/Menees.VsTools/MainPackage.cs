@@ -24,11 +24,12 @@
 	{
 		#region Private Data Members
 
-		private static Options generalOptions;
 		private static BaseConverter.Options baseConverterOptions;
-		private static Tasks.Options tasksOptions;
+		private static Options generalOptions;
 		private static HighlightOptions highlightOptions;
+		private static Regions.Options regionOptions;
 		private static Sort.Options sortOptions;
+		private static Tasks.Options taskOptions;
 
 		private CommandProcessor processor;
 		private ClassificationFormatManager formatManager;
@@ -100,6 +101,21 @@
 			}
 		}
 
+		internal static Regions.Options RegionOptions
+		{
+			get
+			{
+				ThreadHelper.ThrowIfNotOnUIThread();
+
+				if (regionOptions == null)
+				{
+					ForceLoad();
+				}
+
+				return regionOptions;
+			}
+		}
+
 		internal static Sort.Options SortOptions
 		{
 			get
@@ -115,18 +131,18 @@
 			}
 		}
 
-		internal static Tasks.Options TasksOptions
+		internal static Tasks.Options TaskOptions
 		{
 			get
 			{
 				ThreadHelper.ThrowIfNotOnUIThread();
 
-				if (tasksOptions == null)
+				if (taskOptions == null)
 				{
 					ForceLoad();
 				}
 
-				return tasksOptions;
+				return taskOptions;
 			}
 		}
 
@@ -237,8 +253,9 @@
 				baseConverterOptions = this.GetDialogPage(typeof(BaseConverter.Options)) as BaseConverter.Options;
 				generalOptions = this.GetDialogPage(typeof(Options)) as Options;
 				highlightOptions = this.GetDialogPage(typeof(HighlightOptions)) as HighlightOptions;
+				regionOptions = this.GetDialogPage(typeof(Regions.Options)) as Regions.Options;
 				sortOptions = this.GetDialogPage(typeof(Sort.Options)) as Sort.Options;
-				tasksOptions = this.GetDialogPage(typeof(Tasks.Options)) as Tasks.Options;
+				taskOptions = this.GetDialogPage(typeof(Tasks.Options)) as Tasks.Options;
 
 				this.processor = new CommandProcessor(this);
 
@@ -267,7 +284,7 @@
 				// This option requires a restart if changed because the CommentTaskProvider and various
 				// XxxMonitor classes attach to too many events and register too many things to easily
 				// detach/unregister and clean them all up if this is toggled interactively.
-				if (TasksOptions.EnableCommentScans)
+				if (TaskOptions.EnableCommentScans)
 				{
 					this.commentTaskProvider = new CommentTaskProvider(this);
 				}
