@@ -23,8 +23,7 @@
 	using Microsoft.Win32;
 	#endregion
 
-	// Note: The MainPackage has ProvideOptionPage and ProvideProfile attributes
-	// that associate this class with our package.  Helpful pages:
+	// Note: The MainPackage has ProvideOptionPage and ProvideProfile attributes that associate this class with that package.
 	// http://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.dialogpage(v=vs.110).aspx
 	// http://msdn.microsoft.com/en-us/library/bb162586(v=vs.110).aspx
 	// http://bloggingabout.net/blogs/perikles/archive/2006/11/22/How-to-dynamically-Import_2F00_Export-setting-in-Visual-Studio-2005_2E00_.aspx
@@ -74,8 +73,6 @@
 
 			// Other dialog state settings
 			this.TrimEnd = true;
-			this.SortAscending = true;
-			this.SortIgnoreWhitespace = true;
 		}
 
 		#endregion
@@ -158,20 +155,6 @@
 		[DefaultValue(true)]
 		public bool IsMouseWheelZoomEnabled { get; set; }
 
-		[Category("Sort Members")]
-		[DisplayName("Sort Members order")]
-		[Description("A comma-separated list of member properties to order by. Prefix a property with '-' to order it descending. " +
-			"The default ordering is: Kind, Access, IsStatic, KindModifier, ConstModifier, OverrideModifier, Name, ParameterCount.")]
-		[DefaultValue(null)]
-		public string SortMembersOrder { get; set; }
-
-		[Category("Sort Members")]
-		[DisplayName("Only show Sort Members dialog when shift is pressed")]
-		[Description("Provides a way to suppress the display of the Sort Members dialog unless the Shift key is pressed. " +
-			"If the dialog is suppressed, then selected members will be sorted.")]
-		[DefaultValue(false)]
-		public bool OnlyShowSortMembersDialogWhenShiftIsPressed { get; set; }
-
 		[Category("Miscellaneous")]
 		[DisplayName("Build timing")]
 		[Description("Whether build timing information should be added to the Build output window.")]
@@ -187,24 +170,6 @@
 
 		[Browsable(false)]
 		public bool TrimEnd { get; set; }
-
-		[Browsable(false)]
-		public bool SortCaseSensitive { get; set; }
-
-		[Browsable(false)]
-		public bool SortCompareByOrdinal { get; set; }
-
-		[Browsable(false)]
-		public bool SortAscending { get; set; }
-
-		[Browsable(false)]
-		public bool SortIgnoreWhitespace { get; set; }
-
-		[Browsable(false)]
-		public bool SortIgnorePunctuation { get; set; }
-
-		[Browsable(false)]
-		public bool SortEliminateDuplicates { get; set; }
 
 		#endregion
 

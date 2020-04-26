@@ -114,7 +114,7 @@
     <Compile Include="BaseConverter\Window.cs" />
     <Compile Include="BaseConverter\Enumerations.cs" />
     <Compile Include="BuildTimer.cs" />
-    <Compile Include="CodeMember.cs" />
+    <Compile Include="Sort\CodeMember.cs" />
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="CommentHandler.cs" />
     <Compile Include="Editor\ClassificationFormatBase.cs" />
@@ -151,7 +151,7 @@
     <Compile Include="Editor\MouseWheelZoomListener.cs" />
     <Compile Include="MainPackage.VsAttributes.cs" />
     <Compile Include="MainPackage.Version.cs" />
-    <Compile Include="MemberSorter.cs" />
+    <Compile Include="Sort\MemberSorter.cs" />
     <Compile Include="Options.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -175,12 +175,16 @@
     </None>
     <None Include="UnusedCode.cs" />
     <Compile Include="RegionHandler.cs" />
-    <Compile Include="SortDialog.xaml.cs">
-      <DependentUpon>SortDialog.xaml</DependentUpon>
+    <Compile Include="Sort\Options.cs">
+      <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SortMembersDialog.xaml.cs">
+    <Compile Include="Sort\SortLinesDialog.xaml.cs">
+      <DependentUpon>SortLinesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sort\SortMembersDialog.xaml.cs">
       <DependentUpon>SortMembersDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sort\Enumerations.cs" />
     <Compile Include="StatisticsDialog.xaml.cs">
       <DependentUpon>StatisticsDialog.xaml</DependentUpon>
     </Compile>
@@ -294,11 +298,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SortDialog.xaml">
+    <Page Include="Sort\SortLinesDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SortMembersDialog.xaml">
+    <Page Include="Sort\SortMembersDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

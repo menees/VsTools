@@ -88,7 +88,7 @@
 				<CommandFlag>DynamicVisibility</CommandFlag>
 				<Strings>
 					<ButtonText>&amp;Sort Lines</ButtonText>
-					<ToolTipText>Sorts the selected lines of text</ToolTipText>
+					<ToolTipText>Sorts the lines within the selected text</ToolTipText>
 					<CanonicalName>Menees.VsTools.SortLines</CanonicalName>
 					<LocCanonicalName>Menees.VsTools.SortLines</LocCanonicalName>
 				</Strings>

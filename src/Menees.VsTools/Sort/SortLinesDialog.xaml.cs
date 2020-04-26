@@ -1,4 +1,4 @@
-﻿namespace Menees.VsTools
+﻿namespace Menees.VsTools.Sort
 {
 	#region Using Directives
 
@@ -19,11 +19,11 @@
 
 	#endregion
 
-	internal partial class SortDialog : DialogWindow
+	internal partial class SortLinesDialog : DialogWindow
 	{
 		#region Constructors
 
-		public SortDialog()
+		public SortLinesDialog()
 		{
 			this.InitializeComponent();
 		}
@@ -40,6 +40,7 @@
 			this.ignoreWhitespace.IsChecked = options.SortIgnoreWhitespace;
 			this.ignorePunctuation.IsChecked = options.SortIgnorePunctuation;
 			this.eliminateDuplicates.IsChecked = options.SortEliminateDuplicates;
+			this.onlyShowWhenShiftIsPressed.IsChecked = options.OnlyShowSortLinesDialogWhenShiftIsPressed;
 
 			bool result = false;
 			if (this.ShowModal().GetValueOrDefault())
@@ -50,6 +51,7 @@
 				options.SortIgnoreWhitespace = this.ignoreWhitespace.IsChecked.GetValueOrDefault();
 				options.SortIgnorePunctuation = this.ignorePunctuation.IsChecked.GetValueOrDefault();
 				options.SortEliminateDuplicates = this.eliminateDuplicates.IsChecked.GetValueOrDefault();
+				options.OnlyShowSortLinesDialogWhenShiftIsPressed = this.onlyShowWhenShiftIsPressed.IsChecked.GetValueOrDefault();
 				options.SaveSettingsToStorage();
 				result = true;
 			}

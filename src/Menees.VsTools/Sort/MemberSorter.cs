@@ -1,4 +1,13 @@
-namespace Menees.VsTools
+#region Using Directives
+
+// If EnvDTE is used inside the namespace, then its EnvDTE.Language interface is used before VsTools.Language enum.
+#pragma warning disable SA1200 // Using directives should be placed correctly
+using EnvDTE;
+#pragma warning restore SA1200 // Using directives should be placed correctly
+
+#endregion
+
+namespace Menees.VsTools.Sort
 {
 	#region Using Directives
 
@@ -8,7 +17,6 @@ namespace Menees.VsTools
 	using System.Linq;
 	using System.Text;
 	using System.Text.RegularExpressions;
-	using EnvDTE;
 	using EnvDTE80;
 	using Microsoft.VisualStudio.Shell;
 

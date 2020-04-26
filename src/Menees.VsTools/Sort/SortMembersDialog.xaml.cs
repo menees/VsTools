@@ -1,4 +1,4 @@
-﻿namespace Menees.VsTools
+﻿namespace Menees.VsTools.Sort
 {
 	#region Using Directives
 

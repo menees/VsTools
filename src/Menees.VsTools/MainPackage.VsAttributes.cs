@@ -107,6 +107,24 @@
 		isToolsOptionPage: true,
 		DescriptionResourceID = 114,
 		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
+	[ProvideOptionPage(
+		typeof(Sort.Options),
+		categoryName: Title,
+		pageName: Sort.Options.DefaultCaption,
+		categoryResourceID: 113,
+		pageNameResourceID: 118,
+		supportsAutomation: false,
+		SupportsProfiles = true,
+		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
+	[ProvideProfile(
+		typeof(Sort.Options),
+		categoryName: Title,
+		objectName: Sort.Options.DefaultCaption,
+		categoryResourceID: 113,
+		objectNameResourceID: 118,
+		isToolsOptionPage: true,
+		DescriptionResourceID = 114,
+		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
 #pragma warning restore SA1515
 	public sealed partial class MainPackage
 	{

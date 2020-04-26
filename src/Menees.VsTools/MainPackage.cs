@@ -28,6 +28,7 @@
 		private static BaseConverter.Options baseConverterOptions;
 		private static Tasks.Options tasksOptions;
 		private static HighlightOptions highlightOptions;
+		private static Sort.Options sortOptions;
 
 		private CommandProcessor processor;
 		private ClassificationFormatManager formatManager;
@@ -96,6 +97,21 @@
 				}
 
 				return highlightOptions;
+			}
+		}
+
+		internal static Sort.Options SortOptions
+		{
+			get
+			{
+				ThreadHelper.ThrowIfNotOnUIThread();
+
+				if (sortOptions == null)
+				{
+					ForceLoad();
+				}
+
+				return sortOptions;
 			}
 		}
 
@@ -218,10 +234,11 @@
 				// I've also verified GetDialogPage's caching implementation in VS11 by looking at it with Reflector.
 				// http://social.msdn.microsoft.com/Forums/eu/vsx/thread/303fce01-dfc0-43b3-a578-8b3258c0b83f
 				// From http://msdn.microsoft.com/en-us/library/bb165039.aspx
-				generalOptions = this.GetDialogPage(typeof(Options)) as Options;
 				baseConverterOptions = this.GetDialogPage(typeof(BaseConverter.Options)) as BaseConverter.Options;
-				tasksOptions = this.GetDialogPage(typeof(Tasks.Options)) as Tasks.Options;
+				generalOptions = this.GetDialogPage(typeof(Options)) as Options;
 				highlightOptions = this.GetDialogPage(typeof(HighlightOptions)) as HighlightOptions;
+				sortOptions = this.GetDialogPage(typeof(Sort.Options)) as Sort.Options;
+				tasksOptions = this.GetDialogPage(typeof(Tasks.Options)) as Tasks.Options;
 
 				this.processor = new CommandProcessor(this);
 

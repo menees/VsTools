@@ -23,11 +23,7 @@
 	using Microsoft.Win32;
 	#endregion
 
-	// Note: The MainPackage has ProvideOptionPage and ProvideProfile attributes
-	// that associate this class with our package.  Helpful pages:
-	// http://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.dialogpage(v=vs.110).aspx
-	// http://msdn.microsoft.com/en-us/library/bb162586(v=vs.110).aspx
-	// http://bloggingabout.net/blogs/perikles/archive/2006/11/22/How-to-dynamically-Import_2F00_Export-setting-in-Visual-Studio-2005_2E00_.aspx
+	// Note: The MainPackage has ProvideOptionPage and ProvideProfile attributes that associate this class with that package.
 	[Guid(Guids.BaseConverterOptionsString)]
 	[DefaultProperty(nameof(UseGroupDelimiterForDecimal))] // Make this get focus in the PropertyGrid first since its category is alphabetically first.
 	[SuppressMessage("Internal class never created.", "CA1812", Justification = "Created via reflection by VS.")]

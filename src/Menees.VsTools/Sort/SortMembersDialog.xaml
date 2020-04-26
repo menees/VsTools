@@ -1,4 +1,4 @@
-﻿<ui:DialogWindow x:Class="Menees.VsTools.SortMembersDialog"
+﻿<ui:DialogWindow x:Class="Menees.VsTools.Sort.SortMembersDialog"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"

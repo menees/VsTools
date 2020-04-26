@@ -13,6 +13,7 @@
 	using System.Text;
 	using System.Threading.Tasks;
 	using EnvDTE;
+	using Menees.VsTools.Sort;
 	using Microsoft.VisualStudio;
 	using Microsoft.VisualStudio.Shell;
 	using Microsoft.VisualStudio.Shell.Interop;
@@ -420,10 +421,16 @@
 			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
-				Options options = MainPackage.GeneralOptions;
+				Sort.Options options = MainPackage.SortOptions;
 
-				SortDialog dialog = new SortDialog();
-				if (dialog.Execute(options))
+				bool execute = true;
+				if (!options.OnlyShowSortLinesDialogWhenShiftIsPressed || Utilities.IsShiftPressed)
+				{
+					SortLinesDialog dialog = new SortLinesDialog();
+					execute = dialog.Execute(options);
+				}
+
+				if (execute)
 				{
 					StringComparison comparison;
 					if (options.SortCompareByOrdinal)
@@ -451,7 +458,7 @@
 			MemberSorter sorter = new MemberSorter(this.dte, true);
 			if (sorter.HasSelectedMembers)
 			{
-				sorter.SortMembers(MainPackage.GeneralOptions);
+				sorter.SortMembers(MainPackage.SortOptions);
 			}
 		}
 
