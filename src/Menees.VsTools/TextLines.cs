@@ -7,6 +7,7 @@
 	using System.Linq;
 	using System.Text;
 	using System.Threading.Tasks;
+	using Menees.VsTools.Sort;
 	using Menees.VsTools.Tasks;
 
 	#endregion
@@ -83,30 +84,7 @@
 			return result;
 		}
 
-		public void Sort(StringComparison comparison, bool ascending, bool ignoreWhitespace, bool ignorePunctuation, bool eliminateDuplicates)
-		{
-			SortComparer comparer = new SortComparer(comparison, ascending, ignoreWhitespace, ignorePunctuation);
-			Array.Sort(this.lines, comparer);
-
-			if (eliminateDuplicates)
-			{
-				int numLines = this.lines.Length;
-				List<string> newLines = new List<string>(numLines);
-				string previousLine = null;
-				for (int i = 0; i < numLines; i++)
-				{
-					string line = this.lines[i];
-					if (previousLine == null || comparer.Compare(line, previousLine) != 0)
-					{
-						newLines.Add(line);
-					}
-
-					previousLine = line;
-				}
-
-				this.lines = newLines.ToArray();
-			}
-		}
+		public void Sort(LineOptions lineOptions) => LineComparer.Sort(ref this.lines, lineOptions);
 
 		public void Trim(bool start, bool end)
 		{
@@ -512,81 +490,6 @@
 			}
 
 			this.SetLines(newText);
-		}
-
-		#endregion
-
-		#region Private Types
-
-		private sealed class SortComparer : IComparer<string>
-		{
-			#region Private Data Members
-
-			private readonly StringComparison comparison;
-			private readonly bool ascending;
-			private readonly bool ignoreWhitespace;
-			private readonly bool ignorePunctuation;
-
-			#endregion
-
-			#region Constructors
-
-			public SortComparer(StringComparison comparison, bool ascending, bool ignoreWhitespace, bool ignorePunctuation)
-			{
-				this.comparison = comparison;
-				this.ascending = ascending;
-				this.ignoreWhitespace = ignoreWhitespace;
-				this.ignorePunctuation = ignorePunctuation;
-			}
-
-			#endregion
-
-			#region IComparer<string> Members
-
-			public int Compare(string x, string y)
-			{
-				if (this.ignoreWhitespace)
-				{
-					x = x.Trim();
-					y = y.Trim();
-				}
-
-				if (this.ignorePunctuation)
-				{
-					x = StripPunctuation(x);
-					y = StripPunctuation(y);
-				}
-
-				int result = string.Compare(x, y, this.comparison);
-
-				if (!this.ascending)
-				{
-					result = -result;
-				}
-
-				return result;
-			}
-
-			#endregion
-
-			#region Private Methods
-
-			private static string StripPunctuation(string value)
-			{
-				StringBuilder sb = new StringBuilder(value.Length);
-				foreach (char ch in value)
-				{
-					if (!char.IsPunctuation(ch))
-					{
-						sb.Append(ch);
-					}
-				}
-
-				string result = sb.Length == value.Length ? value : sb.ToString();
-				return result;
-			}
-
-			#endregion
 		}
 
 		#endregion

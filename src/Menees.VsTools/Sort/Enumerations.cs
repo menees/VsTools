@@ -1,5 +1,21 @@
 ﻿namespace Menees.VsTools.Sort
 {
+	#region LineOptions
+
+	internal enum LineOptions
+	{
+		None = 0,
+		CaseSensitive = 1,
+		ByOrdinal = 2,
+		Descending = 4,
+		IgnoreWhitespace = 8,
+		IgnorePunctuation = 16,
+		EliminateDuplicates = 32,
+		ByLength = 64,
+	}
+
+	#endregion
+
 	#region MemberAccess
 
 	internal enum MemberAccess

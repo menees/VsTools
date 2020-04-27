@@ -29,8 +29,6 @@
 
 		public Options()
 		{
-			this.SortAscending = true;
-			this.SortIgnoreWhitespace = true;
 		}
 
 		#endregion
@@ -63,22 +61,7 @@
 		#region Public Non-Browsable Properties (for other state persistence)
 
 		[Browsable(false)]
-		public bool SortCaseSensitive { get; set; }
-
-		[Browsable(false)]
-		public bool SortCompareByOrdinal { get; set; }
-
-		[Browsable(false)]
-		public bool SortAscending { get; set; }
-
-		[Browsable(false)]
-		public bool SortIgnoreWhitespace { get; set; }
-
-		[Browsable(false)]
-		public bool SortIgnorePunctuation { get; set; }
-
-		[Browsable(false)]
-		public bool SortEliminateDuplicates { get; set; }
+		public LineOptions LineOptions { get; set; }
 
 		#endregion
 	}

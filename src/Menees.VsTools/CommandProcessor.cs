@@ -433,20 +433,10 @@
 
 				if (execute)
 				{
-					StringComparison comparison;
-					if (options.SortCompareByOrdinal)
-					{
-						comparison = options.SortCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-					}
-					else
-					{
-						comparison = options.SortCaseSensitive ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
-					}
-
 					// Now sort the lines and put them back as the selection
 					string text = handler.SelectedText;
 					TextLines lines = new TextLines(text);
-					lines.Sort(comparison, options.SortAscending, options.SortIgnoreWhitespace, options.SortIgnorePunctuation, options.SortEliminateDuplicates);
+					lines.Sort(options.LineOptions);
 					string sortedText = lines.ToString();
 					handler.SetSelectedTextIfUnchanged(sortedText, "Sort Lines");
 				}

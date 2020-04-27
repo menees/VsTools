@@ -34,24 +34,39 @@
 
 		public bool Execute(Options options)
 		{
-			this.caseSensitive.IsChecked = options.SortCaseSensitive;
-			this.compareByOrdinal.IsChecked = options.SortCompareByOrdinal;
-			this.ascending.IsChecked = options.SortAscending;
-			this.ignoreWhitespace.IsChecked = options.SortIgnoreWhitespace;
-			this.ignorePunctuation.IsChecked = options.SortIgnorePunctuation;
-			this.eliminateDuplicates.IsChecked = options.SortEliminateDuplicates;
+			LineOptions lineOptions = options.LineOptions;
+			this.caseSensitive.IsChecked = lineOptions.HasFlag(LineOptions.CaseSensitive);
+			this.compareByOrdinal.IsChecked = lineOptions.HasFlag(LineOptions.ByOrdinal);
+			this.descending.IsChecked = lineOptions.HasFlag(LineOptions.Descending);
+			this.ignoreWhitespace.IsChecked = lineOptions.HasFlag(LineOptions.IgnoreWhitespace);
+			this.ignorePunctuation.IsChecked = lineOptions.HasFlag(LineOptions.IgnorePunctuation);
+			this.eliminateDuplicates.IsChecked = lineOptions.HasFlag(LineOptions.EliminateDuplicates);
+			this.compareByLength.IsChecked = lineOptions.HasFlag(LineOptions.ByLength);
 			this.onlyShowWhenShiftIsPressed.IsChecked = options.OnlyShowSortLinesDialogWhenShiftIsPressed;
 
 			bool result = false;
 			if (this.ShowModal().GetValueOrDefault())
 			{
-				options.SortCaseSensitive = this.caseSensitive.IsChecked.GetValueOrDefault();
-				options.SortCompareByOrdinal = this.compareByOrdinal.IsChecked.GetValueOrDefault();
-				options.SortAscending = this.ascending.IsChecked.GetValueOrDefault();
-				options.SortIgnoreWhitespace = this.ignoreWhitespace.IsChecked.GetValueOrDefault();
-				options.SortIgnorePunctuation = this.ignorePunctuation.IsChecked.GetValueOrDefault();
-				options.SortEliminateDuplicates = this.eliminateDuplicates.IsChecked.GetValueOrDefault();
+				lineOptions = LineOptions.None;
+				void AddOption(CheckBox checkBox, LineOptions option)
+				{
+					if (checkBox.IsChecked.GetValueOrDefault())
+					{
+						lineOptions |= option;
+					}
+				}
+
+				AddOption(this.caseSensitive, LineOptions.CaseSensitive);
+				AddOption(this.compareByOrdinal, LineOptions.ByOrdinal);
+				AddOption(this.descending, LineOptions.Descending);
+				AddOption(this.ignoreWhitespace, LineOptions.IgnoreWhitespace);
+				AddOption(this.ignorePunctuation, LineOptions.IgnorePunctuation);
+				AddOption(this.eliminateDuplicates, LineOptions.EliminateDuplicates);
+				AddOption(this.compareByLength, LineOptions.ByLength);
+				options.LineOptions = lineOptions;
+
 				options.OnlyShowSortLinesDialogWhenShiftIsPressed = this.onlyShowWhenShiftIsPressed.IsChecked.GetValueOrDefault();
+
 				options.SaveSettingsToStorage();
 				result = true;
 			}
