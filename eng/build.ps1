@@ -12,6 +12,23 @@ $scriptPath = [IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Definition)
 $repoPath = Resolve-Path (Join-Path $scriptPath '..')
 $slnPath = Get-ChildItem -Path $repoPath -Filter *.sln
 
+function GetVsixVersion($fileName)
+{
+	# We want the Identity Version attribute not the PackageManifest Version attribute.
+	$line = @(Get-Content $fileName | Where-Object {$_ -like '*<Identity*Version="*"*'})[0]
+
+	$result = $null
+	if ($line)
+	{
+		$versionPrefix = 'Version="'
+		$startIndex = $line.IndexOf($versionPrefix) +  + $versionPrefix.Length
+		$endIndex = $line.IndexOf('"', $startIndex)
+		$result = $line.Substring($startIndex, $endIndex - $startIndex)
+	}
+
+	return $result
+}
+
 if ($build)
 {
 	foreach ($configuration in $configurations)
@@ -27,29 +44,34 @@ if ($build)
 
 if ($publish)
 {
+	$version = GetVsixVersion "$repoPath\src\Menees.VsTools\source.extension.vsixmanifest"
 	$published = $false
-	$artifactsPath = "$repoPath\artifacts"
-	if (Test-Path $artifactsPath)
+	if ($version)
 	{
-		Remove-Item -Recurse -Force $artifactsPath
-	}
-
-	$ignore = mkdir $artifactsPath
-	if ($ignore) { } # For PSUseDeclaredVarsMoreThanAssignments
-
-	foreach ($configuration in $configurations)
-	{
-		if ($configuration -like '*Release*')
+		$artifactsPath = "$repoPath\artifacts"
+		if (Test-Path $artifactsPath)
 		{
-			Write-Host "Publishing $configuration files to $artifactsPath"
-			$vsixFiles = @(Get-ChildItem -r "$repoPath\src\**\bin\$configuration\*.vsix")
-			foreach ($vsixFile in $vsixFiles)
+			Remove-Item -Recurse -Force $artifactsPath
+		}
+
+		$ignore = mkdir $artifactsPath
+		if ($ignore) { } # For PSUseDeclaredVarsMoreThanAssignments
+
+		foreach ($configuration in $configurations)
+		{
+			if ($configuration -like '*Release*')
 			{
-				$vsixName = [IO.Path]::GetFileName($vsixFile)
-				Write-Host "Publishing $vsixName"
-				$vsixTarget = "$artifactsPath\$vsixName"
-				Copy-Item -Path $vsixFile -Destination $vsixTarget
-				$published = $true
+				Write-Host "Publishing version $version $configuration files to $artifactsPath"
+				$vsixFiles = @(Get-ChildItem -r "$repoPath\src\**\bin\$configuration\*.vsix")
+				foreach ($vsixFile in $vsixFiles)
+				{
+					$sourceVsixName = [IO.Path]::GetFileName($vsixFile)
+					$targetVsixName = $sourceVsixName.Replace(".vsix", "." + $version + ".vsix")
+					Write-Host "Publishing $targetVsixName"
+					$vsixTarget = "$artifactsPath\$targetVsixName"
+					Copy-Item -Path $vsixFile -Destination $vsixTarget
+					$published = $true
+				}
 			}
 		}
 	}
