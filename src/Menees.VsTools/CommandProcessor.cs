@@ -433,6 +433,11 @@
 
 				if (execute)
 				{
+					if (options.LineOptions.HasFlag(LineOptions.WholeLines))
+					{
+						handler.SelectWholeLines();
+					}
+
 					// Now sort the lines and put them back as the selection
 					string text = handler.SelectedText;
 					TextLines lines = new TextLines(text);

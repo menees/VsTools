@@ -40,6 +40,7 @@
 			this.descending.IsChecked = lineOptions.HasFlag(LineOptions.Descending);
 			this.ignoreWhitespace.IsChecked = lineOptions.HasFlag(LineOptions.IgnoreWhitespace);
 			this.ignorePunctuation.IsChecked = lineOptions.HasFlag(LineOptions.IgnorePunctuation);
+			this.wholeLines.IsChecked = lineOptions.HasFlag(LineOptions.WholeLines);
 			this.eliminateDuplicates.IsChecked = lineOptions.HasFlag(LineOptions.EliminateDuplicates);
 			this.compareByLength.IsChecked = lineOptions.HasFlag(LineOptions.ByLength);
 			this.onlyShowWhenShiftIsPressed.IsChecked = options.OnlyShowSortLinesDialogWhenShiftIsPressed;
@@ -61,6 +62,7 @@
 				AddOption(this.descending, LineOptions.Descending);
 				AddOption(this.ignoreWhitespace, LineOptions.IgnoreWhitespace);
 				AddOption(this.ignorePunctuation, LineOptions.IgnorePunctuation);
+				AddOption(this.wholeLines, LineOptions.WholeLines);
 				AddOption(this.eliminateDuplicates, LineOptions.EliminateDuplicates);
 				AddOption(this.compareByLength, LineOptions.ByLength);
 				options.LineOptions = lineOptions;

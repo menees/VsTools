@@ -22,8 +22,9 @@
 					<CheckBox x:Name="compareByOrdinal" Content="By O_rdinal" Margin="0,0,0,5" />
 					<CheckBox x:Name="compareByLength" Content="By _Length First" Margin="0,0,0,5" />
 					<CheckBox x:Name="descending" Content="_Descending" Margin="0,0,0,5" />
-					<CheckBox x:Name="ignoreWhitespace" Content="_Ignore Leading And Trailing Whitespace" Margin="0,0,0,5" />
+					<CheckBox x:Name="ignoreWhitespace" Content="Ignore Leading And Trailing _Whitespace" Margin="0,0,0,5" />
 					<CheckBox x:Name="ignorePunctuation" Content="Ignore All _Punctuation" Margin="0,0,0,5" />
+					<CheckBox x:Name="wholeLines" Content="_Select Whole Lines" Margin="0,0,0,5" />
 					<CheckBox x:Name="eliminateDuplicates" Content="_Eliminate Duplicates" Margin="0,0,0,5" />
 				</StackPanel>
 			</Border>

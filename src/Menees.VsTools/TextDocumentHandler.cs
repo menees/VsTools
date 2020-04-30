@@ -198,6 +198,27 @@
 			}
 		}
 
+		public void SelectWholeLines()
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			bool swapped = false;
+			if (this.selection.ActivePoint.GreaterThan(this.selection.AnchorPoint))
+			{
+				this.selection.SwapAnchor();
+				swapped = true;
+			}
+
+			this.selection.StartOfLine(vsStartOfLineOptions.vsStartOfLineOptionsFirstColumn, true);
+			this.selection.SwapAnchor();
+			this.selection.EndOfLine(true);
+
+			if (!swapped)
+			{
+				this.selection.SwapAnchor();
+			}
+		}
+
 		#endregion
 
 		#region Private Methods

@@ -12,6 +12,7 @@
 		IgnorePunctuation = 16,
 		EliminateDuplicates = 32,
 		ByLength = 64,
+		WholeLines = 128,
 	}
 
 	#endregion
