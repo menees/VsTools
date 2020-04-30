@@ -189,7 +189,7 @@ namespace Menees.VsTools.Regions
 
 					const string ToggleOutliningExpansion = "Edit.ToggleOutliningExpansion";
 					command = dte.Commands.Item(ToggleOutliningExpansion);
-					const int MaxAttempts = 3;
+					const int MaxAttempts = 2;
 					int maxAttempts = command.IsAvailable ? MaxAttempts : 0;
 
 					string regionBeginRegex = GetRegionBeginRegex(language);
@@ -245,7 +245,7 @@ namespace Menees.VsTools.Regions
 								// isn't available even though it should be.  Poke it and give it a little bit of time to sync up.
 								if (!command.IsAvailable)
 								{
-									const int WaitMilliseconds = 20;
+									const int WaitMilliseconds = 5;
 									System.Threading.Thread.Sleep(WaitMilliseconds);
 									int tempOffset = selection.TopPoint.AbsoluteCharOffset;
 									selection.CharRight();
