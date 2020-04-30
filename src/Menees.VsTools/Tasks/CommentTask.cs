@@ -45,7 +45,6 @@ namespace Menees.VsTools.Tasks
 
 		#region Public Properties
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used via WPF data binding.")]
 		public TaskPriority Priority { get; }
 
 		public string Project { get; }
@@ -54,10 +53,8 @@ namespace Menees.VsTools.Tasks
 
 		public int Line { get; }
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used via WPF data binding.")]
 		public string Comment { get; }
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used via WPF data binding.")]
 		public string FileName
 		{
 			get
@@ -66,6 +63,9 @@ namespace Menees.VsTools.Tasks
 				return result;
 			}
 		}
+
+		// Ignore the file path, line number, project, and priority.
+		public string ExcludeText => $"{this.FileName}: {this.Comment}";
 
 		#endregion
 

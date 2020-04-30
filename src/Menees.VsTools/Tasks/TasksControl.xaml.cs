@@ -160,7 +160,7 @@
 				}
 				else
 				{
-					message = "Task comment scanning is currently disabled (under Tools → Options → Menees VS Tools).";
+					message = $"Task comment scanning is currently disabled (under Tools → Options → {MainPackage.Title} → {TasksWindow.DefaultCaption}).";
 				}
 			}
 
@@ -426,6 +426,31 @@
 				}
 
 				this.isLoading = false;
+			}
+		}
+
+		private void Exclude_Click(object sender, RoutedEventArgs e)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			CommentTask task = this.SelectedTask;
+			if (task != null)
+			{
+				Options options = MainPackage.TaskOptions;
+				string text = task.ExcludeText;
+				if (!options.ExcludeFileCommentSet.Contains(text))
+				{
+					List<string> excludeFileComments = new List<string>(options.ExcludeFileCommentSet);
+					excludeFileComments.Add(text);
+					excludeFileComments.Sort();
+
+					// The task would go away in about 2 seconds after Apply, but this makes it disappear instantly.
+					this.tasks.Items.Remove(task);
+
+					options.ExcludeFileComments = string.Join(Environment.NewLine, excludeFileComments);
+					options.Apply();
+					options.SaveSettingsToStorage();
+				}
 			}
 		}
 

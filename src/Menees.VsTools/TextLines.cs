@@ -37,7 +37,7 @@
 		{
 			get
 			{
-				foreach (string line in this.lines)
+				foreach (string line in this.lines ?? Enumerable.Empty<string>())
 				{
 					yield return line;
 				}

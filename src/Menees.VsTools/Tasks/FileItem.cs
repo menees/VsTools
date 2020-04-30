@@ -357,12 +357,15 @@ namespace Menees.VsTools.Tasks
 									lineNumber,
 									match.Groups[ScanInfo.RegexCommentGroupName].Value.Trim());
 
-								if (result == null)
+								if (!this.provider.Options.ExcludeFileComments.Contains(task.ExcludeText))
 								{
-									result = new List<CommentTask>();
-								}
+									if (result == null)
+									{
+										result = new List<CommentTask>();
+									}
 
-								result.Add(task);
+									result.Add(task);
+								}
 							}
 						}
 					}

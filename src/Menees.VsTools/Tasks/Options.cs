@@ -38,6 +38,7 @@
 
 		private string excludeFilesPatterns;
 		private string excludeProjectsPatterns;
+		private string excludeFileComments;
 		private int? requestedMaxDegreeOfParallelism;
 
 		#endregion
@@ -46,8 +47,10 @@
 
 		public Options()
 		{
+			// Set each public property to force the internal list and set properties to be updated.
 			this.ExcludeFilesPatterns = DefaultExcludeFilesPatterns;
 			this.ExcludeProjectsPatterns = DefaultExcludeProjectsPatterns;
+			this.ExcludeFileComments = null;
 		}
 
 		#endregion
@@ -125,21 +128,45 @@
 			}
 		}
 
+		[Category("Exclude")]
+		[DisplayName("Exclude file comments")]
+		[Description("Exact \"FileName: Comment\" patterns to exclude. Enter one pattern per line. " +
+			"This is typically appended to by the Tasks window's right-click Exclude command.")]
+		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+		[DefaultValue(null)]
+		public string ExcludeFileComments
+		{
+			get
+			{
+				return this.excludeFileComments;
+			}
+
+			set
+			{
+				this.excludeFileComments = value;
+				TextLines lines = new TextLines(this.excludeFileComments);
+				this.ExcludeFileCommentSet = new HashSet<string>(lines.Lines.Where(line => !string.IsNullOrWhiteSpace(line)), StringComparer.OrdinalIgnoreCase);
+			}
+		}
+
 		#endregion
 
 		#region Public Non-Browsable Properties (for other state persistence)
 
 		[Browsable(false)]
-		public IReadOnlyList<Regex> ExcludeFilesExpressions { get; private set; }
-
-		[Browsable(false)]
-		public IReadOnlyList<Regex> ExcludeProjectsExpressions { get; private set; }
-
-		[Browsable(false)]
 		public string TasksStatusXml { get; set; }
 
-		[Browsable(false)]
-		public int MaxDegreeOfParallelism
+		#endregion
+
+		#region Internal Properties
+
+		internal IReadOnlyList<Regex> ExcludeFilesExpressions { get; private set; }
+
+		internal IReadOnlyList<Regex> ExcludeProjectsExpressions { get; private set; }
+
+		internal ISet<string> ExcludeFileCommentSet { get; private set; }
+
+		internal int MaxDegreeOfParallelism
 		{
 			get
 			{

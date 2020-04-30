@@ -35,6 +35,8 @@
 
 		public int MaxDegreeOfParallelism { get; private set; }
 
+		public ISet<string> ExcludeFileComments { get; private set; }
+
 		#endregion
 
 		#region Public Methods
@@ -66,6 +68,12 @@
 				if (this.MaxDegreeOfParallelism != options.MaxDegreeOfParallelism)
 				{
 					this.MaxDegreeOfParallelism = options.MaxDegreeOfParallelism;
+					updated = true;
+				}
+
+				if (this.ExcludeFileComments != options.ExcludeFileCommentSet)
+				{
+					this.ExcludeFileComments = options.ExcludeFileCommentSet;
 					updated = true;
 				}
 			}

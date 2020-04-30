@@ -90,7 +90,7 @@
 		</StackPanel>
 		<Border x:Name="warningBorder" DockPanel.Dock="Top" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
 			<TextBlock x:Name="warning" Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" Padding="6" TextWrapping="Wrap">
-			Task comment scanning is currently disabled (under Tools → Options → Menees VS Tools).
+			Task comment scanning is currently disabled (under Tools → Options → Menees VS Tools → Tasks).
 			</TextBlock>
 		</Border>
 		<!-- We use ScrollViewer.CanContentScroll="False" to allow smooth scrolling instead of item-by-item scrolling. -->
@@ -137,6 +137,8 @@
 					<MenuItem Header="Copy _Comment" Click="CopyComment_Click" Tag="SelectedTask"/>
 					<MenuItem Header="Copy _Task" Click="CopyTask_Click" Tag="SelectedTask"/>
 					<MenuItem Header="Copy _All Tasks" Click="CopyAllTasks_Click" Tag="SelectedTask"/>
+					<Separator/>
+					<MenuItem Header="_Exclude" Click="Exclude_Click" Tag="SelectedTask"/>
 				</ContextMenu>
 			</ListBox.ContextMenu>
 		</ListBox>

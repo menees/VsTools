@@ -36,6 +36,10 @@
 			return result;
 		}
 
+		// Raise an event so non-modal windows like BaseConverterControl
+		// can get a notification that they may need to update.
+		public void Apply() => this.Applied?.Invoke(this, EventArgs.Empty);
+
 		#endregion
 
 		#region Protected Methods
@@ -44,12 +48,9 @@
 		{
 			base.OnApply(e);
 
-			// Raise an event so non-modal windows like BaseConverterControl
-			// can get a notification that they may need to update.
-			if (e.ApplyBehavior == ApplyKind.Apply && this.Applied != null)
+			if (e.ApplyBehavior == ApplyKind.Apply)
 			{
-				EventHandler eh = this.Applied;
-				eh(this, e);
+				this.Apply();
 			}
 		}
 
