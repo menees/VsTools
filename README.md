@@ -29,3 +29,19 @@ Other optional features:
 * Disable Ctrl+MouseWheel zoom in text windows
 
 This software is CharityWare. If you use it, I ask that you donate something to the charity of your choice.
+
+### Visual Studio Marketplace
+
+* [Menees VS Tools 2019](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools2019)
+* [Menees VS Tools 2017](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools2017)
+* [Menees VS Tools 2015](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools2015)
+* [Menees VS Tools 2013](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools2013)
+* [Menees VS Tools 2012](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools2012)
+* [Menees VS Tools 2008](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools)
+
+### Other Old Versions
+
+* [Menees VS Tools 2010](http://www.menees.com/Files/MeneesVSTools2010.zip)
+* [Menees VS Tools 2005](http://www.menees.com/Files/MeneesVSTools2005.zip)
+* [Menees VS Tools 2003](http://www.menees.com/Files/MeneesVSTools.zip)
+* [Menees VC Tools](http://www.menees.com/Files/MeneesVCTools.zip) for Visual C++ 6
