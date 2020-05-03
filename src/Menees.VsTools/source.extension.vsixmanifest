@@ -1,15 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Menees VS Tools 2019" Version="2019.0.9" Language="en-US" Publisher="Bill Menees" />
+        <Identity Id="Menees VS Tools 2019" Version="2019.0.10" Language="en-US" Publisher="Bill Menees" />
         <DisplayName>Menees VS Tools 2019</DisplayName>
         <Description xml:space="preserve">Provides several new commands such as Sort Lines, Sort Members, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, ExpandAllRegions, and ToggleFiles.
 
 Also, provides colorized text in the Output and Find Results windows, an enhanced Tasks tool window (e.g., for TODO comments), and a Base Converter tool window.</Description>
         <MoreInfo>https://github.com/menees/VsTools</MoreInfo>
         <License>Resources\LICENSE</License>
-        <Icon>Resources\Package.ico</Icon>
-        <PreviewImage>Resources\PreviewImage.png</PreviewImage>
+        <Icon>Resources\Menees.VsTools.png</Icon>
         <Tags>Sort, Trim, Whitespace, Statistics, Execute, Region, Toggle, Guid, Spelling, Read-Only, ReadOnly, Base, Converter, Collapse, Expand, Tools, Task List, Comments, TODO, Members, Tasks</Tags>
     </Metadata>
     <Installation InstalledByMsi="false">

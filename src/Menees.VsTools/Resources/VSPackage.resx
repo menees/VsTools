@@ -122,7 +122,9 @@
     <comment>Version-specific product name</comment>
   </data>
   <data name="111" xml:space="preserve">
-    <value>Provides several new commands such as Sort, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, and ExpandAllRegions. Also, provides colorized text in the Output and Find Results windows.</value>
+    <value>Provides several new commands such as Sort Lines, Sort Members, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, ExpandAllRegions, and ToggleFiles.
+
+Also, provides colorized text in the Output and Find Results windows, an enhanced Tasks tool window (e.g., for TODO comments), and a Base Converter tool window.</value>
     <comment>Displayed in Help -&gt; About's Product Details section</comment>
   </data>
   <data name="112" xml:space="preserve">
@@ -132,10 +134,6 @@
   <data name="113" xml:space="preserve">
     <value>Menees VS Tools</value>
     <comment>Version-independent product name</comment>
-  </data>
-  <data name="114" xml:space="preserve">
-    <value>Settings for Menees VS Tools</value>
-    <comment>Displayed on Import/Export Settings dialog when our node is selected</comment>
   </data>
   <data name="115" xml:space="preserve">
     <value>Base Converter</value>

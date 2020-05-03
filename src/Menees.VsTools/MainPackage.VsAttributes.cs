@@ -22,12 +22,10 @@
 
 #pragma warning disable SA1515 // SingleLineCommentsMustBePrecededByBlankLine
 	[PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-	// Tells the PkgDef creation utility (CreatePkgDef.exe) that this class is a package.
-	// Registers the information needed to show this package in the Help/About dialog of Visual Studio.
-	[InstalledProductRegistration("#110", "#111", Version, IconResourceID = 400)]
+	[InstalledProductRegistration("#110", "#111", Version, IconResourceID = 400)] // Info for Help/About dialog
 	[ProvideMenuResource("Menus.ctmenu", 1)] // This attribute is needed to let the shell know that this package exposes some menus.
-	[ProvideToolWindow(typeof(BaseConverter.Window), Style = VsDockStyle.Tabbed, Window = ToolWindowGuids.PropertyBrowser)] // Registers a tool window.
-	[ProvideToolWindow(typeof(TasksWindow), Style = VsDockStyle.Tabbed, Window = ToolWindowGuids.SolutionExplorer)] // Registers a tool window.
+	[ProvideToolWindow(typeof(BaseConverter.Window), Style = VsDockStyle.Tabbed, Window = ToolWindowGuids.PropertyBrowser)]
+	[ProvideToolWindow(typeof(TasksWindow), Style = VsDockStyle.Tabbed, Window = ToolWindowGuids.SolutionExplorer)]
 	[ProvideAutoLoad(VSConstants.UICONTEXT.CodeWindow_string, PackageAutoLoadFlags.BackgroundLoad)] // See comments in Menees.VsTools.vsct
 	[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionHasSingleProject_string, PackageAutoLoadFlags.BackgroundLoad)]
 	[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionHasMultipleProjects_string, PackageAutoLoadFlags.BackgroundLoad)]
@@ -35,114 +33,12 @@
 	[ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
 	[Guid(Guids.MeneesVsToolsPackageString)]
 	[CLSCompliant(false)]
-	[ProvideOptionPage(
-		typeof(Options),
-		categoryName: Title,
-		pageName: "General",
-		categoryResourceID: 113,
-		pageNameResourceID: 112,
-		supportsAutomation: false,
-		SupportsProfiles = true,
-		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
-	[ProvideProfile(
-		typeof(Options),
-		categoryName: Title,
-		objectName: "General",
-		categoryResourceID: 113,
-		objectNameResourceID: 112,
-		isToolsOptionPage: true,
-		DescriptionResourceID = 114,
-		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
-	[ProvideOptionPage(
-		typeof(BaseConverter.Options),
-		categoryName: Title,
-		pageName: BaseConverter.Window.DefaultCaption,
-		categoryResourceID: 113,
-		pageNameResourceID: 115,
-		supportsAutomation: false,
-		SupportsProfiles = true,
-		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
-	[ProvideProfile(
-		typeof(BaseConverter.Options),
-		categoryName: Title,
-		objectName: BaseConverter.Window.DefaultCaption,
-		categoryResourceID: 113,
-		objectNameResourceID: 115,
-		isToolsOptionPage: true,
-		DescriptionResourceID = 114,
-		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
-	[ProvideOptionPage(
-		typeof(Tasks.Options),
-		categoryName: Title,
-		pageName: TasksWindow.DefaultCaption,
-		categoryResourceID: 113,
-		pageNameResourceID: 116,
-		supportsAutomation: false,
-		SupportsProfiles = true,
-		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
-	[ProvideProfile(
-		typeof(Tasks.Options),
-		categoryName: Title,
-		objectName: TasksWindow.DefaultCaption,
-		categoryResourceID: 113,
-		objectNameResourceID: 116,
-		isToolsOptionPage: true,
-		DescriptionResourceID = 114,
-		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
-	[ProvideOptionPage(
-		typeof(HighlightOptions),
-		categoryName: Title,
-		pageName: HighlightOptions.DefaultCaption,
-		categoryResourceID: 113,
-		pageNameResourceID: 117,
-		supportsAutomation: false,
-		SupportsProfiles = true,
-		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
-	[ProvideProfile(
-		typeof(HighlightOptions),
-		categoryName: Title,
-		objectName: HighlightOptions.DefaultCaption,
-		categoryResourceID: 113,
-		objectNameResourceID: 117,
-		isToolsOptionPage: true,
-		DescriptionResourceID = 114,
-		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
-	[ProvideOptionPage(
-		typeof(Sort.Options),
-		categoryName: Title,
-		pageName: Sort.Options.DefaultCaption,
-		categoryResourceID: 113,
-		pageNameResourceID: 118,
-		supportsAutomation: false,
-		SupportsProfiles = true,
-		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
-	[ProvideProfile(
-		typeof(Sort.Options),
-		categoryName: Title,
-		objectName: Sort.Options.DefaultCaption,
-		categoryResourceID: 113,
-		objectNameResourceID: 118,
-		isToolsOptionPage: true,
-		DescriptionResourceID = 114,
-		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
-	[ProvideOptionPage(
-		typeof(Regions.Options),
-		categoryName: Title,
-		pageName: Regions.Options.DefaultCaption,
-		categoryResourceID: 113,
-		pageNameResourceID: 119,
-		supportsAutomation: false,
-		SupportsProfiles = true,
-		ProfileMigrationType = ProfileMigrationType.PassThrough)] // Registers an Options page
-	[ProvideProfile(
-		typeof(Regions.Options),
-		categoryName: Title,
-		objectName: Regions.Options.DefaultCaption,
-		categoryResourceID: 113,
-		objectNameResourceID: 119,
-		isToolsOptionPage: true,
-		DescriptionResourceID = 114,
-		MigrationType = ProfileMigrationType.PassThrough)] // Registers settings persistence. Affects Import/Export Settings.
+	[ProvideOptionPage(typeof(Options), Title, "General", 113, 112, false)]
+	[ProvideOptionPage(typeof(BaseConverter.Options), Title, BaseConverter.Window.DefaultCaption, 113, 115, false)]
+	[ProvideOptionPage(typeof(Tasks.Options), Title, TasksWindow.DefaultCaption, 113, 116, false)]
+	[ProvideOptionPage(typeof(HighlightOptions), Title, HighlightOptions.DefaultCaption, 113, 117, false)]
+	[ProvideOptionPage(typeof(Sort.Options), Title, Sort.Options.DefaultCaption, 113, 118, false)]
+	[ProvideOptionPage(typeof(Regions.Options), Title, Regions.Options.DefaultCaption, 113, 119, false)]
 #pragma warning restore SA1515
 	public sealed partial class MainPackage
 	{

@@ -115,7 +115,9 @@
     <Compile Include="BaseConverter\Enumerations.cs" />
     <Compile Include="BuildTimer.cs" />
     <Compile Include="Regions\NonOutliningTagger.cs" />
-    <Compile Include="Regions\Options.cs" />
+    <Compile Include="Regions\Options.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Sort\CodeMember.cs" />
     <Compile Include="CommandProcessor.cs" />
     <Compile Include="CommentHandler.cs" />
@@ -171,7 +173,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="app.config" />
     <None Include="Resources\Menees.VsTools.pdn" />
-    <None Include="Resources\PreviewImage.pdn" />
     <None Include="Resources\Priorities.pdn" />
     <None Include="Tasks\ScanInfo.xsd">
       <SubType>Designer</SubType>
@@ -287,9 +288,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Resources\PreviewImage.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Resources\Menees.VsTools.png">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
