@@ -46,9 +46,15 @@ namespace Menees.VsTools.Tasks
 
 				if (this.textDocument != null)
 				{
-					IContentType contentType = this.textDocument.TextBuffer.ContentType;
-					string fileName = this.textDocument.FilePath;
-					result = GetDocumentLanguage(contentType, fileName);
+					// I've seen a rare call stack from work where we had a textDocument
+					// but got a NullReferenceException trying to get to the ContentType.
+					// I can't reproduce it at home, so I'll just protect against it.
+					IContentType contentType = this.textDocument.TextBuffer?.ContentType;
+					if (contentType != null)
+					{
+						string fileName = this.textDocument.FilePath;
+						result = GetDocumentLanguage(contentType, fileName);
+					}
 				}
 
 				return result;

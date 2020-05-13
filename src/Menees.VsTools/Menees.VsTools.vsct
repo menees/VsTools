@@ -197,7 +197,7 @@
 				<CommandFlag>DynamicVisibility</CommandFlag>
 				<Strings>
 					<ButtonText>Toggle Fi&amp;les</ButtonText>
-					<ToolTipText>Switches between related .cpp and .h files</ToolTipText>
+					<ToolTipText>Switches between related code and designer files or .cpp and .h files</ToolTipText>
 					<CanonicalName>Menees.VsTools.ToggleFiles</CanonicalName>
 					<LocCanonicalName>Menees.VsTools.ToggleFiles</LocCanonicalName>
 				</Strings>
