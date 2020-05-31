@@ -114,6 +114,9 @@
     <Compile Include="BaseConverter\Window.cs" />
     <Compile Include="BaseConverter\Enumerations.cs" />
     <Compile Include="BuildTimer.cs" />
+    <Compile Include="Projects\Enumerations.cs" />
+    <Compile Include="Projects\Graph.cs" />
+    <Compile Include="Projects\Node.cs" />
     <Compile Include="Regions\NonOutliningTagger.cs" />
     <Compile Include="Regions\Options.cs">
       <SubType>Component</SubType>

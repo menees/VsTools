@@ -13,6 +13,7 @@
 	using System.Text;
 	using System.Threading.Tasks;
 	using EnvDTE;
+	using Menees.VsTools.Projects;
 	using Menees.VsTools.Regions;
 	using Menees.VsTools.Sort;
 	using Microsoft.VisualStudio;
