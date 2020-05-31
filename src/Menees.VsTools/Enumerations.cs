@@ -86,6 +86,7 @@
 		SortMembers = 318,
 		AddToDoComment = 319,
 		ViewTasks = 320,
+		ViewProjectDependencies = 321,
 	}
 
 	#endregion

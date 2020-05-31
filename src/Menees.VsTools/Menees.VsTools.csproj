@@ -329,21 +329,33 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Menees.Common">
-      <Version>4.9.6</Version>
+      <Version>4.9.7</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.200" ExcludeAssets="runtime">
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.205" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.1.1071">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="VSSDK.DTE.10">
-      <Version>10.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.VSLangProj.11">
-      <Version>11.0.4</Version>
-    </PackageReference>
+		<!-- Microsoft documents the VSProject4 interface here:
+		https://docs.microsoft.com/en-us/dotnet/api/vslangproj150.vsproject4?view=visualstudiosdk-2017
+		But they only published it in an unlisted NuGet package with version 1.0.0. The listed packages
+		use version 15.0.xxxx. I found this unlisted package by looking at how the official NuGet.Client
+		project uses the VSProject4 interface:
+		https://github.com/NuGet/NuGet.Client/commit/b767ab6dbabb522e3388e7d34d6250dbac9a2521
+		At runtime, all the required interface definitions are available from:
+		C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\PublicAssemblies\VSLangProj150.dll
+		Note: Even this command won't show the unlisted version:
+		nuget.exe list "VSLangProj150" -IncludeDelisted -AllVersions -Prerelease|find "VSLangProj150"
+		But that's because of a long-standing bug with the V2 search endpoint on NuGet.org:
+		https://github.com/NuGet/NuGetGallery/issues/3274
+		-->
+    <PackageReference Include="VSLangProj150" Version="1.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<!--The Microsoft.VisualStudio.SDK package reference above tries to pull in VSLangProj150 v15.0.26229+. -->
+			<NoWarn>NU1605</NoWarn>
+		</PackageReference>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>

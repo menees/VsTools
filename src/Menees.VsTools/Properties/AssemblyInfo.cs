@@ -11,4 +11,4 @@ using Menees.VsTools;
 // - source.extension.vsixmanifest: <Identity>, <DisplayName>, <Tags>, <InstallationTarget>, and <Prerequisites>
 // - SDK assembly references: Microsoft.VisualStudio.Shell.1X.0 in .csproj and .xaml files.
 // - app.config: Required .NET version
-[assembly: AssemblyProduct(MainPackage.Title + " 2019")]
+[assembly: AssemblyProduct(MainPackage.Title + " " + MainPackage.VersionYear)]
