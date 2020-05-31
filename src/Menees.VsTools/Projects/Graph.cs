@@ -48,9 +48,6 @@
 					}
 				}
 
-				// Note: See the comments for the VSLangProj150 PackageReference in the .csproj
-				// for the voodoo magic I had to do in order to reference VSProject4.
-				// Sometimes project.Object is not a VSProject4 (e.g., for "Miscellaneous Files" if the solution was selected).
 				// TODO: Add explicit Solution dependencies. [Bill, 5/29/2020]
 				// TODO: Add Package references. [Bill, 5/29/2020]
 			}
