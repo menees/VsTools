@@ -27,10 +27,13 @@
 
 		public Graph(IReadOnlyList<Project> projects)
 		{
+			HashSet<string> rootProjects = new HashSet<string>(projects.Count);
+
 			ThreadHelper.ThrowIfNotOnUIThread();
 			foreach (Project project in projects)
 			{
 				Node projectNode = this.GetNode(project.Name, NodeType.Project);
+				rootProjects.Add(project.Name);
 
 				// Note: SDK-style projects only implement the old VSLangProj interfaces. They don't implement the
 				// newer VSProject3 or VSProject4 interfaces to get AnalyzerReferences or PackageReferences.
@@ -47,10 +50,30 @@
 						}
 					}
 				}
-
-				// TODO: Add explicit Solution dependencies. [Bill, 5/29/2020]
-				// TODO: Add Package references. [Bill, 5/29/2020]
 			}
+
+			BuildDependencies dependencies = projects[0]?.DTE?.Solution?.SolutionBuild?.BuildDependencies;
+			if (dependencies?.Count > 0)
+			{
+				foreach (BuildDependency dependency in dependencies)
+				{
+					Project sourceProject = dependency.Project;
+					if (rootProjects.Contains(sourceProject.Name))
+					{
+						Node source = this.GetNode(sourceProject.Name, NodeType.Project);
+						foreach (Project targetProject in ((object[])dependency.RequiredProjects).Cast<Project>())
+						{
+							Node target = this.GetNode(targetProject.Name, NodeType.Project);
+							if (!source.References.Any(tuple => ReferenceEquals(tuple.Item1, target)))
+							{
+								source.References.Add((target, LinkType.SolutionDependency));
+							}
+						}
+					}
+				}
+			}
+
+			// TODO: Add Package references. [Bill, 5/29/2020]
 		}
 
 		#endregion
@@ -104,11 +127,13 @@
 
 			XElement categoriesXml = new XElement(ns.GetName("Categories"));
 			graphXml.Add(categoriesXml);
-			AddCategory(NodeType.Project.ToString(), "LightBlue");
-			AddCategory(NodeType.Package.ToString(), "LightGreen");
-			AddCategory(LinkType.ProjectReference.ToString(), stroke: "Black");
-			AddCategory(LinkType.PackageReference.ToString(), stroke: "DarkGreen");
-			AddCategory(LinkType.SolutionDependency.ToString(), stroke: "Black", strokeDashArray: "2,2");
+
+			// WPF color chart: https://wpfknowledge.blogspot.com/2012/05/note-this-is-not-original-work.html
+			AddCategory(NodeType.Project.ToString(), "AliceBlue");
+			AddCategory(NodeType.Package.ToString(), "Lavender");
+			AddCategory(LinkType.ProjectReference.ToString(), stroke: "Silver");
+			AddCategory(LinkType.PackageReference.ToString(), stroke: "MediumSlateBlue");
+			AddCategory(LinkType.SolutionDependency.ToString(), stroke: "DarkGray", strokeDashArray: "5,5");
 
 			void AddCategory(string id, string background = null, string stroke = null, string strokeDashArray = null)
 			{
@@ -117,7 +142,7 @@
 				category.SetAttributeValue("Background", background);
 				category.SetAttributeValue("Stroke", stroke);
 				category.SetAttributeValue("StrokeDashArray", strokeDashArray);
-				category.SetAttributeValue("Style", "Glass"); // Glass or Plain
+				category.SetAttributeValue("Style", "Plain"); // Glass or Plain
 				categoriesXml.Add(category);
 			}
 
