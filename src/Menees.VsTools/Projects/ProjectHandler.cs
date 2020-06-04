@@ -45,8 +45,11 @@
 						Project project = item.Project;
 						if (project != null)
 						{
-							result = true;
-							selectedProjects?.Add(project);
+							if (!IsSolutionFolder(project))
+							{
+								result = true;
+								selectedProjects?.Add(project);
+							}
 						}
 						else if (allowSolution && item.ProjectItem == null)
 						{
@@ -67,15 +70,7 @@
 					if (solution != null)
 					{
 						selectedProjects?.Clear();
-
-						// This throws out any "project" nodes like "Miscellaneous Files" that don't implement VSProject.
-#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread. Where's lambda runs on the current thread, which is the main thread.
-						foreach (Project project in solution.Projects.Cast<Project>().Where(p => p.Object is VSProject))
-#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
-						{
-							result = true;
-							selectedProjects?.Add(project);
-						}
+						result = AddProjects(solution.Projects.Cast<Project>(), selectedProjects);
 					}
 				}
 			}
@@ -212,6 +207,47 @@
 
 				OutputString(output, Environment.NewLine);
 			}
+		}
+
+		private static bool IsSolutionFolder(Project project)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+			bool result = project.Kind.Equals("{66A26720-8FB5-11D2-AA7E-00C04F688DDE}", StringComparison.OrdinalIgnoreCase);
+			return result;
+		}
+
+		private static bool AddProjects(IEnumerable<Project> projects, List<Project> selectedProjects)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			bool result = false;
+
+			// This throws out any "virtual project" nodes like "Miscellaneous Files" that don't implement VSProject.
+			// It also recurses through "virtual project" nodes like solution folders since they might contain nested VSProjects.
+			foreach (Project project in projects)
+			{
+				if (project.Object is VSProject)
+				{
+					result = true;
+					selectedProjects?.Add(project);
+				}
+				else if (IsSolutionFolder(project))
+				{
+					var subProjects = project.ProjectItems
+						.OfType<ProjectItem>()
+#pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread. Select's lambda runs on the Main thread.
+						.Select(item => item.Object as Project)
+#pragma warning restore VSTHRD010 // Invoke single-threaded types on Main thread
+						.Where(p => p != null);
+
+					if (AddProjects(subProjects, selectedProjects))
+					{
+						result = true;
+					}
+				}
+			}
+
+			return result;
 		}
 
 		#endregion
