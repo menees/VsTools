@@ -12,6 +12,12 @@
 
 	internal sealed class Node
 	{
+		#region Private Data Members
+
+		private string category;
+
+		#endregion
+
 		#region Constructors
 
 		public Node(string id, NodeType type)
@@ -27,6 +33,12 @@
 		public string Id { get; }
 
 		public string Label => this.Id;
+
+		public string Category
+		{
+			get => this.category ?? this.Type.ToString();
+			set => this.category = value;
+		}
 
 		public NodeType Type { get; }
 

@@ -4,6 +4,7 @@
 
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.IO;
 	using System.Linq;
 	using System.Text;
@@ -19,6 +20,8 @@
 	{
 		#region Private Data Members
 
+		private const string SelectedPrefix = "Selected";
+
 		private readonly Dictionary<string, Node> idToNodeMap = new Dictionary<string, Node>(StringComparer.CurrentCultureIgnoreCase);
 
 		#endregion
@@ -32,7 +35,7 @@
 			ThreadHelper.ThrowIfNotOnUIThread();
 			foreach (Project project in projects)
 			{
-				Node projectNode = this.GetNode(project.Name, NodeType.Project);
+				Node projectNode = this.GetNode(project.Name, NodeType.Project, true);
 				rootProjects.Add(project.Name);
 
 				// Note: SDK-style projects only implement the old VSLangProj interfaces. They don't implement the
@@ -60,7 +63,7 @@
 					Project sourceProject = dependency.Project;
 					if (rootProjects.Contains(sourceProject.Name))
 					{
-						Node source = this.GetNode(sourceProject.Name, NodeType.Project);
+						Node source = this.GetNode(sourceProject.Name, NodeType.Project, true);
 						foreach (Project targetProject in ((object[])dependency.RequiredProjects).Cast<Project>())
 						{
 							Node target = this.GetNode(targetProject.Name, NodeType.Project);
@@ -114,12 +117,17 @@
 				propertiesXml.Add(property);
 			}
 
+			string commonPrefix = FindCommonPrefix(this.idToNodeMap.Values.Select(n => n.Label).ToList());
+
 			foreach (Node node in this.idToNodeMap.Values)
 			{
 				XElement nodeXml = new XElement(ns.GetName(nameof(Node)));
 				nodeXml.SetAttributeValue("Id", node.Id);
-				nodeXml.SetAttributeValue("Label", node.Label);
-				nodeXml.SetAttributeValue("Category", node.Type);
+				string label = !string.IsNullOrEmpty(commonPrefix) && node.Label.StartsWith(commonPrefix)
+					? node.Label.Substring(commonPrefix.Length)
+					: node.Label;
+				nodeXml.SetAttributeValue("Label", label);
+				nodeXml.SetAttributeValue("Category", node.Category);
 				nodesXml.Add(nodeXml);
 
 				AddLinks(linksXml, node, node.References);
@@ -129,7 +137,8 @@
 			graphXml.Add(categoriesXml);
 
 			// WPF color chart: https://wpfknowledge.blogspot.com/2012/05/note-this-is-not-original-work.html
-			AddCategory(NodeType.Project.ToString(), "AliceBlue");
+			AddCategory(SelectedPrefix + NodeType.Project, "AliceBlue");
+			AddCategory(NodeType.Project.ToString(), "LavenderBlush");
 			AddCategory(NodeType.Package.ToString(), "Lavender");
 			AddCategory(LinkType.ProjectReference.ToString(), stroke: "Silver");
 			AddCategory(LinkType.PackageReference.ToString(), stroke: "MediumSlateBlue");
@@ -172,7 +181,61 @@
 			}
 		}
 
-		private Node GetNode(string name, NodeType type)
+		private static string FindCommonPrefix(IReadOnlyList<string> values)
+		{
+			string result = null;
+
+			if (values.Count >= 2)
+			{
+				var ordered = values.OrderBy(v => v.Length).ThenBy(v => v).ToArray();
+				string prefix = ordered[0];
+				for (int itemIndex = 1; itemIndex < ordered.Length; itemIndex++)
+				{
+					static int FindCommonPrefixLength(string a, string b)
+					{
+						Debug.Assert(a.Length <= b.Length, "len(a) <= len(b) because of OrderBy above.");
+
+						int commonLength = 0;
+						while (commonLength < a.Length && a[commonLength] == b[commonLength])
+						{
+							commonLength++;
+						}
+
+						return commonLength;
+					}
+
+					int commonPrefixLength = FindCommonPrefixLength(prefix, ordered[itemIndex]);
+					if (commonPrefixLength == 0)
+					{
+						prefix = null;
+						break;
+					}
+					else if (commonPrefixLength < prefix.Length)
+					{
+						prefix = prefix.Substring(0, commonPrefixLength);
+					}
+				}
+
+				// Make sure the prefix ends with a non-digit and non-letter. Otherwise, we end up with weird cases:
+				// E.g., Library1 and Library2 have a Library prefix, and we'd end up with just 1 and 2.
+				// E.g., Menees.Common and Menees.Core have a Menees.Co prefix, so we'd have mmon and re.
+				// We really only want to remove prefixes like "Menees." or "Menees_".
+				int prefixLength = prefix?.Length ?? 0;
+				while (prefixLength > 0 && char.IsLetterOrDigit(prefix[prefixLength - 1]))
+				{
+					prefixLength--;
+				}
+
+				if (prefixLength > 0)
+				{
+					result = prefix.Substring(0, prefixLength);
+				}
+			}
+
+			return result;
+		}
+
+		private Node GetNode(string name, NodeType type, bool? selected = null)
 		{
 			string id = Path.GetFileName(name);
 
@@ -180,6 +243,12 @@
 			{
 				result = new Node(id, type);
 				this.idToNodeMap.Add(id, result);
+			}
+
+			// We may see a node first as an unselected target but later discover it was a selected node.
+			if (selected ?? false)
+			{
+				result.Category = SelectedPrefix + type;
 			}
 
 			return result;
