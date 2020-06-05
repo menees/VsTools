@@ -114,6 +114,9 @@
     <Compile Include="BaseConverter\Window.cs" />
     <Compile Include="BaseConverter\Enumerations.cs" />
     <Compile Include="BuildTimer.cs" />
+    <Compile Include="Projects\Enumerations.cs" />
+    <Compile Include="Projects\Graph.cs" />
+    <Compile Include="Projects\Node.cs" />
     <Compile Include="Regions\NonOutliningTagger.cs" />
     <Compile Include="Regions\Options.cs">
       <SubType>Component</SubType>
@@ -163,7 +166,7 @@
     <Compile Include="OptionsBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ProjectHandler.cs" />
+    <Compile Include="Projects\ProjectHandler.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -329,20 +332,14 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Menees.Common">
-      <Version>4.9.6</Version>
+      <Version>4.9.7</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.200" ExcludeAssets="runtime">
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.205" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.1.1071">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="VSSDK.DTE.10">
-      <Version>10.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.VSLangProj.11">
-      <Version>11.0.4</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup>

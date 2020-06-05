@@ -80,6 +80,7 @@
 			N		Add TODO Comment
 			B		Base Converter
 			I		List All Project Properties
+			V		View Project Dependencies
 			-->
 			<Button guid="CommandSet" id="SortLines" priority="0x0100" type="Button">
 				<Icon guid="Images" id="SortLines" />
@@ -324,6 +325,18 @@
 					<LocCanonicalName>Menees.VsTools.ListAllProjectProperties</LocCanonicalName>
 				</Strings>
 			</Button>
+			<Button guid="CommandSet" id="ViewProjectDependencies" priority="0x0120" type="Button">
+				<!--No icon for ViewProjectDependencies-->
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>&amp;View Project Dependencies</ButtonText>
+					<ToolTipText>Generates a directed graph of the selected VSProject's dependencies.</ToolTipText>
+					<CanonicalName>Menees.VsTools.ViewProjectDependencies</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.ViewProjectDependencies</LocCanonicalName>
+				</Strings>
+			</Button>
 		</Buttons>
 
 		<!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -420,6 +433,9 @@
 			<Parent guid="CommandSet" id="ToolsSubMenuGroup04" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ListAllProjectProperties" priority="0x0119">
+			<Parent guid="CommandSet" id="ToolsSubMenuGroup05" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ViewProjectDependencies" priority="0x0120">
 			<Parent guid="CommandSet" id="ToolsSubMenuGroup05" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ToolsSubMenuGroup01" priority="0x0101">
@@ -582,6 +598,8 @@
 		<!--ViewBaseConverter and ViewTasks are always visible, so they aren't listed here.-->
 		<VisibilityItem guid="CommandSet" id="ListAllProjectProperties" context="UICONTEXT_SolutionHasSingleProject" />
 		<VisibilityItem guid="CommandSet" id="ListAllProjectProperties" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="ViewProjectDependencies" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="ViewProjectDependencies" context="UICONTEXT_SolutionHasMultipleProjects" />
 	</VisibilityConstraints>
 
 	<KeyBindings>
@@ -635,6 +653,7 @@
 			<IDSymbol name="SortMembers" value="318" />
 			<IDSymbol name="AddToDoComment" value="319"/>
 			<IDSymbol name="ViewTasks" value="320" />
+			<IDSymbol name="ViewProjectDependencies" value="321" />
 		</GuidSymbol>
 
 		<GuidSymbol name="Images" value="{23de3de7-c077-43ea-b7e6-9ce5d7936031}" >

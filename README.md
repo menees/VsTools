@@ -19,6 +19,8 @@ Menees VS Tools is an extension for Visual Studio.  It adds several new commands
 * Expand All Regions
 * Add TODO Comment
 * [Base Converter (Tool Window)](http://www.menees.com/Images/VSToolsBaseConverter.png)
+* List All Project Properties
+* View Project Dependencies
 
 Other optional features:
 

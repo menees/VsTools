@@ -13,6 +13,7 @@
 	using System.Text;
 	using System.Threading.Tasks;
 	using EnvDTE;
+	using Menees.VsTools.Projects;
 	using Menees.VsTools.Regions;
 	using Menees.VsTools.Sort;
 	using Microsoft.VisualStudio;
@@ -108,7 +109,8 @@
 							break;
 
 						case Command.ListAllProjectProperties:
-							result = ProjectHandler.GetSelectedProjects(this.dte, null);
+						case Command.ViewProjectDependencies:
+							result = ProjectHandler.GetSelectedProjects(this.dte, null, command == Command.ViewProjectDependencies);
 							break;
 
 						case Command.ViewBaseConverter:
@@ -179,6 +181,10 @@
 
 						case Command.ListAllProjectProperties:
 							ProjectHandler.ListAllProjectProperties(this.dte);
+							break;
+
+						case Command.ViewProjectDependencies:
+							ProjectHandler.ViewProjectDependencies(this.package, this.dte);
 							break;
 
 						case Command.SortLines:
