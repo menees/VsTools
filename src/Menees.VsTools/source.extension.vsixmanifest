@@ -5,11 +5,11 @@
         <DisplayName>Menees VS Tools 2019</DisplayName>
         <Description xml:space="preserve">Provides several new commands such as Sort Lines, Sort Members, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, ExpandAllRegions, and ToggleFiles.
 
-Also, provides colorized text in the Output and Find Results windows, an enhanced Tasks tool window (e.g., for TODO comments), and a Base Converter tool window.</Description>
+Also, provides colorized text in the Output and Find Results windows, an enhanced Tasks tool window (e.g., for TODO comments), a Base Converter tool window, and a way to generate project dependency graphs.</Description>
         <MoreInfo>https://github.com/menees/VsTools</MoreInfo>
         <License>Resources\LICENSE</License>
         <Icon>Resources\Menees.VsTools.png</Icon>
-        <Tags>Sort, Trim, Whitespace, Statistics, Execute, Region, Toggle, Guid, Spelling, Read-Only, ReadOnly, Base, Converter, Collapse, Expand, Tools, Task List, Comments, TODO, Members, Tasks</Tags>
+        <Tags>Sort, Trim, Whitespace, Statistics, Execute, Region, Toggle, Guid, Spelling, Read-Only, ReadOnly, Base, Converter, Collapse, Expand, Tools, Task List, Comments, TODO, Members, Tasks, Dependency Graph</Tags>
     </Metadata>
     <Installation InstalledByMsi="false">
         <!-- http://blogs.msdn.com/b/visualstudio/archive/2013/08/08/update-for-extension-authors-vsix-manifest-version-ranges.aspx -->
