@@ -23,7 +23,7 @@
 	using Microsoft.Win32;
 	#endregion
 
-	// Note: The MainPackage has ProvideOptionPage and ProvideProfile attributes that associate this class with that package.
+	// Note: The MainPackage has a ProvideOptionPage attribute that associates this class with that package.
 	// http://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.dialogpage(v=vs.110).aspx
 	// http://msdn.microsoft.com/en-us/library/bb162586(v=vs.110).aspx
 	// http://bloggingabout.net/blogs/perikles/archive/2006/11/22/How-to-dynamically-Import_2F00_Export-setting-in-Visual-Studio-2005_2E00_.aspx

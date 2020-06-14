@@ -155,7 +155,7 @@
 			}
 			else
 			{
-				Graph graph = new Graph(selectedProjects);
+				Graph graph = new Graph(selectedProjects, MainPackage.ProjectOptions);
 				XDocument graphXml = graph.CreateDgmlDocument(dte.Edition);
 
 				string tempFileName = Path.Combine(Path.GetTempPath(), "Project Dependencies.dgml");

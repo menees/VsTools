@@ -28,6 +28,7 @@
 		private static Options generalOptions;
 		private static HighlightOptions highlightOptions;
 		private static Regions.Options regionOptions;
+		private static Projects.Options projectOptions;
 		private static Sort.Options sortOptions;
 		private static Tasks.Options taskOptions;
 
@@ -98,6 +99,21 @@
 				}
 
 				return highlightOptions;
+			}
+		}
+
+		internal static Projects.Options ProjectOptions
+		{
+			get
+			{
+				ThreadHelper.ThrowIfNotOnUIThread();
+
+				if (projectOptions == null)
+				{
+					ForceLoad();
+				}
+
+				return projectOptions;
 			}
 		}
 
@@ -253,6 +269,7 @@
 				baseConverterOptions = this.GetDialogPage(typeof(BaseConverter.Options)) as BaseConverter.Options;
 				generalOptions = this.GetDialogPage(typeof(Options)) as Options;
 				highlightOptions = this.GetDialogPage(typeof(HighlightOptions)) as HighlightOptions;
+				projectOptions = this.GetDialogPage(typeof(Projects.Options)) as Projects.Options;
 				regionOptions = this.GetDialogPage(typeof(Regions.Options)) as Regions.Options;
 				sortOptions = this.GetDialogPage(typeof(Sort.Options)) as Sort.Options;
 				taskOptions = this.GetDialogPage(typeof(Tasks.Options)) as Tasks.Options;

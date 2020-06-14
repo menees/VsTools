@@ -117,6 +117,9 @@
     <Compile Include="Projects\Enumerations.cs" />
     <Compile Include="Projects\Graph.cs" />
     <Compile Include="Projects\Node.cs" />
+    <Compile Include="Projects\Options.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Regions\NonOutliningTagger.cs" />
     <Compile Include="Regions\Options.cs">
       <SubType>Component</SubType>
@@ -175,6 +178,9 @@
     <Compile Include="MainPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="app.config" />
+    <None Include="Projects\dgml.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\Menees.VsTools.pdn" />
     <None Include="Resources\Priorities.pdn" />
     <None Include="Tasks\ScanInfo.xsd">

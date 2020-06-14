@@ -39,6 +39,7 @@
 	[ProvideOptionPage(typeof(HighlightOptions), Title, HighlightOptions.DefaultCaption, 113, 117, false)]
 	[ProvideOptionPage(typeof(Sort.Options), Title, Sort.Options.DefaultCaption, 113, 118, false)]
 	[ProvideOptionPage(typeof(Regions.Options), Title, Regions.Options.DefaultCaption, 113, 119, false)]
+	[ProvideOptionPage(typeof(Projects.Options), Title, Projects.Options.DefaultCaption, 113, 120, false)]
 #pragma warning restore SA1515
 	public sealed partial class MainPackage
 	{

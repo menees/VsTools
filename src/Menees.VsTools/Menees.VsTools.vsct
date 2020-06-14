@@ -326,7 +326,7 @@
 				</Strings>
 			</Button>
 			<Button guid="CommandSet" id="ViewProjectDependencies" priority="0x0120" type="Button">
-				<!--No icon for ViewProjectDependencies-->
+				<Icon guid="Images" id="ViewProjectDependencies" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
 				<CommandFlag>DefaultInvisible</CommandFlag>
 				<CommandFlag>DynamicVisibility</CommandFlag>
@@ -346,7 +346,7 @@
 						bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
 						inside a button definition. An important aspect of this declaration is that the element id
 						must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-			<Bitmap guid="Images" href="Resources\Images.png" usedList="SortLines, Trim, Statistics, StreamText, CheckSpelling, ExecuteText, ExecuteFile, GenerateGuid, ToggleFiles, ToggleReadOnly, ViewBaseConverter, AddRegion, ExpandAllRegions, CollapseAllRegions, CommentSelection, UncommentSelection, SortMembers, AddToDoComment, ViewTasks"/>
+			<Bitmap guid="Images" href="Resources\Images.png" usedList="SortLines, Trim, Statistics, StreamText, CheckSpelling, ExecuteText, ExecuteFile, GenerateGuid, ToggleFiles, ToggleReadOnly, ViewBaseConverter, AddRegion, ExpandAllRegions, CollapseAllRegions, CommentSelection, UncommentSelection, SortMembers, AddToDoComment, ViewTasks, ViewProjectDependencies"/>
 		</Bitmaps>
 
 		<Menus>
@@ -676,6 +676,7 @@
 			<IDSymbol name="SortMembers" value="17" />
 			<IDSymbol name="AddToDoComment" value="18"/>
 			<IDSymbol name="ViewTasks" value="19"/>
+			<IDSymbol name="ViewProjectDependencies" value="20"/>
 		</GuidSymbol>
 	</Symbols>
 

@@ -5,6 +5,7 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Drawing;
 	using System.IO;
 	using System.Linq;
 	using System.Text;
@@ -20,22 +21,22 @@
 	{
 		#region Private Data Members
 
-		private const string SelectedPrefix = "Selected";
-
 		private readonly Dictionary<string, Node> idToNodeMap = new Dictionary<string, Node>(StringComparer.CurrentCultureIgnoreCase);
+		private readonly Options options;
 
 		#endregion
 
 		#region Constructors
 
-		public Graph(IReadOnlyList<Project> projects)
+		public Graph(IReadOnlyList<Project> projects, Options options)
 		{
 			HashSet<string> rootProjects = new HashSet<string>(projects.Count);
+			this.options = options;
 
 			ThreadHelper.ThrowIfNotOnUIThread();
 			foreach (Project project in projects)
 			{
-				Node projectNode = this.GetNode(project.Name, NodeType.Project, true);
+				Node projectNode = this.GetNode(project.Name, NodeType.Project, project.FullName, true);
 				rootProjects.Add(project.Name);
 
 				// Note: SDK-style projects only implement the old VSLangProj interfaces. They don't implement the
@@ -48,7 +49,7 @@
 						// Only report project references not framework and external DLL assemblies.
 						if (reference.SourceProject != null)
 						{
-							Node refNode = this.GetNode(reference.Name, NodeType.Project);
+							Node refNode = this.GetNode(reference.Name, NodeType.Project, reference.SourceProject.FullName);
 							projectNode.References.Add((refNode, LinkType.ProjectReference));
 						}
 					}
@@ -63,10 +64,10 @@
 					Project sourceProject = dependency.Project;
 					if (rootProjects.Contains(sourceProject.Name))
 					{
-						Node source = this.GetNode(sourceProject.Name, NodeType.Project, true);
+						Node source = this.GetNode(sourceProject.Name, NodeType.Project, sourceProject.FullName, true);
 						foreach (Project targetProject in ((object[])dependency.RequiredProjects).Cast<Project>())
 						{
-							Node target = this.GetNode(targetProject.Name, NodeType.Project);
+							Node target = this.GetNode(targetProject.Name, NodeType.Project, targetProject.FullName);
 							if (!source.References.Any(tuple => ReferenceEquals(tuple.Item1, target)))
 							{
 								source.References.Add((target, LinkType.SolutionDependency));
@@ -75,8 +76,6 @@
 					}
 				}
 			}
-
-			// TODO: Add Package references. [Bill, 5/29/2020]
 		}
 
 		#endregion
@@ -86,74 +85,29 @@
 		public XDocument CreateDgmlDocument(string edition)
 		{
 			// DGML = Directed Graph Markup Language
-			// https://docs.microsoft.com/en-us/visualstudio/modeling/directed-graph-markup-language-dgml-reference?view=vs-2019
+			// https://docs.microsoft.com/en-us/visualstudio/modeling/directed-graph-markup-language-dgml-reference
 			// https://en.wikipedia.org/wiki/DGML
 			// http://schemas.microsoft.com/vs/2009/dgml/dgml.xsd
 			XNamespace ns = XNamespace.Get("http://schemas.microsoft.com/vs/2009/dgml");
 			XElement graphXml = new XElement(ns.GetName("DirectedGraph"));
-			graphXml.SetAttributeValue("GraphDirection", "BottomToTop");
-			graphXml.SetAttributeValue("Layout", "Sugiyama"); // None, Sugiyama (tree layout), ForceDirected (quick clusters), or DependencyMatrix
 			graphXml.SetAttributeValue("ZoomLevel", "-1");
-
-			XElement nodesXml = new XElement(ns.GetName("Nodes"));
-			graphXml.Add(nodesXml);
-
-			XElement linksXml = new XElement(ns.GetName("Links"));
-			graphXml.Add(linksXml);
-
-			XElement propertiesXml = new XElement(ns.GetName(nameof(Properties)));
-			graphXml.Add(propertiesXml);
-			AddProperty("Label", typeof(string).FullName);
-			AddProperty("GraphDirection", "Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation");
-			AddProperty("Layout", typeof(string).FullName);
-			AddProperty("ZoomLevel", typeof(string).FullName);
-
-			void AddProperty(string id, string dataType)
+			switch (this.options.DefaultLayout)
 			{
-				XElement property = new XElement(ns.GetName("Property"));
-				property.SetAttributeValue("Id", id);
-				property.SetAttributeValue("Label", id);
-				property.SetAttributeValue("DataType", dataType);
-				propertiesXml.Add(property);
+				case GraphLayout.QuickClusters:
+					graphXml.SetAttributeValue("GraphDirection", GraphLayout.BottomToTop);
+					graphXml.SetAttributeValue("Layout", "ForceDirected");
+					break;
+
+				default:
+					graphXml.SetAttributeValue("GraphDirection", this.options.DefaultLayout);
+					graphXml.SetAttributeValue("Layout", "Sugiyama");
+					break;
 			}
 
-			string commonPrefix = FindCommonPrefix(this.idToNodeMap.Values.Select(n => n.Label).ToList());
-
-			foreach (Node node in this.idToNodeMap.Values)
-			{
-				XElement nodeXml = new XElement(ns.GetName(nameof(Node)));
-				nodeXml.SetAttributeValue("Id", node.Id);
-				string label = !string.IsNullOrEmpty(commonPrefix) && node.Label.StartsWith(commonPrefix)
-					? node.Label.Substring(commonPrefix.Length)
-					: node.Label;
-				nodeXml.SetAttributeValue("Label", label);
-				nodeXml.SetAttributeValue("Category", node.Category);
-				nodesXml.Add(nodeXml);
-
-				AddLinks(linksXml, node, node.References);
-			}
-
-			XElement categoriesXml = new XElement(ns.GetName("Categories"));
-			graphXml.Add(categoriesXml);
-
-			// WPF color chart: https://wpfknowledge.blogspot.com/2012/05/note-this-is-not-original-work.html
-			AddCategory(SelectedPrefix + NodeType.Project, "AliceBlue");
-			AddCategory(NodeType.Project.ToString(), "LavenderBlush");
-			AddCategory(NodeType.Package.ToString(), "Lavender");
-			AddCategory(LinkType.ProjectReference.ToString(), stroke: "Silver");
-			AddCategory(LinkType.PackageReference.ToString(), stroke: "MediumSlateBlue");
-			AddCategory(LinkType.SolutionDependency.ToString(), stroke: "DarkGray", strokeDashArray: "5,5");
-
-			void AddCategory(string id, string background = null, string stroke = null, string strokeDashArray = null)
-			{
-				XElement category = new XElement(ns.GetName("Category"));
-				category.SetAttributeValue("Id", id);
-				category.SetAttributeValue("Background", background);
-				category.SetAttributeValue("Stroke", stroke);
-				category.SetAttributeValue("StrokeDashArray", strokeDashArray);
-				category.SetAttributeValue("Style", "Plain"); // Glass or Plain
-				categoriesXml.Add(category);
-			}
+			AddProperties(graphXml);
+			this.AddNodesAndLinks(graphXml);
+			this.AddCategories(graphXml);
+			this.AddStyles(graphXml);
 
 			string fullVsName = $"Visual Studio {edition} {MainPackage.VersionYear}";
 			XDocument result = new XDocument();
@@ -235,20 +189,163 @@
 			return result;
 		}
 
-		private Node GetNode(string name, NodeType type, bool? selected = null)
+		private static void AddProperties(XElement graphXml)
+		{
+			XNamespace ns = graphXml.Name.Namespace;
+			XElement propertiesXml = new XElement(ns.GetName(nameof(Properties)));
+			graphXml.Add(propertiesXml);
+			AddProperty("Label", typeof(string).FullName);
+			AddProperty("GraphDirection", "Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation");
+			AddProperty("Layout", typeof(string).FullName);
+
+			// We can't name this "IsSelected" because that's an actualy property of the Diagrams graph node,
+			// and we if try setting a virtual "IsSelected" property, it selects the node on the graph.
+			AddProperty("IsRoot", typeof(bool).FullName, "Selected");
+			AddProperty("ZoomLevel", typeof(string).FullName);
+			AddProperty("Project", typeof(string).FullName, isReference: true);
+
+			void AddProperty(string id, string dataType, string label = null, bool isReference = false)
+			{
+				XElement property = new XElement(ns.GetName("Property"));
+				property.SetAttributeValue("Id", id);
+				property.SetAttributeValue("Label", label ?? id);
+				property.SetAttributeValue("DataType", dataType);
+				if (isReference)
+				{
+					property.SetAttributeValue("IsReference", true);
+				}
+
+				propertiesXml.Add(property);
+			}
+		}
+
+		private void AddNodesAndLinks(XElement graphXml)
+		{
+			XNamespace ns = graphXml.Name.Namespace;
+			XElement nodesXml = new XElement(ns.GetName("Nodes"));
+			graphXml.Add(nodesXml);
+
+			XElement linksXml = new XElement(ns.GetName("Links"));
+			graphXml.Add(linksXml);
+
+			string commonPrefix = this.options.RemoveCommonPrefix ? FindCommonPrefix(this.idToNodeMap.Values.Select(n => n.Label).ToList()) : null;
+
+			foreach (Node node in this.idToNodeMap.Values)
+			{
+				XElement nodeXml = new XElement(ns.GetName(nameof(Node)));
+				nodeXml.SetAttributeValue("Id", node.Id);
+				string label = !string.IsNullOrEmpty(commonPrefix) && node.Label.StartsWith(commonPrefix)
+					? node.Label.Substring(commonPrefix.Length)
+					: node.Label;
+				nodeXml.SetAttributeValue("Label", label);
+				nodeXml.SetAttributeValue("Category", node.Category);
+				nodeXml.SetAttributeValue("IsRoot", node.IsRoot);
+				if (this.options.AddHyperLinks)
+				{
+					nodeXml.SetAttributeValue("Project", node.Reference);
+				}
+
+				nodesXml.Add(nodeXml);
+
+				AddLinks(linksXml, node, node.References);
+			}
+		}
+
+		private void AddCategories(XElement graphXml)
+		{
+			XNamespace ns = graphXml.Name.Namespace;
+			XElement categoriesXml = new XElement(ns.GetName("Categories"));
+			graphXml.Add(categoriesXml);
+
+			// WPF color chart: https://wpfknowledge.blogspot.com/2012/05/note-this-is-not-original-work.html
+			AddCategory(NodeType.Project.ToString());
+			AddCategory(NodeType.Package.ToString());
+			AddCategory(LinkType.ProjectReference.ToString(), stroke: "Silver");
+			AddCategory(LinkType.PackageReference.ToString(), stroke: "MediumSlateBlue");
+			AddCategory(LinkType.SolutionDependency.ToString(), stroke: "DarkGray", strokeDashArray: "5,5");
+
+			void AddCategory(string id, string background = null, string stroke = null, string strokeDashArray = null)
+			{
+				XElement category = new XElement(ns.GetName("Category"));
+				category.SetAttributeValue("Id", id);
+				category.SetAttributeValue("Background", background);
+				category.SetAttributeValue("Stroke", stroke);
+				category.SetAttributeValue("StrokeDashArray", strokeDashArray);
+				category.SetAttributeValue("Style", this.options.UseGlassStyle ? "Glass" : "Plain");
+				categoriesXml.Add(category);
+			}
+		}
+
+		private void AddStyles(XElement graphXml)
+		{
+			XNamespace ns = graphXml.Name.Namespace;
+			XElement stylesXml = new XElement(ns.GetName("Styles"));
+			graphXml.Add(stylesXml);
+
+			AddStyle(
+				nameof(Node),
+				nameof(Project),
+				"Selected",
+				"HasCategory('Project') and IsRoot",
+				this.options.SelectedProjectColor,
+				this.options.SelectedProjectIcon);
+			AddStyle(
+				nameof(Node),
+				nameof(Project),
+				"Referenced",
+				"HasCategory('Project') and !IsRoot",
+				this.options.ReferencedProjectColor,
+				this.options.ReferencedProjectIcon);
+
+			void AddStyle(
+				string targetType,
+				string groupLabel,
+				string valueLabel,
+				string conditionExpression,
+				Color background,
+				string icon)
+			{
+				XElement style = new XElement(ns.GetName("Style"));
+				style.SetAttributeValue("TargetType", targetType);
+				style.SetAttributeValue("GroupLabel", groupLabel);
+				style.SetAttributeValue("ValueLabel", valueLabel);
+				stylesXml.Add(style);
+
+				XElement condition = new XElement(ns.GetName("Condition"));
+				condition.SetAttributeValue("Expression", conditionExpression);
+				style.Add(condition);
+
+				// System.Drawing's colors aren't the same as WPF's colors, so we'll use ARGB format.
+				AddSetter(style, "Background", $"#{background.ToArgb():X8}");
+				if (this.options.UseIcons && !string.IsNullOrEmpty(icon))
+				{
+					AddSetter(style, "Icon", icon);
+				}
+			}
+
+			void AddSetter(XElement style, string property, object value)
+			{
+				XElement setter = new XElement(ns.GetName("Setter"));
+				setter.SetAttributeValue("Property", property);
+				setter.SetAttributeValue("Value", value);
+				style.Add(setter);
+			}
+		}
+
+		private Node GetNode(string name, NodeType type, string reference, bool root = false)
 		{
 			string id = Path.GetFileName(name);
 
 			if (!this.idToNodeMap.TryGetValue(id, out Node result))
 			{
-				result = new Node(id, type);
+				result = new Node(id, type, reference);
 				this.idToNodeMap.Add(id, result);
 			}
 
-			// We may see a node first as an unselected target but later discover it was a selected node.
-			if (selected ?? false)
+			// We may see a node first as a referenced target but later discover it was a root node.
+			if (root)
 			{
-				result.Category = SelectedPrefix + type;
+				result.IsRoot = true;
 			}
 
 			return result;

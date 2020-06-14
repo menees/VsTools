@@ -23,7 +23,7 @@
 	using Microsoft.Win32;
 	#endregion
 
-	// Note: The MainPackage has ProvideOptionPage and ProvideProfile attributes that associate this class with that package.
+	// Note: The MainPackage has a ProvideOptionPage attribute that associates this class with that package.
 	[Guid(Guids.BaseConverterOptionsString)]
 	[DefaultProperty(nameof(UseGroupDelimiterForDecimal))] // Make this get focus in the PropertyGrid first since its category is alphabetically first.
 	[SuppressMessage("Internal class never created.", "CA1812", Justification = "Created via reflection by VS.")]

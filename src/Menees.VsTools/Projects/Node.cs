@@ -12,18 +12,13 @@
 
 	internal sealed class Node
 	{
-		#region Private Data Members
-
-		private string category;
-
-		#endregion
-
 		#region Constructors
 
-		public Node(string id, NodeType type)
+		public Node(string id, NodeType type, string reference)
 		{
 			this.Id = id;
 			this.Type = type;
+			this.Reference = reference;
 		}
 
 		#endregion
@@ -34,15 +29,15 @@
 
 		public string Label => this.Id;
 
-		public string Category
-		{
-			get => this.category ?? this.Type.ToString();
-			set => this.category = value;
-		}
+		public string Category => this.Type.ToString();
 
 		public NodeType Type { get; }
 
 		public List<(Node, LinkType)> References { get; } = new List<(Node, LinkType)>();
+
+		public bool IsRoot { get; set; }
+
+		public string Reference { get; }
 
 		#endregion
 	}
