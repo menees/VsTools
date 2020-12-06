@@ -332,7 +332,8 @@ namespace Menees.VsTools.Tasks
 		private IList<CommentTask> GetNewCommentTasks()
 		{
 			var tokenRegexList = this.provider.BackgroundTokens
-				.Select(token => new { Token = token, Regexes = this.scanInfo.GetTokenRegexes(token).ToList() });
+				.Select(token => new { Token = token, Regexes = this.scanInfo.GetTokenRegexes(token).ToList() })
+				.ToList();
 
 			List<CommentTask> result = null;
 

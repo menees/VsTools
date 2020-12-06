@@ -98,22 +98,34 @@ namespace Menees.VsTools.Tasks
 		}
 
 		public static ITextDocument GetTextDocument(ITextBuffer buffer)
+			=> GetTextDocument(buffer, null);
+
+		public static ITextDocument GetTextDocument(ITextBuffer buffer, ITextDocumentFactoryService documentFactory)
 		{
 			// https://social.msdn.microsoft.com/Forums/vstudio/en-US/0f6ef03a-df6b-4670-856e-f4a539fbfbe1/how-get-document-name-of-an-iwpftextview
 			ITextDocument result = null;
 
 			if (buffer != null)
 			{
-				if (buffer.Properties.TryGetProperty<ITextDocument>(typeof(ITextDocument), out ITextDocument document))
+				// In projection buffers (e.g., in Razor/HTML files), this may return false.
+				if (buffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument document))
 				{
 					result = document;
+				}
+
+				if (result == null && documentFactory != null && documentFactory.TryGetTextDocument(buffer, out ITextDocument textDocument))
+				{
+					result = textDocument;
 				}
 			}
 
 			return result;
 		}
 
-		public static ITextDocument GetTextDocument(IVsWindowFrame frame, IVsEditorAdaptersFactoryService adapterFactory)
+		public static ITextDocument GetTextDocument(
+			IVsWindowFrame frame,
+			IVsEditorAdaptersFactoryService adapterFactory,
+			ITextDocumentFactoryService documentFactory)
 		{
 			ITextDocument result = null;
 
@@ -122,7 +134,7 @@ namespace Menees.VsTools.Tasks
 			if (view != null && view.GetBuffer(out IVsTextLines lines) == 0 && lines is IVsTextBuffer oldVsBuffer)
 			{
 				ITextBuffer buffer = adapterFactory.GetDataBuffer(oldVsBuffer);
-				result = GetTextDocument(buffer);
+				result = GetTextDocument(buffer, documentFactory);
 			}
 
 			return result;
@@ -130,9 +142,9 @@ namespace Menees.VsTools.Tasks
 
 		public IEnumerable<string> GetLines()
 		{
-			if (this.textDocument != null)
+			ITextSnapshot snapshot = this.textDocument?.TextBuffer?.CurrentSnapshot;
+			if (snapshot != null)
 			{
-				ITextSnapshot snapshot = this.textDocument.TextBuffer.CurrentSnapshot;
 				foreach (ITextSnapshotLine line in snapshot.Lines)
 				{
 					yield return line.GetText();

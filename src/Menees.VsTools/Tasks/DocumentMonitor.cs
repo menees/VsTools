@@ -223,7 +223,7 @@ namespace Menees.VsTools.Tasks
 			string moniker = this.docTable4.GetDocumentMoniker(docCookie);
 			if (!string.IsNullOrEmpty(moniker))
 			{
-				DocumentItem document = visible ? new DocumentItem(DocumentItem.GetTextDocument(frame, this.adapterFactory)) : null;
+				DocumentItem document = visible ? new DocumentItem(DocumentItem.GetTextDocument(frame, this.adapterFactory, this.documentFactory)) : null;
 				this.AddChangedDocument(moniker, document);
 			}
 		}
@@ -302,7 +302,7 @@ namespace Menees.VsTools.Tasks
 
 		private void TextBuffer_PostChanged(object sender, EventArgs e)
 		{
-			ITextDocument document = DocumentItem.GetTextDocument(sender as ITextBuffer);
+			ITextDocument document = DocumentItem.GetTextDocument(sender as ITextBuffer, this.documentFactory);
 			this.AddChangedDocument(document);
 		}
 

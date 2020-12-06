@@ -4,7 +4,7 @@
 		<SingleLineDelimiter>//</SingleLineDelimiter>
 		<MultiLineDelimiter Begin="/*" End="*/" />
 		<Languages>CPlusPlus, CSharp, IDL, JavaScript, TypeScript</Languages>
-		<Extensions>cs, c, cpp, cxx, cc, java, js, ts, cshtml, h, hpp, inl, idl, tli, tlh, hh, hxx, rc, aspx, ascx, master, asax</Extensions>
+		<Extensions>cs, csx, c, cpp, cxx, cc, java, js, json, ts, cshtml, h, hpp, inl, idl, tli, tlh, hh, hxx, rc, aspx, ascx, master, asax, proto</Extensions>
 	</Style>
 
 	<Style Name="VB">
@@ -26,14 +26,14 @@
 		<Languages>XML, HTML, XAML</Languages>
 		<Extensions>
 			xml, xaml, xoml, htm, html, config, settings, xsd, wsdl, resx, csproj, vbproj, vcxproj,
-			xsl, xslt, edmx, dbml, cshtml, vbhtml, aspx, ascx, master, ps1xml, xhtml, svg, myapp
+			xsl, xslt, edmx, dbml, cshtml, vbhtml, aspx, ascx, master, ps1xml, xhtml, svg, myapp, razor
 		</Extensions>
 	</Style>
 
 	<Style Name="CSS">
 		<MultiLineDelimiter Begin="/*" End="*/" />
 		<Languages>CSS</Languages>
-		<Extensions>css, htm, html, cshtml, vbhtml, aspx, ascx, master, less</Extensions>
+		<Extensions>css, htm, html, cshtml, vbhtml, aspx, ascx, master, less, razor</Extensions>
 	</Style>
 
 	<Style Name="F#">
@@ -56,9 +56,15 @@
 		<Extensions>ps1, psm1, psc1, psd1, ps1xml</Extensions>
 	</Style>
 
+	<Style Name="Shell/Yaml/Ignore">
+		<SingleLineDelimiter>#</SingleLineDelimiter>
+		<Extensions>sh, bash, yaml, yml, ignore, gitignore, tfignore, dockerignore, dockerfile</Extensions>
+	</Style>
+
 	<Style Name="Razor">
 		<MultiLineDelimiter Begin="@*" End="*@"/>
-		<Extensions>cshtml, vbhtml</Extensions>
+		<Languages>Razor</Languages>
+		<Extensions>cshtml, vbhtml, razor</Extensions>
 	</Style>
 
 	<Style Name="AspNet">

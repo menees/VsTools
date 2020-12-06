@@ -108,15 +108,17 @@ namespace Menees.VsTools.Tasks
 
 				if (this.files.TryGetValue(fileName, out FileItem file))
 				{
+					// If the doc changes, we need to refresh file. Buffer changes may have been discarded,
+					// so we need to read from disk instead of showing old tasks from discarded buffer lines.
 					file.Document = document;
-					if (document != null)
+					if (document != null || file.HasHierarchyReference)
 					{
 						lock (this.changedItems)
 						{
 							this.changedItems.Add(file);
 						}
 					}
-					else if (!file.HasHierarchyReference)
+					else
 					{
 						removeItems.Add(file);
 					}

@@ -88,6 +88,16 @@ namespace Menees.VsTools.Tasks
 
 		#endregion
 
+		#region Private Properties
+
+		private bool IsPlainText =>
+			this.languages.Count == 1
+			&& this.languages.First() == Language.PlainText
+			&& this.delimiters.Count == 1
+			&& string.IsNullOrEmpty(this.delimiters.First().Begin);
+
+		#endregion
+
 		#region Public Methods
 
 		public static ScanInfo Get(FileItem file)
@@ -111,7 +121,11 @@ namespace Menees.VsTools.Tasks
 					{
 						if (cache.TryGet(docLanguage, out ScanInfo languageScanInfo))
 						{
-							result = ScanInfo.Merge(result, languageScanInfo);
+							// If we matched the extension to PlainText and the VS editor associated a language
+							// that uses comment delimters, then we only need the language's ScanInfo. VS now
+							// maps lots of text file formats to its HTML language editor, and we don't want to
+							// report duplicates by also matching tokens with no comment delimiter.
+							result = result.IsPlainText ? languageScanInfo : Merge(result, languageScanInfo);
 						}
 					}
 				}
