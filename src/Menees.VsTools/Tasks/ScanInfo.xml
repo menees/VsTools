@@ -4,7 +4,7 @@
 		<SingleLineDelimiter>//</SingleLineDelimiter>
 		<MultiLineDelimiter Begin="/*" End="*/" />
 		<Languages>CPlusPlus, CSharp, IDL, JavaScript, TypeScript</Languages>
-		<Extensions>cs, csx, c, cpp, cxx, cc, java, js, json, ts, cshtml, h, hpp, inl, idl, tli, tlh, hh, hxx, rc, aspx, ascx, master, asax, proto</Extensions>
+		<Extensions>cs, csx, c, cpp, cxx, cc, java, js, json, ts, cshtml, h, hpp, inl, idl, tli, tlh, hh, hxx, rc, aspx, ascx, master, asax, proto, razor</Extensions>
 	</Style>
 
 	<Style Name="VB">

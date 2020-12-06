@@ -12,7 +12,13 @@
 	using System.Threading.Tasks;
 	using System.Windows.Input;
 	using Menees.Shell;
+	using Microsoft.VisualStudio;
+	using Microsoft.VisualStudio.ComponentModelHost;
+	using Microsoft.VisualStudio.Editor;
 	using Microsoft.VisualStudio.Shell;
+	using Microsoft.VisualStudio.Shell.Interop;
+	using Microsoft.VisualStudio.Text;
+	using Microsoft.VisualStudio.TextManager.Interop;
 	using Microsoft.VisualStudio.Utilities;
 	using VS = EnvDTE;
 
@@ -38,10 +44,47 @@
 		public static Language GetLanguage(VS.Document doc)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
+
 			Language result = Language.Unknown;
+
 			if (doc != null)
 			{
 				result = GetLanguage(doc.Language, doc.FullName);
+
+				// I'd like to get the "current" (based on the caret position) ITextBuffer's ContentType.
+				// That would allow for better Language decisions in multi-language files like .razor,
+				// which allows C#, HTML, and CSS. But I can't figure out a way to get the current
+				// caret position's ITextBuffer. This started from https://stackoverflow.com/a/7373385/1882616.
+				if ((result == Language.Unknown || result == Language.PlainText)
+					&& doc.DTE is Microsoft.VisualStudio.OLE.Interop.IServiceProvider oleServiceProvider
+					&& !string.IsNullOrEmpty(doc.FullName))
+				{
+					using (var serviceProvider = new ServiceProvider(oleServiceProvider))
+					{
+						if (VsShellUtilities.IsDocumentOpen(
+							serviceProvider,
+							doc.FullName,
+							Guid.Empty,
+							out _,
+							out _,
+							out IVsWindowFrame windowFrame))
+						{
+							IVsTextView view = VsShellUtilities.GetTextView(windowFrame);
+							if (view.GetBuffer(out IVsTextLines lines) == VSConstants.S_OK && lines is IVsTextBuffer vsBuffer)
+							{
+								IComponentModel componentModel = (IComponentModel)Package.GetGlobalService(typeof(SComponentModel));
+								IVsEditorAdaptersFactoryService adapterFactory = componentModel.GetService<IVsEditorAdaptersFactoryService>();
+								ITextBuffer buffer = adapterFactory.GetDataBuffer(vsBuffer);
+								string contentType = buffer?.ContentType?.TypeName;
+								Language contentLanguage = GetLanguage(contentType, doc.FullName);
+								if (contentLanguage != Language.Unknown)
+								{
+									result = contentLanguage;
+								}
+							}
+						}
+					}
+				}
 			}
 
 			return result;
@@ -71,12 +114,16 @@
 				case "HTML":
 				case "HTMLX": // Added in VS 2013 for non-Web Forms HTML editing
 				case "htmlx":
+				case "HTMLXProjection": // Seen in VS 2019 for .razor files.
 					result = Language.HTML;
 					if (!string.IsNullOrEmpty(fileName))
 					{
-						// Note: This code should never be reached as of VS 2012.  Now these languages have their own names.
 						switch (Path.GetExtension(fileName).ToLower())
 						{
+							case ".razor":
+								result = Language.Razor;
+								break;
+
 							case ".vbs":
 								// VS dropped support for VBScript in VS 2008, but added it back in VS 2008 SP1.
 								// http://blogs.msdn.com/b/webdev/archive/2008/05/12/visual-studio-2008-sp1-beta.aspx

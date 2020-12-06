@@ -42,6 +42,17 @@ namespace Menees.VsTools
 				vsCMElement.vsCMElementNamespace,
 			};
 
+		private static readonly Language[] NamespaceLanguages = new[]
+		{
+			Language.CPlusPlus,
+			Language.VB,
+			Language.CSharp,
+			Language.IDL,
+			Language.FSharp,
+			Language.TypeScript,
+			Language.Python,
+		};
+
 		#endregion
 
 		#region Public Methods
@@ -137,7 +148,7 @@ namespace Menees.VsTools
 
 				sb.Append("TODO: ");
 				int noteStartIndex = sb.Length;
-				string memberName = GetMemberName(handler);
+				string memberName = GetMemberName(handler, language);
 				sb.Append("Finish ").Append(memberName ?? "implementation").Append(".");
 				int noteLength = sb.Length - noteStartIndex;
 				sb.Append(" [").Append(Environment.UserName).Append(", ").Append(DateTime.UtcNow.ToLocalTime().ToShortDateString()).Append(']');
@@ -255,7 +266,7 @@ namespace Menees.VsTools
 			return useVsIndentation;
 		}
 
-		private static string GetMemberName(TextDocumentHandler handler)
+		private static string GetMemberName(TextDocumentHandler handler, Language language)
 		{
 			string result = null;
 
@@ -270,7 +281,7 @@ namespace Menees.VsTools
 					try
 					{
 						CodeElement element = activePoint.CodeElement[scope];
-						if (element != null)
+						if (element != null && (scope != vsCMElement.vsCMElementNamespace || NamespaceLanguages.Contains(language)))
 						{
 							result = element.Name;
 							break;
