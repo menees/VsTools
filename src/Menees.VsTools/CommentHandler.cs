@@ -63,7 +63,7 @@ namespace Menees.VsTools
 
 			// First make sure text is selected.  The VS commands don't require that,
 			// but visually I don't want the command enabled unless text is selected.
-			TextDocumentHandler handler = new TextDocumentHandler(dte);
+			TextDocumentHandler handler = new(dte);
 			bool result = handler.HasNonEmptySelection;
 			if (result)
 			{
@@ -78,7 +78,7 @@ namespace Menees.VsTools
 		public static void CommentSelection(DTE dte, bool comment)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			TextDocumentHandler handler = new TextDocumentHandler(dte);
+			TextDocumentHandler handler = new(dte);
 			if (handler.HasNonEmptySelection)
 			{
 				Language language = handler.Language;
@@ -123,7 +123,7 @@ namespace Menees.VsTools
 
 		public static bool CanAddToDoComment(DTE dte)
 		{
-			TextDocumentHandler handler = new TextDocumentHandler(dte);
+			TextDocumentHandler handler = new(dte);
 			bool result = handler.TextDocument != null;
 			return result;
 		}
@@ -131,7 +131,7 @@ namespace Menees.VsTools
 		public static void AddToDoComment(DTE dte)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			TextDocumentHandler handler = new TextDocumentHandler(dte);
+			TextDocumentHandler handler = new(dte);
 			if (handler.TextDocument != null)
 			{
 				TextPoint bottomPoint = handler.Selection.BottomPoint;
@@ -139,7 +139,7 @@ namespace Menees.VsTools
 				Language language = handler.Language;
 				GetCommentStyle(language, false, !isAtEndOfLine, out string beginDelimiter, out string endDelimiter);
 
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				sb.Append(beginDelimiter);
 				if (sb.Length > 0)
 				{
@@ -149,7 +149,7 @@ namespace Menees.VsTools
 				sb.Append("TODO: ");
 				int noteStartIndex = sb.Length;
 				string memberName = GetMemberName(handler, language);
-				sb.Append("Finish ").Append(memberName ?? "implementation").Append(".");
+				sb.Append("Finish ").Append(memberName ?? "implementation").Append('.');
 				int noteLength = sb.Length - noteStartIndex;
 				sb.Append(" [").Append(Environment.UserName).Append(", ").Append(DateTime.UtcNow.ToLocalTime().ToShortDateString()).Append(']');
 				if (!string.IsNullOrEmpty(endDelimiter))
@@ -174,7 +174,7 @@ namespace Menees.VsTools
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 			string text = handler.SelectedText;
-			TextLines lines = new TextLines(text);
+			TextLines lines = new(text);
 			updateSelection(lines);
 			handler.SetSelectedTextIfUnchanged(lines.ToString(), commandName);
 		}

@@ -59,7 +59,7 @@
 
 			if (this.lines != null)
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				// Convert the lines into a single string
 				int numLines = this.lines.Length;
@@ -114,7 +114,7 @@
 				singleLineCommentDelimiter = scanInfo.TryGetSingleLineCommentDelimiter();
 			}
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			int numLines = this.lines.Length;
 			bool startOfLine = true;
@@ -139,7 +139,7 @@
 					}
 					else
 					{
-						sb.Append(" ");
+						sb.Append(' ');
 					}
 
 					sb.Append(line);
@@ -312,7 +312,7 @@
 
 				if (matchBeginIndex >= 0 || matchEndIndex >= 0)
 				{
-					StringBuilder sb = new StringBuilder();
+					StringBuilder sb = new();
 
 					int startIndex = 0;
 					while (matchBeginIndex >= 0 || matchEndIndex >= 0)
@@ -373,7 +373,7 @@
 				int matchIndex = text.IndexOf(escapedDelimiter);
 				if (matchIndex >= 0)
 				{
-					StringBuilder sb = new StringBuilder();
+					StringBuilder sb = new();
 
 					// Alternate replacing the escaped delimiter with the begin and end delimiters.
 					bool useBeginDelimiter = true;
@@ -457,7 +457,7 @@
 
 		private void Uncomment(string beginDelimiter, string endDelimiter)
 		{
-			List<string> newLines = new List<string>(this.lines);
+			List<string> newLines = new(this.lines);
 
 			string line = newLines[0];
 			if (line.Trim() == beginDelimiter)

@@ -26,7 +26,6 @@ namespace Menees.VsTools.Editor
 
 		#region Constructors
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Created by MEF.")]
 		protected ClassifierTextViewListenerBase(string classifierName)
 		{
 			this.classifierName = classifierName;

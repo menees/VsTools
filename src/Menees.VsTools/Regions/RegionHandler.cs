@@ -28,7 +28,7 @@ namespace Menees.VsTools.Regions
 	{
 		#region Private Data Members
 
-		private static readonly HashSet<Language> VsBuiltInRegionSupport = new HashSet<Language>
+		private static readonly HashSet<Language> VsBuiltInRegionSupport = new()
 		{
 			Language.CSharp,
 			Language.VB,
@@ -293,7 +293,7 @@ namespace Menees.VsTools.Regions
 
 		private static string GetRegionName(string[] predefinedRegions)
 		{
-			ListDialog dialog = new ListDialog();
+			ListDialog dialog = new();
 			string result = dialog.Execute("Add Region", "Enter a name or number:", "Region", predefinedRegions, null);
 			return result;
 		}
@@ -304,7 +304,7 @@ namespace Menees.VsTools.Regions
 			string temp = startPoint.GetText(startPoint.LineLength);
 			int tempLength = temp.Length;
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			for (int i = 0; i < tempLength; i++)
 			{
 				char ch = temp[i];

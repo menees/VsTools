@@ -127,7 +127,7 @@ namespace Menees.VsTools.Sort
 			IEnumerable<Tuple<MemberProperty, bool>> sortOrder = GetSortOrder(options) ?? StyleCopSortOrder;
 
 			// Get a list of all selected members using our CodeMember type since Microsoft didn't define a common member base type.
-			List<CodeMember> codeMembers = new List<CodeMember>();
+			List<CodeMember> codeMembers = new();
 			if (this.memberLists != null)
 			{
 				foreach (var tuple in this.memberLists)
@@ -140,7 +140,7 @@ namespace Menees.VsTools.Sort
 			void SortMembers(List<CodeMember> list) => list.Sort((x, y) => x.CompareByMemberProperties(y, sortOrder));
 			if (!options.OnlyShowSortMembersDialogWhenShiftIsPressed || Utilities.IsShiftPressed)
 			{
-				SortMembersDialog dialog = new SortMembersDialog();
+				SortMembersDialog dialog = new();
 				try
 				{
 					execute = dialog.Execute(codeMembers, options, SortMembers);
@@ -258,7 +258,7 @@ namespace Menees.VsTools.Sort
 			{
 				// If member groups are interlaced (e.g., PropA, MethA, PropB, MethB), then we need to force an
 				// overall reordering even if the group members are already in the correct order within the group.
-				List<CodeMember> startPointOrderedTypeMembers = new List<CodeMember>(userOrderedTypeMembers);
+				List<CodeMember> startPointOrderedTypeMembers = new(userOrderedTypeMembers);
 				startPointOrderedTypeMembers.Sort((x, y) =>
 					{
 						ThreadHelper.ThrowIfNotOnUIThread();
@@ -290,7 +290,7 @@ namespace Menees.VsTools.Sort
 		private static string GetCode(IEnumerable<CodeMember> members, out TextPoint minStartPoint)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			minStartPoint = null;
 
 			foreach (var member in members)
@@ -319,7 +319,7 @@ namespace Menees.VsTools.Sort
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			List<Tuple<CodeElement2, List<CodeElement2>>> result = new List<Tuple<CodeElement2, List<CodeElement2>>>();
+			List<Tuple<CodeElement2, List<CodeElement2>>> result = new();
 
 			foreach (CodeElement2 element in codeElements)
 			{
@@ -358,7 +358,7 @@ namespace Menees.VsTools.Sort
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			List<Tuple<CodeElement2, List<CodeElement2>>> result = new List<Tuple<CodeElement2, List<CodeElement2>>>();
+			List<Tuple<CodeElement2, List<CodeElement2>>> result = new();
 
 			List<CodeElement2> typeMembers = null;
 			foreach (CodeElement2 member in codeMembers)
@@ -413,7 +413,7 @@ namespace Menees.VsTools.Sort
 
 			if (!forceReorder)
 			{
-				List<CodeMember> membersByStartPoint = new List<CodeMember>(members);
+				List<CodeMember> membersByStartPoint = new(members);
 				membersByStartPoint.Sort((x, y) => x.CompareByStartPoint(y));
 				string originalCode = GetCode(membersByStartPoint, out TextPoint originalStartPoint);
 

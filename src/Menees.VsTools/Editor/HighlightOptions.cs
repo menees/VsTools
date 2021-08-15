@@ -104,7 +104,7 @@
 
 		private static List<OutputHighlight> CreateDefaultOutputHighlights()
 		{
-			List<OutputHighlight> result = new List<OutputHighlight>();
+			List<OutputHighlight> result = new();
 
 			ISet<string> knownOutputContentTypes = OutputHighlight.GetKnownOutputContentTypes();
 

@@ -180,7 +180,7 @@ namespace Menees.VsTools.Tasks
 			int countProjects,
 			int countDirectories,
 			IVsProject[] projects,
-			int[] firstIndices,
+			int[] firstIndexes,
 			string[] rgpszMkDocuments,
 			VSADDDIRECTORYFLAGS[] flags)
 		{
@@ -192,7 +192,7 @@ namespace Menees.VsTools.Tasks
 			int countProjects,
 			int countFiles,
 			IVsProject[] projects,
-			int[] firstIndices,
+			int[] firstIndexes,
 			string[] rgpszMkDocuments,
 			VSADDFILEFLAGS[] flags)
 		{
@@ -204,7 +204,7 @@ namespace Menees.VsTools.Tasks
 			int countProjects,
 			int countDirectories,
 			IVsProject[] projects,
-			int[] firstIndices,
+			int[] firstIndexes,
 			string[] rgpszMkDocuments,
 			VSREMOVEDIRECTORYFLAGS[] flags)
 		{
@@ -216,7 +216,7 @@ namespace Menees.VsTools.Tasks
 			int countProjects,
 			int countFiles,
 			IVsProject[] projects,
-			int[] firstIndices,
+			int[] firstIndexes,
 			string[] rgpszMkDocuments,
 			VSREMOVEFILEFLAGS[] flags)
 		{
@@ -228,7 +228,7 @@ namespace Menees.VsTools.Tasks
 			int countProjects,
 			int countDirs,
 			IVsProject[] orojects,
-			int[] firstIndices,
+			int[] firstIndexes,
 			string[] rgszMkOldNames,
 			string[] rgszMkNewNames,
 			VSRENAMEDIRECTORYFLAGS[] flags)
@@ -241,7 +241,7 @@ namespace Menees.VsTools.Tasks
 			int countProjects,
 			int countFiles,
 			IVsProject[] projects,
-			int[] firstIndices,
+			int[] firstIndexes,
 			string[] rgszMkOldNames,
 			string[] rgszMkNewNames,
 			VSRENAMEFILEFLAGS[] flags)
@@ -254,7 +254,7 @@ namespace Menees.VsTools.Tasks
 			int countProjects,
 			int countFiles,
 			IVsProject[] projects,
-			int[] firstIndices,
+			int[] firstIndexes,
 			string[] rgpszMkDocuments,
 			uint[] rgdwSccStatus) => VSConstants.S_OK;
 
@@ -341,7 +341,7 @@ namespace Menees.VsTools.Tasks
 
 			if (this.isScanRequired)
 			{
-				HierarchyVisitor visitor = new HierarchyVisitor(this.SolutionHierarchy, this.provider.Options);
+				HierarchyVisitor visitor = new(this.SolutionHierarchy, this.provider.Options);
 				result = visitor.Items;
 				this.RequireScan(false);
 			}

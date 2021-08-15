@@ -77,7 +77,7 @@ namespace Menees.VsTools.Tasks
 
 			if (this.provider != null)
 			{
-				Task task = new Task
+				Task task = new()
 				{
 					Document = this.FilePath,
 					Line = this.Line,

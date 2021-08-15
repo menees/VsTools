@@ -36,8 +36,8 @@ namespace Menees.VsTools.Tasks
 		private readonly IVsRunningDocumentTable4 docTable4;
 		private readonly IComponentModel componentModel;
 		private readonly IVsEditorAdaptersFactoryService adapterFactory;
-		private readonly HashSet<ITextDocument> attachedDocuments = new HashSet<ITextDocument>();
-		private readonly Dictionary<string, DocumentItem> changedDocuments = new Dictionary<string, DocumentItem>(StringComparer.OrdinalIgnoreCase);
+		private readonly HashSet<ITextDocument> attachedDocuments = new();
+		private readonly Dictionary<string, DocumentItem> changedDocuments = new(StringComparer.OrdinalIgnoreCase);
 
 		private uint docTableAdviseCookie;
 		private ITextDocumentFactoryService documentFactory;

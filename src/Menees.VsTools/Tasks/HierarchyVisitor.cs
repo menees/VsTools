@@ -22,9 +22,9 @@ namespace Menees.VsTools.Tasks
 	{
 		#region Private Data Members
 
-		private readonly Stack<HierarchyItem> ancestors = new Stack<HierarchyItem>();
-		private readonly List<HierarchyItem> items = new List<HierarchyItem>();
-		private readonly HashSet<string> visitedProjects = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		private readonly Stack<HierarchyItem> ancestors = new();
+		private readonly List<HierarchyItem> items = new();
+		private readonly HashSet<string> visitedProjects = new(StringComparer.OrdinalIgnoreCase);
 		private readonly BackgroundOptions options;
 
 		#endregion
@@ -43,7 +43,7 @@ namespace Menees.VsTools.Tasks
 				// We have to get all nodes even if they're not visible in order to visit any "open" documents.
 				// VS delay loads documents, so when opening a solution, it can show tabs for documents
 				// that our DocumentMonitor hasn't received any notification for yet.
-				HierarchyNode root = new HierarchyNode(hierarchy);
+				HierarchyNode root = new(hierarchy);
 				this.VisitHierarchyNodes(root, 0, visibleNodesOnly: false);
 			}
 		}

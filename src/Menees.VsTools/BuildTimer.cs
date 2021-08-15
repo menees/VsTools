@@ -20,7 +20,7 @@ namespace Menees.VsTools
 
 		private readonly MainPackage package;
 		private readonly DTE dte;
-		private readonly Dictionary<string, DateTime> projectConfigBegan = new Dictionary<string, DateTime>(StringComparer.CurrentCultureIgnoreCase);
+		private readonly Dictionary<string, DateTime> projectConfigBegan = new(StringComparer.CurrentCultureIgnoreCase);
 
 		private BuildEvents buildEvents;
 		private DateTime? buildBegan;

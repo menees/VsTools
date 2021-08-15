@@ -26,7 +26,6 @@ namespace Menees.VsTools.Editor
 
 		#region Protected Methods
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Created by MEF.")]
 		protected ClassificationFormatBase(string classificationTypeName)
 		{
 			if (classificationTypeName.StartsWith(ClassificationBasePrefix))

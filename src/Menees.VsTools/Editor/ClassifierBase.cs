@@ -53,7 +53,7 @@ namespace Menees.VsTools.Editor
 		/// <returns>A list of ClassificationSpans that represent spans identified to be of this classification</returns>
 		public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
 		{
-			List<ClassificationSpan> result = new List<ClassificationSpan>();
+			List<ClassificationSpan> result = new();
 
 			ThreadHelper.ThrowIfNotOnUIThread();
 			if (span.Length > 0)

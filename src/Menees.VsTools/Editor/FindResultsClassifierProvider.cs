@@ -40,7 +40,7 @@ namespace Menees.VsTools.Editor
 
 		protected override ClassifierBase CreateClassifier(ITextBuffer buffer)
 		{
-			FindResultsClassifier result = new FindResultsClassifier(buffer, this.ClassificationRegistry);
+			FindResultsClassifier result = new(buffer, this.ClassificationRegistry);
 			return result;
 		}
 

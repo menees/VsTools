@@ -277,17 +277,15 @@
 				this.processor = new CommandProcessor(this);
 
 				// Add our command handlers.  Commands must exist in the .vsct file.
-#pragma warning disable VSSDK006 // Check whether the result of GetService is null
 				if (await this.GetServiceAsync(typeof(IMenuCommandService)).ConfigureAwait(true) is OleMenuCommandService mcs)
-#pragma warning restore VSSDK006 // Check whether the result of GetService is null
 				{
 					foreach (Command id in Enum.GetValues(typeof(Command)))
 					{
-						CommandID commandId = new CommandID(Guids.MeneesVsToolsCommandSet, (int)id);
+						CommandID commandId = new(Guids.MeneesVsToolsCommandSet, (int)id);
 
 						// OleMenuCommand extends the base MenuCommand to add BeforeQueryStatus.
 						// http://msdn.microsoft.com/en-us/library/bb165468.aspx
-						OleMenuCommand menuItem = new OleMenuCommand(this.Command_Execute, commandId);
+						OleMenuCommand menuItem = new(this.Command_Execute, commandId);
 						menuItem.BeforeQueryStatus += this.Command_QueryStatus;
 						mcs.AddCommand(menuItem);
 					}

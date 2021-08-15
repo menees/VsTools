@@ -29,7 +29,7 @@ namespace Menees.VsTools
 
 		public static Uri CreateResourceUri(string imageName)
 		{
-			Uri result = new Uri(UriPrefix + imageName);
+			Uri result = new(UriPrefix + imageName);
 			return result;
 		}
 

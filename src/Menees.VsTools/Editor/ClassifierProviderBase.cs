@@ -26,7 +26,6 @@ namespace Menees.VsTools.Editor
 
 		#region Constructors
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Created by MEF.")]
 		protected ClassifierProviderBase(string classifierName)
 		{
 			this.classifierName = classifierName;
@@ -41,14 +40,12 @@ namespace Menees.VsTools.Editor
 		/// to the custom classification type later.
 		/// </summary>
 		[Import]
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
 		internal IClassificationTypeRegistryService ClassificationRegistry { get; set; }
 
 		/// <summary>
 		/// Import the service so we can get the editor options for a text buffer.
 		/// </summary>
 		[Import]
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
 		internal IEditorOptionsFactoryService EditorOptionsFactory { get; set; }
 
 		#endregion

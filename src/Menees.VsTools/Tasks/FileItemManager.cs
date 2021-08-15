@@ -20,11 +20,11 @@ namespace Menees.VsTools.Tasks
 
 		private readonly CommentTaskProvider provider;
 		private readonly FileMonitor monitor;
-		private readonly Dictionary<string, FileItem> files = new Dictionary<string, FileItem>(StringComparer.OrdinalIgnoreCase);
-		private readonly HashSet<FileItem> changedItems = new HashSet<FileItem>();
-		private readonly Dictionary<CommentTask, bool> changedTasks = new Dictionary<CommentTask, bool>();
+		private readonly Dictionary<string, FileItem> files = new(StringComparer.OrdinalIgnoreCase);
+		private readonly HashSet<FileItem> changedItems = new();
+		private readonly Dictionary<CommentTask, bool> changedTasks = new();
 		private readonly BackgroundOptions options;
-		private readonly List<Regex> backgroundExcludePatterns = new List<Regex>();
+		private readonly List<Regex> backgroundExcludePatterns = new();
 
 		#endregion
 
@@ -52,7 +52,7 @@ namespace Menees.VsTools.Tasks
 				pair.Value.ClearHierarchy();
 			}
 
-			HashSet<string> allHierarchyFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			HashSet<string> allHierarchyFiles = new(StringComparer.OrdinalIgnoreCase);
 			foreach (HierarchyItem item in allHierarchyItems)
 			{
 				// Virtual projects (e.g., TypeScript Virtual Projects) and virtual items may have no file name.
@@ -100,7 +100,7 @@ namespace Menees.VsTools.Tasks
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			List<FileItem> removeItems = new List<FileItem>();
+			List<FileItem> removeItems = new();
 			foreach (var pair in changedDocuments)
 			{
 				string fileName = pair.Key;

@@ -15,7 +15,7 @@
 	{
 		#region Private Data Members
 
-		private readonly object locker = new object();
+		private readonly object locker = new();
 
 		#endregion
 

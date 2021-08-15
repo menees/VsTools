@@ -31,12 +31,12 @@ namespace Menees.VsTools.Sort
 	{
 		#region Private Data Members
 
-		private static readonly Dictionary<string, string> VbTypeKinds = new Dictionary<string, string>
+		private static readonly Dictionary<string, string> VbTypeKinds = new()
 		{
 			{ "Struct", "Structure" },
 		};
 
-		private static readonly Dictionary<string, string> VbOverrideKinds = new Dictionary<string, string>
+		private static readonly Dictionary<string, string> VbOverrideKinds = new()
 		{
 			{ "Abstract", "MustOverride" },
 			{ "Override", "Overrides" },
@@ -142,12 +142,11 @@ namespace Menees.VsTools.Sort
 
 		public CodeElement2 TypeElement { get; }
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called via WPF Binding (via Reflection).")]
 		public string TypeDescription
 		{
 			get
 			{
-				StringBuilder result = new StringBuilder();
+				StringBuilder result = new();
 
 				// Note: Our ImageNameConverter class depends on the TypeKind formatting.
 				string typeKind = this.GetName(this.TypeKind, false, VbTypeKinds);
@@ -167,12 +166,11 @@ namespace Menees.VsTools.Sort
 			}
 		}
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called via WPF Binding (via Reflection).")]
 		public string ModifiersDescription
 		{
 			get
 			{
-				List<string> tokens = new List<string>();
+				List<string> tokens = new();
 
 				switch (this.TypeKind)
 				{
@@ -228,7 +226,6 @@ namespace Menees.VsTools.Sort
 			}
 		}
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called via WPF Binding (via Reflection).")]
 		public string ParametersDescription
 		{
 			get
@@ -239,7 +236,7 @@ namespace Menees.VsTools.Sort
 
 				if (this.parameters != null)
 				{
-					StringBuilder sb = new StringBuilder();
+					StringBuilder sb = new();
 					foreach (CodeParameter2 parameter in this.parameters)
 					{
 						if (sb.Length > 0)
@@ -276,7 +273,6 @@ namespace Menees.VsTools.Sort
 			}
 		}
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called via WPF Binding (via Reflection).")]
 		public string ImageName
 		{
 			get
@@ -305,10 +301,8 @@ namespace Menees.VsTools.Sort
 
 		#region Private Properties
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called from properties used by WPF bindings.")]
 		private vsCMElement TypeKind => this.TypeElement.Kind;
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called from properties used by WPF bindings.")]
 		private bool IsEnumMember
 		{
 			get
@@ -318,7 +312,6 @@ namespace Menees.VsTools.Sort
 			}
 		}
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called from properties used by WPF bindings.")]
 		private bool IsInterfaceMember
 		{
 			get
@@ -533,10 +526,9 @@ namespace Menees.VsTools.Sort
 			return result;
 		}
 
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called from properties used by WPF bindings.")]
 		private string GetName<TEnum>(TEnum value, bool treatLikeFlags, IDictionary<string, string> visualBasicNames)
 		{
-			List<string> tokens = new List<string>();
+			List<string> tokens = new();
 			if (!treatLikeFlags)
 			{
 				tokens.Add(value.ToString());
@@ -560,7 +552,7 @@ namespace Menees.VsTools.Sort
 				}
 			}
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			string typeName = typeof(TEnum).Name;
 			foreach (string token in tokens)
 			{

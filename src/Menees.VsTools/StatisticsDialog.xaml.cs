@@ -37,7 +37,7 @@
 		{
 			int lineCount = 0;
 			int characterCount = 0;
-			Dictionary<char, int> counts = new Dictionary<char, int>();
+			Dictionary<char, int> counts = new();
 
 			// Process the text.
 			if (!string.IsNullOrEmpty(text))
@@ -69,7 +69,7 @@
 			// Display the results
 			this.lineCountLabel.Content = lineCount.ToString();
 			this.characterCountLabel.Content = characterCount.ToString();
-			using (DataTable table = new DataTable())
+			using (DataTable table = new())
 			{
 				DataColumn numberColumn = table.Columns.Add("Number", typeof(int));
 				DataColumn characterColumn = table.Columns.Add("Character", typeof(string));

@@ -29,8 +29,8 @@ namespace Menees.VsTools.Tasks
 		#region Private Data Members
 
 		// We're not using TaskProviderGuids.Comments because we don't want our tasks in the VS task list.
-		private static readonly Guid ProviderId = new Guid("24079DE0-6866-4EF5-9095-530705917139");
-		private static readonly Guid CategoryId = new Guid("DBC6A6BD-302C-4095-941A-1B126548C66A");
+		private static readonly Guid ProviderId = new("24079DE0-6866-4EF5-9095-530705917139");
+		private static readonly Guid CategoryId = new("DBC6A6BD-302C-4095-941A-1B126548C66A");
 
 		private readonly System.Windows.Forms.Timer foregroundTimer;
 		private readonly System.Threading.Timer backgroundTimer;
@@ -38,8 +38,8 @@ namespace Menees.VsTools.Tasks
 		private readonly DocumentMonitor documentMonitor;
 		private readonly FileMonitor fileMonitor;
 		private readonly FileItemManager manager;
-		private readonly List<CommentToken> foregroundTokens = new List<CommentToken>();
-		private readonly BackgroundOptions backgroundOptions = new BackgroundOptions();
+		private readonly List<CommentToken> foregroundTokens = new();
+		private readonly BackgroundOptions backgroundOptions = new();
 
 		private bool disposed;
 		private int isBackgroundTimerExecuting;
@@ -59,7 +59,7 @@ namespace Menees.VsTools.Tasks
 			this.ServiceProvider = package.ServiceProvider;
 
 			// In some cases the task list may not be available (e.g., during devenv.exe /build).
-			if (!(this.ServiceProvider.GetService(typeof(SVsTaskList)) is IVsTaskList taskList))
+			if (this.ServiceProvider.GetService(typeof(SVsTaskList)) is not IVsTaskList taskList)
 			{
 				this.disposed = true;
 			}
@@ -86,8 +86,7 @@ namespace Menees.VsTools.Tasks
 				this.DisableAutoRoute = false;
 				this.MaintainInitialTaskOrder = false;
 
-				this.foregroundTimer = new System.Windows.Forms.Timer();
-				this.foregroundTimer.Interval = (int)TimeSpan.FromSeconds(1).TotalMilliseconds;
+				this.foregroundTimer = new System.Windows.Forms.Timer { Interval = (int)TimeSpan.FromSeconds(1).TotalMilliseconds };
 				this.foregroundTimer.Tick += this.ForegroundTimer_Tick;
 				this.ScanDelay = TimeSpan.FromSeconds(2);
 
@@ -201,7 +200,7 @@ namespace Menees.VsTools.Tasks
 				IReadOnlyDictionary<CommentTask, bool> changedTasks = this.manager.GetChangedTasks();
 				if (changedTasks != null)
 				{
-					TasksChangedEventArgs args = new TasksChangedEventArgs(
+					TasksChangedEventArgs args = new(
 						changedTasks.Where(pair => pair.Value).Select(pair => pair.Key),
 						changedTasks.Where(pair => !pair.Value).Select(pair => pair.Key));
 					handler(this, args);
@@ -259,9 +258,7 @@ namespace Menees.VsTools.Tasks
 					// then a RCW might get separated from its COM object before this.disposed is set.
 				}
 #pragma warning restore CC0004 // Catch block cannot be empty
-#pragma warning disable CA1031 // Do not catch general exception types. Background timer exceptions would end the process.
 				catch (Exception ex)
-#pragma warning restore CA1031 // Do not catch general exception types
 				{
 					// If any exception escapes a background timer thread, it will end the process, which sucks.
 					MainPackage.LogException(ex);
@@ -303,7 +300,7 @@ namespace Menees.VsTools.Tasks
 			// and it allows them to each have a different priority assigned.  However, the VS comment task provider
 			// doesn't match case-insensitively, so only the last token and priority are used within a case group.
 			// We'll be smarter than that and detect whether case-sensitivity is required for a token.
-			Dictionary<string, TaskPriority> tempTokens = new Dictionary<string, TaskPriority>();
+			Dictionary<string, TaskPriority> tempTokens = new();
 
 			if (this.VsTaskList is IVsCommentTaskInfo tokenInfo
 				&& ErrorHandler.Succeeded(tokenInfo.TokenCount(out int tokenCount)) && tokenCount > 0)

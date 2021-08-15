@@ -37,7 +37,7 @@ namespace Menees.VsTools.Editor
 	{
 		#region Private Data Members
 
-		private readonly Dictionary<string, Guid> formatNameToCategoryMap = new Dictionary<string, Guid>();
+		private readonly Dictionary<string, Guid> formatNameToCategoryMap = new();
 		private readonly IVsFontAndColorStorage storage;
 		private readonly IVsFontAndColorStorage2 storage2;
 

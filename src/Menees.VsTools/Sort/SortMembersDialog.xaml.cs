@@ -57,7 +57,7 @@
 			// Note: We'll group by the TypeDescription property, which will be bound to the GroupItem.Name property.
 			// Then the XAML will use the GroupItem.Name to extract the type kind image (via ImageNameToSourceConverter).
 			CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(this.list.ItemsSource);
-			PropertyGroupDescription groupDescription = new PropertyGroupDescription("TypeDescription");
+			PropertyGroupDescription groupDescription = new("TypeDescription");
 			view.GroupDescriptions.Add(groupDescription);
 
 			bool result = false;
@@ -438,11 +438,11 @@
 				if (!double.IsNaN(this.position))
 				{
 					const int LeftGap = 4;
-					Point left = new Point(LeftGap, this.position);
+					Point left = new(LeftGap, this.position);
 
 					double rightEnd = double.IsNaN(this.width) ? this.AdornedElement.RenderSize.Width : this.width;
-					Point right = new Point(rightEnd, this.position);
-					Pen pen = new Pen(SystemColors.HotTrackBrush, 1);
+					Point right = new(rightEnd, this.position);
+					Pen pen = new(SystemColors.HotTrackBrush, 1);
 					drawingContext.DrawLine(pen, left, right);
 				}
 			}

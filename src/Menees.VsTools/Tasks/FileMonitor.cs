@@ -20,8 +20,8 @@ namespace Menees.VsTools.Tasks
 
 		private readonly IVsFileChangeEx fileChangeService;
 		private readonly CommentTaskProvider provider;
-		private readonly Dictionary<string, uint> cookies = new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase);
-		private readonly Dictionary<string, bool> changedFiles = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, uint> cookies = new(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, bool> changedFiles = new(StringComparer.OrdinalIgnoreCase);
 
 		#endregion
 

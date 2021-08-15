@@ -24,13 +24,13 @@ namespace Menees.VsTools.Editor
 
 		// FilenameOnlyRegex must match to the end of the line.  FilenameAndLineNumberRegex requires either
 		// a subsequent "(Line):" (for Find) or "(Line,Col):" (for Replace) before the match details.
-		private static readonly Regex FilenameOnlyRegex = new Regex(FilenamePrefixPattern + "$", RegexOptions.Compiled);
-		private static readonly Regex FilenameAndLineNumberRegex = new Regex(FilenamePrefixPattern + @"\(\d+(\,\d+)?\)\:", RegexOptions.Compiled);
+		private static readonly Regex FilenameOnlyRegex = new(FilenamePrefixPattern + "$", RegexOptions.Compiled);
+		private static readonly Regex FilenameAndLineNumberRegex = new(FilenamePrefixPattern + @"\(\d+(\,\d+)?\)\:", RegexOptions.Compiled);
 
-		private static readonly Regex FindAllPattern = new Regex("(?n)Find all \"(?<pattern>.+?)\",", RegexOptions.Compiled);
-		private static readonly Regex ReplaceAllPattern = new Regex("(?n)Replace all \".+?\", \"(?<pattern>.+?)\",", RegexOptions.Compiled);
+		private static readonly Regex FindAllPattern = new("(?n)Find all \"(?<pattern>.+?)\",", RegexOptions.Compiled);
+		private static readonly Regex ReplaceAllPattern = new("(?n)Replace all \".+?\", \"(?<pattern>.+?)\",", RegexOptions.Compiled);
 
-		private static readonly object ResourceLock = new object();
+		private static readonly object ResourceLock = new();
 		private static IClassificationType matchType;
 		private static IClassificationType fileNameType;
 		private static IClassificationType detailType;
@@ -105,8 +105,8 @@ namespace Menees.VsTools.Editor
 		{
 			SnapshotPoint startPoint = line.Start + start;
 			SnapshotPoint endPoint = startPoint + length;
-			SnapshotSpan snapshotSpan = new SnapshotSpan(startPoint, endPoint);
-			ClassificationSpan classificationSpan = new ClassificationSpan(snapshotSpan, type);
+			SnapshotSpan snapshotSpan = new(startPoint, endPoint);
+			ClassificationSpan classificationSpan = new(snapshotSpan, type);
 			result.Add(classificationSpan);
 		}
 

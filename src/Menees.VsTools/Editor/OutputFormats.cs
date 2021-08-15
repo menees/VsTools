@@ -44,7 +44,6 @@ namespace Menees.VsTools.Editor
 
 			[Export(typeof(ClassificationTypeDefinition))]
 			[Name(ErrorFormat.ClassificationName)]
-			[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
 			internal static ClassificationTypeDefinition ErrorType { get; set; }
 		}
 
@@ -70,7 +69,6 @@ namespace Menees.VsTools.Editor
 
 			[Export(typeof(ClassificationTypeDefinition))]
 			[Name(WarningFormat.ClassificationName)]
-			[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
 			internal static ClassificationTypeDefinition WarningType { get; set; }
 		}
 
@@ -95,7 +93,6 @@ namespace Menees.VsTools.Editor
 
 			[Export(typeof(ClassificationTypeDefinition))]
 			[Name(InformationFormat.ClassificationName)]
-			[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
 			internal static ClassificationTypeDefinition InformationType { get; set; }
 		}
 
@@ -120,7 +117,6 @@ namespace Menees.VsTools.Editor
 
 			[Export(typeof(ClassificationTypeDefinition))]
 			[Name(DetailFormat.ClassificationName)]
-			[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
 			internal static ClassificationTypeDefinition DetailType { get; set; }
 		}
 
@@ -146,7 +142,6 @@ namespace Menees.VsTools.Editor
 
 			[Export(typeof(ClassificationTypeDefinition))]
 			[Name(HeaderFormat.ClassificationName)]
-			[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
 			internal static ClassificationTypeDefinition HeaderType { get; set; }
 		}
 
@@ -171,7 +166,6 @@ namespace Menees.VsTools.Editor
 
 			[Export(typeof(ClassificationTypeDefinition))]
 			[Name(Custom1Format.ClassificationName)]
-			[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
 			internal static ClassificationTypeDefinition Custom1Type { get; set; }
 		}
 
@@ -196,7 +190,6 @@ namespace Menees.VsTools.Editor
 
 			[Export(typeof(ClassificationTypeDefinition))]
 			[Name(Custom2Format.ClassificationName)]
-			[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by MEF.")]
 			internal static ClassificationTypeDefinition Custom2Type { get; set; }
 		}
 

@@ -22,15 +22,15 @@ namespace Menees.VsTools.Regions
 		#region Private Data Members
 
 		private const string RegionToken = "#region";
-		private static readonly CommentToken StartToken = new CommentToken(RegionToken, TaskPriority.Normal, false);
-		private static readonly CommentToken EndToken = new CommentToken("#endregion", TaskPriority.Normal, false);
-		private static readonly CommentToken AltEndToken = new CommentToken("#end region", TaskPriority.Normal, false);
+		private static readonly CommentToken StartToken = new(RegionToken, TaskPriority.Normal, false);
+		private static readonly CommentToken EndToken = new("#endregion", TaskPriority.Normal, false);
+		private static readonly CommentToken AltEndToken = new("#end region", TaskPriority.Normal, false);
 
 		private readonly ITextBuffer buffer;
 		private readonly IReadOnlyList<Regex> startExpressions;
 		private readonly IReadOnlyList<Regex> endExpressions;
 
-		private readonly object resourceLock = new object();
+		private readonly object resourceLock = new();
 		private SnapshotRegions snapshotRegions;
 
 		#endregion
@@ -119,7 +119,7 @@ namespace Menees.VsTools.Regions
 			var startLine = snapshot.GetLineFromLineNumber(region.StartLine);
 			var endLine = (region.StartLine == region.EndLine) ? startLine
 				: snapshot.GetLineFromLineNumber(region.EndLine);
-			SnapshotSpan result = new SnapshotSpan(startLine.Start + region.StartOffset, endLine.End);
+			SnapshotSpan result = new(startLine.Start + region.StartOffset, endLine.End);
 			return result;
 		}
 
@@ -140,7 +140,7 @@ namespace Menees.VsTools.Regions
 		private void Reparse()
 		{
 			ITextSnapshot newSnapshot = this.buffer.CurrentSnapshot;
-			List<Region> newRegions = new List<Region>();
+			List<Region> newRegions = new();
 
 			// Keep the current (deepest) partial region, which will have references to any parent partial regions.
 			PartialRegion currentRegion = null;
@@ -215,7 +215,7 @@ namespace Menees.VsTools.Regions
 				}
 			}
 
-			SnapshotRegions newSnapshotRegions = new SnapshotRegions(newSnapshot, newRegions);
+			SnapshotRegions newSnapshotRegions = new(newSnapshot, newRegions);
 			SnapshotRegions oldSnapshotRegions;
 			lock (this.resourceLock)
 			{
@@ -234,12 +234,12 @@ namespace Menees.VsTools.Regions
 			IReadOnlyList<Region> newRegions = newSnapshotRegions.Regions;
 
 			// Determine the changed spans and send a changed event with the new spans.
-			List<Span> oldSpans = new List<Span>(
+			List<Span> oldSpans = new(
 				oldRegions.Select(r => AsSnapshotSpan(r, oldSnapshot).TranslateTo(newSnapshot, SpanTrackingMode.EdgeExclusive).Span));
-			List<Span> newSpans = new List<Span>(newRegions.Select(r => AsSnapshotSpan(r, newSnapshot).Span));
+			List<Span> newSpans = new(newRegions.Select(r => AsSnapshotSpan(r, newSnapshot).Span));
 
-			NormalizedSpanCollection oldSpanCollection = new NormalizedSpanCollection(oldSpans);
-			NormalizedSpanCollection newSpanCollection = new NormalizedSpanCollection(newSpans);
+			NormalizedSpanCollection oldSpanCollection = new(oldSpans);
+			NormalizedSpanCollection newSpanCollection = new(newSpans);
 
 			// The changed regions are regions that appear in one set or the other, but not both.
 			NormalizedSpanCollection removed = NormalizedSpanCollection.Difference(oldSpanCollection, newSpanCollection);
@@ -304,7 +304,7 @@ namespace Menees.VsTools.Regions
 				IEnumerable<char> leadingWhitespaceChars = startLineText.TakeWhile((ch, index) => index < match.Index && char.IsWhiteSpace(ch));
 				string leadingWhitespace = leadingWhitespaceChars.Any() ? new string(leadingWhitespaceChars.ToArray()) : string.Empty;
 
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				int afterMatchIndex = match.Index + match.Length;
 				if (afterMatchIndex < startLineText.Length)
 				{

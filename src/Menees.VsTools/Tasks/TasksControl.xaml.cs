@@ -174,9 +174,9 @@
 
 		private void CopyAllTasks_Click(object sender, RoutedEventArgs e)
 		{
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 
-			using (StringWriter writer = new StringWriter(sb))
+			using (StringWriter writer = new(sb))
 			{
 				CsvUtility.WriteLine(writer, new object[] { "Comment", "Priority", "File", "Line", "Project" });
 				foreach (CommentTask task in this.tasks.Items)
@@ -187,7 +187,7 @@
 
 			// .NET sets the text as Unicode text, but Excel wants CSV data as UTF-8 bytes.
 			string csv = sb.ToString();
-			DataObject data = new DataObject();
+			DataObject data = new();
 			data.SetText(csv);
 			byte[] bytes = Encoding.UTF8.GetBytes(csv);
 			using (var stream = new MemoryStream(bytes))
@@ -211,7 +211,7 @@
 			CommentTask task = this.SelectedTask;
 			if (task != null)
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				sb.AppendLine(task.Comment);
 				sb.Append(task.Priority).AppendLine();
 				sb.AppendLine(task.FilePath);
@@ -244,7 +244,7 @@
 						{
 							string imageName = sort.Direction == ListSortDirection.Ascending ? "SortAscending.png" : "SortDescending.png";
 							Uri uri = ImageNameToSourceConverter.CreateResourceUri(imageName);
-							BitmapImage source = new BitmapImage(uri);
+							BitmapImage source = new(uri);
 							menuItem.Icon = new Image { Source = source };
 						}
 						else
@@ -254,10 +254,10 @@
 					}
 				}
 
-				XElement status = new XElement("TasksStatus");
+				XElement status = new("TasksStatus");
 				foreach (SortDescription sort in sorting)
 				{
-					XElement sortBy = new XElement(
+					XElement sortBy = new(
 						nameof(this.SortBy),
 						new XAttribute("PropertyName", sort.PropertyName),
 						new XAttribute("Direction", sort.Direction));
@@ -418,7 +418,7 @@
 					XElement status = XElement.Parse(statusXml);
 					foreach (XElement sortBy in status.Elements(nameof(this.SortBy)))
 					{
-						SortDescription sort = new SortDescription(
+						SortDescription sort = new(
 							sortBy.GetAttributeValue("PropertyName"),
 							sortBy.GetAttributeValue("Direction", ListSortDirection.Ascending));
 						sorting.Add(sort);
@@ -440,7 +440,7 @@
 				string text = task.ExcludeText;
 				if (!options.ExcludeFileCommentSet.Contains(text))
 				{
-					List<string> excludeFileComments = new List<string>(options.ExcludeFileCommentSet);
+					List<string> excludeFileComments = new(options.ExcludeFileCommentSet);
 					excludeFileComments.Add(text);
 					excludeFileComments.Sort();
 

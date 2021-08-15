@@ -29,16 +29,16 @@ namespace Menees.VsTools.Tasks
 
 		#region Internal Fields
 
-		internal static readonly ScanInfo Unscannable = new ScanInfo();
+		internal static readonly ScanInfo Unscannable = new();
 
 		#endregion
 
 		#region Private Data Members
 
-		private static readonly Lazy<Cache> LazyCache = new Lazy<Cache>(() => new Cache());
+		private static readonly Lazy<Cache> LazyCache = new(() => new Cache());
 
-		private readonly HashSet<Delimiter> delimiters = new HashSet<Delimiter>();
-		private readonly HashSet<Language> languages = new HashSet<Language>();
+		private readonly HashSet<Delimiter> delimiters = new();
+		private readonly HashSet<Language> languages = new();
 
 		#endregion
 
@@ -231,7 +231,7 @@ namespace Menees.VsTools.Tasks
 
 		private static ScanInfo Merge(ScanInfo scanInfo1, ScanInfo scanInfo2)
 		{
-			ScanInfo result = new ScanInfo(
+			ScanInfo result = new(
 				scanInfo1.delimiters.Concat(scanInfo2.delimiters),
 				scanInfo1.languages.Concat(scanInfo2.languages));
 			return result;
@@ -243,7 +243,7 @@ namespace Menees.VsTools.Tasks
 
 			try
 			{
-				FileInfo fileInfo = new FileInfo(file.FileName);
+				FileInfo fileInfo = new(file.FileName);
 
 				// The largest hand-maintained source code file I've ever encountered was almost 900K (in G. Millennium),
 				// and it was over 25000 lines of spaghetti code.  So I'm going to assume any file that's over 1MB
@@ -385,7 +385,7 @@ namespace Menees.VsTools.Tasks
 		{
 			bool? result = null;
 
-			using (MemoryStream stream = new MemoryStream(buffer))
+			using (MemoryStream stream = new(buffer))
 			{
 				using (StreamReader reader = CreateStreamReader(stream))
 				{
@@ -431,7 +431,7 @@ namespace Menees.VsTools.Tasks
 		{
 			bool? result = null;
 
-			using (MemoryStream stream = new MemoryStream(buffer))
+			using (MemoryStream stream = new(buffer))
 			{
 				using (StreamReader reader = CreateStreamReader(stream))
 				{
@@ -483,7 +483,7 @@ namespace Menees.VsTools.Tasks
 
 		private static StreamReader CreateStreamReader(MemoryStream stream)
 		{
-			StreamReader result = new StreamReader(
+			StreamReader result = new(
 				stream,
 				Encoding.Default,
 				detectEncodingFromByteOrderMarks: true,
@@ -505,8 +505,8 @@ namespace Menees.VsTools.Tasks
 			// Include whitespace and newline characters to string.Split will get rid of indentation and newlines too.
 			private static readonly char[] SplitCharacters = new[] { ',', ';', ' ', '\t', '\r', '\n' };
 
-			private readonly ConcurrentDictionary<string, ScanInfo> extensions = new ConcurrentDictionary<string, ScanInfo>(StringComparer.OrdinalIgnoreCase);
-			private readonly Dictionary<Language, ScanInfo> languages = new Dictionary<Language, ScanInfo>();
+			private readonly ConcurrentDictionary<string, ScanInfo> extensions = new(StringComparer.OrdinalIgnoreCase);
+			private readonly Dictionary<Language, ScanInfo> languages = new();
 
 			#endregion
 
@@ -516,7 +516,7 @@ namespace Menees.VsTools.Tasks
 			{
 				XElement root = XElement.Parse(Properties.Resources.ScanInfoXml);
 
-				HashSet<string> binaryExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+				HashSet<string> binaryExtensions = new(StringComparer.OrdinalIgnoreCase);
 				foreach (XElement binary in root.Elements("Binary"))
 				{
 					ReadExtensions(binary, binaryExtensions);
@@ -529,7 +529,7 @@ namespace Menees.VsTools.Tasks
 
 				foreach (XElement style in root.Elements("Style"))
 				{
-					HashSet<Delimiter> delimiters = new HashSet<Delimiter>();
+					HashSet<Delimiter> delimiters = new();
 					foreach (XElement delimiter in style.Elements("SingleLineDelimiter"))
 					{
 						delimiters.Add(new Delimiter(delimiter.Value));
@@ -554,7 +554,7 @@ namespace Menees.VsTools.Tasks
 						}
 					}
 
-					List<string> extensionList = new List<string>();
+					List<string> extensionList = new();
 					ReadExtensions(style, extensionList);
 					this.MergeExtensions(extensionList, delimiters, languageValues, binaryExtensions);
 				}
@@ -630,7 +630,7 @@ namespace Menees.VsTools.Tasks
 				HashSet<Language> languageValues,
 				HashSet<string> binaryExtensions)
 			{
-				ScanInfo scanInfo = new ScanInfo(delimiters, languageValues);
+				ScanInfo scanInfo = new(delimiters, languageValues);
 
 				foreach (string extension in extensionList)
 				{
@@ -664,7 +664,7 @@ namespace Menees.VsTools.Tasks
 		{
 			#region Private Data Members
 
-			private static readonly ConcurrentDictionary<string, Regex> RegexCache = new ConcurrentDictionary<string, Regex>();
+			private static readonly ConcurrentDictionary<string, Regex> RegexCache = new();
 			private readonly string id;
 
 			#endregion
@@ -710,7 +710,7 @@ namespace Menees.VsTools.Tasks
 
 			public override bool Equals(object obj)
 			{
-				bool result = !(obj is Delimiter delimiter) ? false : StringComparer.OrdinalIgnoreCase.Equals(this.id, delimiter.id);
+				bool result = obj is Delimiter delimiter && StringComparer.OrdinalIgnoreCase.Equals(this.id, delimiter.id);
 				return result;
 			}
 
@@ -729,7 +729,7 @@ namespace Menees.VsTools.Tasks
 
 			private Regex CreateRegex(CommentToken token)
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				if (!string.IsNullOrEmpty(this.Begin))
 				{
 					// Allow optional whitespace after the comment begins.
@@ -753,7 +753,7 @@ namespace Menees.VsTools.Tasks
 				sb.Append(Regex.Escape(token.Text));
 				if (token.IsCaseSensitive)
 				{
-					sb.Append(")");
+					sb.Append(')');
 				}
 
 				// Support an optional colon, space, or tab followed by any sequence of characters.
@@ -762,7 +762,7 @@ namespace Menees.VsTools.Tasks
 				if (string.IsNullOrEmpty(this.End))
 				{
 					// Close the optional separator and the named group then match to the end of the string.
-					sb.Append("(").Append(SeparatorPattern).Append(")?)$");
+					sb.Append('(').Append(SeparatorPattern).Append(")?)$");
 				}
 				else
 				{
@@ -770,14 +770,14 @@ namespace Menees.VsTools.Tasks
 					// to the end of the string if the end delimiter is matched first.  Then close the optional separator
 					// and the named group and then match to the end of the string or to the end delimiter.
 					// http://stackoverflow.com/a/6738624/1882616 and http://www.regular-expressions.info/repeat.html
-					sb.Append(@"(").Append(SeparatorPattern).Append("?)?)($|").Append(Regex.Escape(this.End)).Append(")");
+					sb.Append('(').Append(SeparatorPattern).Append("?)?)($|").Append(Regex.Escape(this.End)).Append(')');
 				}
 
 				// Ignore case overall because even in case-sensitive languages, most tokens need to be match case-insensitively.
 				// Also, in some languages the case for comment delimiters needs to be ignored (e.g., REM in .bat files).
 				// The options for Compiled and CultureInvariant are just to make it match as fast as possible.
 				string regexPattern = sb.ToString();
-				Regex result = new Regex(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+				Regex result = new(regexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 				return result;
 			}
 

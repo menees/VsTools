@@ -54,7 +54,7 @@
 			if (lineOptions.HasFlag(LineOptions.EliminateDuplicates))
 			{
 				int numLines = lines.Length;
-				List<string> newLines = new List<string>(numLines);
+				List<string> newLines = new(numLines);
 				string previousLine = null;
 				for (int i = 0; i < numLines; i++)
 				{
@@ -117,7 +117,7 @@
 
 		private static string StripPunctuation(string value)
 		{
-			StringBuilder sb = new StringBuilder(value.Length);
+			StringBuilder sb = new(value.Length);
 			foreach (char ch in value)
 			{
 				if (!char.IsPunctuation(ch))

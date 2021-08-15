@@ -141,7 +141,6 @@ namespace Menees.VsTools.Editor
 		[Category(nameof(Pattern))]
 		[DefaultValue(false)]
 		[DisplayName("Match case")]
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Set by PropertyGrid")]
 		public bool MatchCase { get; set; }
 
 		#endregion
@@ -159,7 +158,7 @@ namespace Menees.VsTools.Editor
 
 		public static string[] ValidateContentTypes(string[] contentTypes, ISet<string> knownOutputContentTypes)
 		{
-			HashSet<string> valid = new HashSet<string>(StringComparer.CurrentCultureIgnoreCase);
+			HashSet<string> valid = new(StringComparer.CurrentCultureIgnoreCase);
 
 			if (contentTypes != null)
 			{

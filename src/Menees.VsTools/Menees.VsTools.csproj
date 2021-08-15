@@ -338,7 +338,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Menees.Common">
-      <Version>4.9.7</Version>
+      <Version>4.9.11</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.205" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

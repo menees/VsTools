@@ -99,7 +99,7 @@
 			if (options != null)
 			{
 				NumberBase numBase = (NumberBase)this.currentTextBox.Tag;
-				Converter num = new Converter(this.currentTextBox.Text, options, numBase, this.CurrentByteOrder, this.CurrentNumberType);
+				Converter num = new(this.currentTextBox.Text, options, numBase, this.CurrentByteOrder, this.CurrentNumberType);
 
 				// Update the display.
 				bool previouslyUpdatingDisplay = this.updatingDisplay;

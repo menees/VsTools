@@ -324,7 +324,7 @@
 			Debug.Assert(textValue.Length % numCharsPerByte == 0, "Text must use an integral number of bytes.");
 
 			int numBytes = textValue.Length / numCharsPerByte;
-			List<string> byteStrings = new List<string>(numBytes);
+			List<string> byteStrings = new(numBytes);
 			for (int groupIndex = 0; groupIndex < numBytes; groupIndex++)
 			{
 				string byteString = textValue.Substring(groupIndex * numCharsPerByte, numCharsPerByte);
@@ -354,7 +354,7 @@
 			{
 				bool valid = true;
 				string[] byteStrings = SplitIntoByteStrings(textValue, numBase == NumberBase.Binary ? BitsPerByte : 2);
-				List<byte> byteList = new List<byte>(requiredNumBytes);
+				List<byte> byteList = new(requiredNumBytes);
 				foreach (string byteString in byteStrings)
 				{
 					if (TryParse(byteString, numBase, out byte byteValue))
@@ -562,7 +562,7 @@
 
 		private string GenerateBinaryString(byte[] requestedOrderBytes, NumberByteOrder byteOrder)
 		{
-			StringBuilder sb = new StringBuilder(BitsPerByte * requestedOrderBytes.Length);
+			StringBuilder sb = new(BitsPerByte * requestedOrderBytes.Length);
 
 			foreach (byte currentByte in requestedOrderBytes)
 			{
@@ -589,7 +589,7 @@
 
 		private string GenerateHexString(byte[] requestedOrderBytes, NumberByteOrder byteOrder)
 		{
-			StringBuilder sb = new StringBuilder(2 * requestedOrderBytes.Length);
+			StringBuilder sb = new(2 * requestedOrderBytes.Length);
 
 			foreach (byte b in requestedOrderBytes)
 			{

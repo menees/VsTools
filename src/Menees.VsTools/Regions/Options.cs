@@ -45,7 +45,7 @@
 			"Private Event Handlers\r\n" +
 			"Private Types";
 
-		private readonly HashSet<Language> supportRegions = new HashSet<Language> { Language.HTML, Language.SQL, Language.XML, Language.XAML };
+		private readonly HashSet<Language> supportRegions = new() { Language.HTML, Language.SQL, Language.XML, Language.XAML };
 
 		#endregion
 

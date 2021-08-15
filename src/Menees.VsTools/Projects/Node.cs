@@ -33,7 +33,7 @@
 
 		public NodeType Type { get; }
 
-		public List<(Node, LinkType)> References { get; } = new List<(Node, LinkType)>();
+		public List<(Node Node, LinkType Link)> References { get; } = new List<(Node, LinkType)>();
 
 		public bool IsRoot { get; set; }
 

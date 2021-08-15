@@ -33,9 +33,9 @@
 
 		public const string TaskOptionsString = "3e8cab32-2743-4c91-9826-62e717281ea8";
 
-		public static readonly Guid MeneesVsToolsPackage = new Guid(MeneesVsToolsPackageString);
+		public static readonly Guid MeneesVsToolsPackage = new(MeneesVsToolsPackageString);
 
-		public static readonly Guid MeneesVsToolsCommandSet = new Guid(MeneesVsToolsCommandSetString);
+		public static readonly Guid MeneesVsToolsCommandSet = new(MeneesVsToolsCommandSetString);
 
 		#endregion
 	}

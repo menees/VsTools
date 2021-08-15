@@ -200,7 +200,7 @@
 							break;
 
 						case Command.ToggleFiles:
-							ToggleFilesHandler toggleFilesHandler = new ToggleFilesHandler(this.dte);
+							ToggleFilesHandler toggleFilesHandler = new(this.dte);
 							toggleFilesHandler.ToggleFiles();
 							break;
 
@@ -258,7 +258,7 @@
 		private void CheckSpelling()
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
+			TextDocumentHandler handler = new(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
 				try
@@ -371,7 +371,7 @@
 		private void ExecuteText()
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
+			TextDocumentHandler handler = new(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
 				Utilities.ShellExecute(handler.SelectedText);
@@ -381,7 +381,7 @@
 		private void GenerateGuid()
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
+			TextDocumentHandler handler = new(this.dte);
 			if (handler.CanSetSelectedText)
 			{
 				Guid guid = Guid.NewGuid();
@@ -425,7 +425,7 @@
 		private void SortLines()
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
+			TextDocumentHandler handler = new(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
 				Sort.Options options = MainPackage.SortOptions;
@@ -433,7 +433,7 @@
 				bool execute = true;
 				if (!options.OnlyShowSortLinesDialogWhenShiftIsPressed || Utilities.IsShiftPressed)
 				{
-					SortLinesDialog dialog = new SortLinesDialog();
+					SortLinesDialog dialog = new();
 					execute = dialog.Execute(options);
 				}
 
@@ -446,7 +446,7 @@
 
 					// Now sort the lines and put them back as the selection
 					string text = handler.SelectedText;
-					TextLines lines = new TextLines(text);
+					TextLines lines = new(text);
 					lines.Sort(options.LineOptions);
 					string sortedText = lines.ToString();
 					handler.SetSelectedTextIfUnchanged(sortedText, "Sort Lines");
@@ -457,7 +457,7 @@
 		private void SortMembers()
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			MemberSorter sorter = new MemberSorter(this.dte, true);
+			MemberSorter sorter = new(this.dte, true);
 			if (sorter.HasSelectedMembers)
 			{
 				sorter.SortMembers(MainPackage.SortOptions);
@@ -467,11 +467,11 @@
 		private void Statistics()
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
+			TextDocumentHandler handler = new(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
 				string text = handler.SelectedText;
-				StatisticsDialog dialog = new StatisticsDialog();
+				StatisticsDialog dialog = new();
 				dialog.Execute(text);
 			}
 		}
@@ -479,11 +479,11 @@
 		private void StreamText()
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
+			TextDocumentHandler handler = new(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
 				string text = handler.SelectedText;
-				TextLines lines = new TextLines(text);
+				TextLines lines = new(text);
 				string streamedText = lines.Stream(handler.Language);
 				handler.SetSelectedTextIfUnchanged(streamedText, "Stream Text");
 			}
@@ -513,7 +513,7 @@
 		private void Trim()
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			TextDocumentHandler handler = new TextDocumentHandler(this.dte);
+			TextDocumentHandler handler = new(this.dte);
 			if (handler.HasNonEmptySelection)
 			{
 				Options options = MainPackage.GeneralOptions;
@@ -521,14 +521,14 @@
 				bool execute = true;
 				if (!options.OnlyShowTrimDialogWhenShiftIsPressed || Utilities.IsShiftPressed)
 				{
-					TrimDialog dialog = new TrimDialog();
+					TrimDialog dialog = new();
 					execute = dialog.Execute(options);
 				}
 
 				if (execute && (options.TrimStart || options.TrimEnd))
 				{
 					string text = handler.SelectedText;
-					TextLines lines = new TextLines(text);
+					TextLines lines = new(text);
 					lines.Trim(options.TrimStart, options.TrimEnd);
 					string trimmedText = lines.ToString();
 					handler.SetSelectedTextIfUnchanged(trimmedText, nameof(this.Trim));

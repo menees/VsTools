@@ -37,7 +37,7 @@ namespace Menees.VsTools.Editor
 			object result;
 			if (value is string text)
 			{
-				JavaScriptSerializer serializer = new JavaScriptSerializer();
+				JavaScriptSerializer serializer = new();
 				result = serializer.Deserialize<List<OutputHighlight>>(text);
 			}
 			else
@@ -53,7 +53,7 @@ namespace Menees.VsTools.Editor
 			object result;
 			if (destinationType == typeof(string))
 			{
-				JavaScriptSerializer serializer = new JavaScriptSerializer();
+				JavaScriptSerializer serializer = new();
 				result = serializer.Serialize(value);
 			}
 			else

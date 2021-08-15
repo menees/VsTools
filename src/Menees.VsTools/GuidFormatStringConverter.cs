@@ -65,7 +65,7 @@
 		public override bool GetStandardValuesSupported(ITypeDescriptorContext context) => true;
 
 		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
-			=> new StandardValuesCollection(Associations.Select(a => a.Item1).ToArray());
+			=> new(Associations.Select(a => a.Item1).ToArray());
 
 		#endregion
 	}

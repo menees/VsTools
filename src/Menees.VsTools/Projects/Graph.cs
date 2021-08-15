@@ -21,7 +21,7 @@
 	{
 		#region Private Data Members
 
-		private readonly Dictionary<string, Node> idToNodeMap = new Dictionary<string, Node>(StringComparer.CurrentCultureIgnoreCase);
+		private readonly Dictionary<string, Node> idToNodeMap = new(StringComparer.CurrentCultureIgnoreCase);
 		private readonly Options options;
 
 		#endregion
@@ -30,7 +30,7 @@
 
 		public Graph(IReadOnlyList<Project> projects, Options options)
 		{
-			HashSet<string> rootProjects = new HashSet<string>(projects.Count);
+			HashSet<string> rootProjects = new(projects.Count);
 			this.options = options;
 
 			ThreadHelper.ThrowIfNotOnUIThread();
@@ -68,7 +68,7 @@
 						foreach (Project targetProject in ((object[])dependency.RequiredProjects).Cast<Project>())
 						{
 							Node target = this.GetNode(targetProject.Name, NodeType.Project, targetProject.FullName);
-							if (!source.References.Any(tuple => ReferenceEquals(tuple.Item1, target)))
+							if (!source.References.Any(tuple => ReferenceEquals(tuple.Node, target)))
 							{
 								source.References.Add((target, LinkType.SolutionDependency));
 							}
@@ -89,7 +89,7 @@
 			// https://en.wikipedia.org/wiki/DGML
 			// http://schemas.microsoft.com/vs/2009/dgml/dgml.xsd
 			XNamespace ns = XNamespace.Get("http://schemas.microsoft.com/vs/2009/dgml");
-			XElement graphXml = new XElement(ns.GetName("DirectedGraph"));
+			XElement graphXml = new(ns.GetName("DirectedGraph"));
 			graphXml.SetAttributeValue("ZoomLevel", "-1");
 			switch (this.options.DefaultLayout)
 			{
@@ -110,7 +110,7 @@
 			this.AddStyles(graphXml);
 
 			string fullVsName = $"Visual Studio {edition} {MainPackage.VersionYear}";
-			XDocument result = new XDocument();
+			XDocument result = new();
 			result.Add(new XComment("If this opens in the XML editor, then you need to install Visual Studio's DGML editor."));
 			result.Add(new XComment($"Run the Visual Studio Installer, click Modify on {fullVsName}, and go to the Individual Components tab."));
 			result.Add(new XComment("Search for 'DGML editor' (under 'Code tools'), check its checkbox, and click Modify."));
@@ -122,12 +122,12 @@
 
 		#region Private Methods
 
-		private static void AddLinks(XElement linksXml, Node sourceNode, IEnumerable<(Node, LinkType)> targetNodes)
+		private static void AddLinks(XElement linksXml, Node sourceNode, IEnumerable<(Node Node, LinkType Link)> targetNodes)
 		{
 			XNamespace ns = linksXml.Name.Namespace;
 			foreach ((Node targetNode, LinkType linkType) in targetNodes)
 			{
-				XElement linkXml = new XElement(ns.GetName("Link"));
+				XElement linkXml = new(ns.GetName("Link"));
 				linkXml.SetAttributeValue("Source", sourceNode.Id);
 				linkXml.SetAttributeValue("Target", targetNode.Id);
 				linkXml.SetAttributeValue("Category", linkType);
@@ -192,7 +192,7 @@
 		private static void AddProperties(XElement graphXml)
 		{
 			XNamespace ns = graphXml.Name.Namespace;
-			XElement propertiesXml = new XElement(ns.GetName(nameof(Properties)));
+			XElement propertiesXml = new(ns.GetName(nameof(Properties)));
 			graphXml.Add(propertiesXml);
 			AddProperty("Label", typeof(string).FullName);
 			AddProperty("GraphDirection", "Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation");
@@ -206,7 +206,7 @@
 
 			void AddProperty(string id, string dataType, string label = null, bool isReference = false)
 			{
-				XElement property = new XElement(ns.GetName("Property"));
+				XElement property = new(ns.GetName("Property"));
 				property.SetAttributeValue("Id", id);
 				property.SetAttributeValue("Label", label ?? id);
 				property.SetAttributeValue("DataType", dataType);
@@ -222,17 +222,17 @@
 		private void AddNodesAndLinks(XElement graphXml)
 		{
 			XNamespace ns = graphXml.Name.Namespace;
-			XElement nodesXml = new XElement(ns.GetName("Nodes"));
+			XElement nodesXml = new(ns.GetName("Nodes"));
 			graphXml.Add(nodesXml);
 
-			XElement linksXml = new XElement(ns.GetName("Links"));
+			XElement linksXml = new(ns.GetName("Links"));
 			graphXml.Add(linksXml);
 
 			string commonPrefix = this.options.RemoveCommonPrefix ? FindCommonPrefix(this.idToNodeMap.Values.Select(n => n.Label).ToList()) : null;
 
 			foreach (Node node in this.idToNodeMap.Values)
 			{
-				XElement nodeXml = new XElement(ns.GetName(nameof(Node)));
+				XElement nodeXml = new(ns.GetName(nameof(Node)));
 				nodeXml.SetAttributeValue("Id", node.Id);
 				string label = !string.IsNullOrEmpty(commonPrefix) && node.Label.StartsWith(commonPrefix)
 					? node.Label.Substring(commonPrefix.Length)
@@ -254,7 +254,7 @@
 		private void AddCategories(XElement graphXml)
 		{
 			XNamespace ns = graphXml.Name.Namespace;
-			XElement categoriesXml = new XElement(ns.GetName("Categories"));
+			XElement categoriesXml = new(ns.GetName("Categories"));
 			graphXml.Add(categoriesXml);
 
 			// WPF color chart: https://wpfknowledge.blogspot.com/2012/05/note-this-is-not-original-work.html
@@ -266,7 +266,7 @@
 
 			void AddCategory(string id, string background = null, string stroke = null, string strokeDashArray = null)
 			{
-				XElement category = new XElement(ns.GetName("Category"));
+				XElement category = new(ns.GetName("Category"));
 				category.SetAttributeValue("Id", id);
 				category.SetAttributeValue("Background", background);
 				category.SetAttributeValue("Stroke", stroke);
@@ -279,7 +279,7 @@
 		private void AddStyles(XElement graphXml)
 		{
 			XNamespace ns = graphXml.Name.Namespace;
-			XElement stylesXml = new XElement(ns.GetName("Styles"));
+			XElement stylesXml = new(ns.GetName("Styles"));
 			graphXml.Add(stylesXml);
 
 			AddStyle(
@@ -305,13 +305,13 @@
 				Color background,
 				string icon)
 			{
-				XElement style = new XElement(ns.GetName("Style"));
+				XElement style = new(ns.GetName("Style"));
 				style.SetAttributeValue("TargetType", targetType);
 				style.SetAttributeValue("GroupLabel", groupLabel);
 				style.SetAttributeValue("ValueLabel", valueLabel);
 				stylesXml.Add(style);
 
-				XElement condition = new XElement(ns.GetName("Condition"));
+				XElement condition = new(ns.GetName("Condition"));
 				condition.SetAttributeValue("Expression", conditionExpression);
 				style.Add(condition);
 
@@ -325,7 +325,7 @@
 
 			void AddSetter(XElement style, string property, object value)
 			{
-				XElement setter = new XElement(ns.GetName("Setter"));
+				XElement setter = new(ns.GetName("Setter"));
 				setter.SetAttributeValue("Property", property);
 				setter.SetAttributeValue("Value", value);
 				style.Add(setter);

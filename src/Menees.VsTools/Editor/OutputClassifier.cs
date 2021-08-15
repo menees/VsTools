@@ -19,7 +19,7 @@ namespace Menees.VsTools.Editor
 		#region Private Data Members
 
 		private static readonly Dictionary<OutputHighlightType, IClassificationType> Classifications =
-			new Dictionary<OutputHighlightType, IClassificationType>();
+			new();
 
 		private IContentType contentType;
 		private List<Highlight> highlights;
@@ -151,7 +151,7 @@ namespace Menees.VsTools.Editor
 					// and we just need to see if it's in the OutputHighlight's pre-verified list.
 					if (highlight.ContentTypes.Any(ct => Utilities.IsContentOfType(contentType, ct)))
 					{
-						Regex pattern = new Regex(highlight.Pattern, highlight.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
+						Regex pattern = new(highlight.Pattern, highlight.MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
 						result = new Highlight
 							{
 								HighlightType = highlight.Highlight,

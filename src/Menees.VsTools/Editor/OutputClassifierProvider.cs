@@ -42,7 +42,7 @@ namespace Menees.VsTools.Editor
 			"TFSourceControlOutput",
 		};
 
-		private static readonly object ResourceLock = new object();
+		private static readonly object ResourceLock = new();
 		private static IContentTypeRegistryService contentTypeRegistryService;
 
 		#endregion
@@ -59,7 +59,6 @@ namespace Menees.VsTools.Editor
 		#region Public Properties
 
 		[Import]
-		[SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Assigned by MEF.")]
 		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "MEF requires an instance property.")]
 		public IContentTypeRegistryService ContentTypeRegistryService
 		{
@@ -111,7 +110,7 @@ namespace Menees.VsTools.Editor
 
 		protected override ClassifierBase CreateClassifier(ITextBuffer buffer)
 		{
-			OutputClassifier result = new OutputClassifier(buffer, this.ClassificationRegistry);
+			OutputClassifier result = new(buffer, this.ClassificationRegistry);
 			return result;
 		}
 

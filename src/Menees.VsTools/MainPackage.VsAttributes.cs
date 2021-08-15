@@ -20,7 +20,6 @@
 
 	#endregion
 
-#pragma warning disable SA1515 // SingleLineCommentsMustBePrecededByBlankLine
 	[PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
 	[InstalledProductRegistration("#110", "#111", Version, IconResourceID = 400)] // Info for Help/About dialog
 	[ProvideMenuResource("Menus.ctmenu", 1)] // This attribute is needed to let the shell know that this package exposes some menus.
@@ -40,7 +39,6 @@
 	[ProvideOptionPage(typeof(Sort.Options), Title, Sort.Options.DefaultCaption, 113, 118, false)]
 	[ProvideOptionPage(typeof(Regions.Options), Title, Regions.Options.DefaultCaption, 113, 119, false)]
 	[ProvideOptionPage(typeof(Projects.Options), Title, Projects.Options.DefaultCaption, 113, 120, false)]
-#pragma warning restore SA1515
 	public sealed partial class MainPackage
 	{
 	}

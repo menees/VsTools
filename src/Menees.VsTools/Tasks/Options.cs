@@ -144,7 +144,7 @@
 			set
 			{
 				this.excludeFileComments = value;
-				TextLines lines = new TextLines(this.excludeFileComments);
+				TextLines lines = new(this.excludeFileComments);
 				this.ExcludeFileCommentSet = new HashSet<string>(lines.Lines.Where(line => !string.IsNullOrWhiteSpace(line)), StringComparer.OrdinalIgnoreCase);
 			}
 		}
@@ -182,7 +182,7 @@
 
 		private static IReadOnlyList<Regex> SplitPatterns(string patterns)
 		{
-			TextLines lines = new TextLines(patterns);
+			TextLines lines = new(patterns);
 
 			// If they enter an invalid regular expression, then this will throw an ArgumentException.
 			List<Regex> result = lines.Lines.Where(line => !string.IsNullOrEmpty(line))

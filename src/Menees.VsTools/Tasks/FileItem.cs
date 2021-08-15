@@ -21,8 +21,8 @@ namespace Menees.VsTools.Tasks
 	{
 		#region Private Data Members
 
-		private static readonly DateTime MinDateTimeUtc = new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-		private static readonly HashSet<HierarchyItem> EmptySet = new HashSet<HierarchyItem>();
+		private static readonly DateTime MinDateTimeUtc = new(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+		private static readonly HashSet<HierarchyItem> EmptySet = new();
 
 		private readonly CommentTaskProvider provider;
 		private readonly FileInfo fileInfo;
@@ -350,7 +350,7 @@ namespace Menees.VsTools.Tasks
 							MatchCollection matches = regex.Matches(line);
 							foreach (Match match in matches)
 							{
-								CommentTask task = new CommentTask(
+								CommentTask task = new(
 									this.provider,
 									tokenRegex.Token.Priority,
 									this.ProjectNames,
@@ -391,7 +391,7 @@ namespace Menees.VsTools.Tasks
 				{
 					if (stream != null)
 					{
-						using (StreamReader reader = new StreamReader(stream))
+						using (StreamReader reader = new(stream))
 						{
 							string line;
 							while ((line = reader.ReadLine()) != null)

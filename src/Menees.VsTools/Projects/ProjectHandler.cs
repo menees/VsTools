@@ -88,9 +88,9 @@
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			StringBuilder output = new StringBuilder();
+			StringBuilder output = new();
 
-			List<Project> selectedProjects = new List<Project>();
+			List<Project> selectedProjects = new();
 			if (!GetSelectedProjects(dte, selectedProjects, false))
 			{
 				OutputString(output, "One or more projects must be selected in Solution Explorer.");
@@ -140,7 +140,7 @@
 
 			// Example from http://msdn.microsoft.com/en-us/library/envdte.dte.aspx
 			dte.ItemOperations.NewFile(@"General\Text File", "Project Properties");
-			TextDocumentHandler handler = new TextDocumentHandler(dte);
+			TextDocumentHandler handler = new(dte);
 			handler.SetSelectedText(output.ToString(), "List All Project Properties");
 		}
 
@@ -148,14 +148,14 @@
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			List<Project> selectedProjects = new List<Project>();
+			List<Project> selectedProjects = new();
 			if (!GetSelectedProjects(dte, selectedProjects, true))
 			{
 				package.ShowMessageBox("One or more projects (or the solution) must be selected in Solution Explorer.");
 			}
 			else
 			{
-				Graph graph = new Graph(selectedProjects, MainPackage.ProjectOptions);
+				Graph graph = new(selectedProjects, MainPackage.ProjectOptions);
 				XDocument graphXml = graph.CreateDgmlDocument(dte.Edition);
 
 				string tempFileName = Path.Combine(Path.GetTempPath(), "Project Dependencies.dgml");
@@ -176,10 +176,6 @@
 			output.Append(message);
 		}
 
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1031:DoNotCatchGeneralExceptionTypes",
-			Justification = "This is necessary because the project system can throw any exception type.")]
 		private static void OutputProperties(StringBuilder output, EnvDTE.Properties properties, string indent)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();

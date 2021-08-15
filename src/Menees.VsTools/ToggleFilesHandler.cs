@@ -18,7 +18,7 @@
 	{
 		#region Private Data Members
 
-		private static readonly HashSet<Language> SupportsToggleFiles = new HashSet<Language>(
+		private static readonly HashSet<Language> SupportsToggleFiles = new(
 			new[] { Language.CSharp, Language.VB, Language.CPlusPlus, Language.HTML, Language.XML, Language.XAML });
 
 		// Use arrays (not HashSets) so we can search for extensions
