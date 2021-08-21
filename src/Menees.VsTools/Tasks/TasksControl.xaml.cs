@@ -349,18 +349,29 @@
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
+			CommentTaskEqualityComparer comparer = new();
+			HashSet<CommentTask> unchangedTasks = new(e.RemovedTasks, comparer);
+			unchangedTasks.IntersectWith(e.AddedTasks);
+
 			// If a user is trying to exclude an item while we're trying to remove and add things, it doesn't work reliably.
 			// Forcing the context menu closed is abrupt but better than a user's menu action being ignored (because its
 			// target item was replaced).
-			this.tasks.ContextMenu.IsOpen = false;
+			if (this.tasks.ContextMenu.IsOpen)
+			{
+				CommentTask selected = this.SelectedTask;
+				if (selected == null || !unchangedTasks.Contains(selected))
+				{
+					this.tasks.ContextMenu.IsOpen = false;
+				}
+			}
 
-			foreach (CommentTask task in e.RemovedTasks)
+			foreach (CommentTask task in e.RemovedTasks.Except(unchangedTasks, comparer))
 			{
 				this.tasks.Items.Remove(task);
 			}
 
 			Options options = MainPackage.TaskOptions;
-			foreach (CommentTask task in e.AddedTasks)
+			foreach (CommentTask task in e.AddedTasks.Except(unchangedTasks, comparer))
 			{
 				// The foreground and background options can be out of sync for up to 2 seconds, which is enough time for
 				// a user to exclude line B after excluding line A. But the background thread will have re-scanned after excluding
@@ -511,6 +522,26 @@
 		private void Tasks_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			this.TrySelectTask(e.GetPosition(this.tasks));
+		}
+
+		#endregion
+
+		#region Private Types
+
+		private sealed class CommentTaskEqualityComparer : IEqualityComparer<CommentTask>
+		{
+			public bool Equals(CommentTask x, CommentTask y)
+			{
+				bool result = x.Priority == y.Priority
+					&& x.Line == y.Line
+					&& x.Project == y.Project
+					&& x.FilePath == y.FilePath
+					&& x.Comment == y.Comment;
+				return result;
+			}
+
+			public int GetHashCode(CommentTask obj)
+				=> obj.Comment.GetHashCode();
 		}
 
 		#endregion
