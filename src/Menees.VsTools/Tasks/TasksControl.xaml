@@ -101,7 +101,8 @@
 				KeyDown="Tasks_KeyDown"
 				MouseDoubleClick="Tasks_DoubleClick"
 				TextSearch.TextPath="Comment"
-				ContextMenuOpening="Tasks_ContextMenuOpening">
+				ContextMenuOpening="Tasks_ContextMenuOpening"
+				 PreviewMouseRightButtonDown="Tasks_PreviewMouseRightButtonDown">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Border Style="{StaticResource TaskBorder}" BorderThickness="0,0,0,1" Grid.Row="2" BorderBrush="Black" Padding="0,0,0,4">

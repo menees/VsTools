@@ -10,7 +10,9 @@
 	using System.Linq;
 	using System.Text;
 	using System.Threading.Tasks;
+	using System.Windows;
 	using System.Windows.Input;
+	using System.Windows.Media;
 	using Menees.Shell;
 	using Microsoft.VisualStudio;
 	using Microsoft.VisualStudio.ComponentModelHost;
@@ -232,6 +234,30 @@
 		{
 			bool result = actualType.IsOfType(typeNameToCheck)
 				|| string.Equals(actualType.TypeName, typeNameToCheck, StringComparison.OrdinalIgnoreCase);
+			return result;
+		}
+
+		public static TItem GetItemTarget<TItem>(Visual visual, Point point)
+			where TItem : class
+		{
+			TItem result = null;
+
+			// http://stackoverflow.com/questions/3788337/how-to-get-item-under-cursor-in-wpf-listview
+			HitTestResult hit = VisualTreeHelper.HitTest(visual, point);
+			if (hit != null)
+			{
+				DependencyObject dependencyObject = hit.VisualHit;
+				if (dependencyObject != null)
+				{
+					do
+					{
+						result = dependencyObject as TItem;
+						dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
+					}
+					while (result == null && dependencyObject != null);
+				}
+			}
+
 			return result;
 		}
 

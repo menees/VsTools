@@ -122,27 +122,7 @@
 		}
 
 		private ListViewItem GetItemTargetInfo(Point listViewPoint)
-		{
-			ListViewItem result = null;
-
-			// http://stackoverflow.com/questions/3788337/how-to-get-item-under-cursor-in-wpf-listview
-			HitTestResult hit = VisualTreeHelper.HitTest(this.list, listViewPoint);
-			if (hit != null)
-			{
-				DependencyObject dependencyObject = hit.VisualHit;
-				if (dependencyObject != null)
-				{
-					do
-					{
-						result = dependencyObject as ListViewItem;
-						dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
-					}
-					while (result == null && dependencyObject != null);
-				}
-			}
-
-			return result;
-		}
+			=> Utilities.GetItemTarget<ListViewItem>(this.list, listViewPoint);
 
 		private Tuple<ListViewItem, List<CodeMember>> GetDropTargetInfo(DragEventArgs e)
 		{

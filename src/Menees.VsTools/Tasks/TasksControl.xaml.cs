@@ -168,6 +168,24 @@
 			this.warningBorder.Visibility = string.IsNullOrEmpty(message) ? Visibility.Collapsed : Visibility.Visible;
 		}
 
+		private bool TrySelectTask(Point pt)
+		{
+			bool hasSelectedTask = this.SelectedTask != null;
+
+			// If they used a mouse to open the context menu, try to select the item under the mouse cursor (if any).
+			if (!hasSelectedTask && pt.X != -1 && pt.Y != -1)
+			{
+				ListBoxItem item = Utilities.GetItemTarget<ListBoxItem>(this.tasks, pt);
+				if (item?.Content is CommentTask task)
+				{
+					this.tasks.SelectedItem = task;
+					hasSelectedTask = true;
+				}
+			}
+
+			return hasSelectedTask;
+		}
+
 		#endregion
 
 		#region Private Event Handlers
@@ -288,10 +306,10 @@
 					// This allows the ContextMenuClosing event to fire later.
 					// http://stackoverflow.com/a/27694260/1882616
 					var mouseDownEvent = new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Right)
-						{
-							RoutedEvent = Mouse.MouseUpEvent,
-							Source = sender,
-						};
+					{
+						RoutedEvent = Mouse.MouseUpEvent,
+						Source = sender,
+					};
 
 					InputManager.Current.ProcessInput(mouseDownEvent);
 				}
@@ -329,14 +347,29 @@
 
 		private void TaskProvider_TasksChanged(object sender, TasksChangedEventArgs e)
 		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			// If a user is trying to exclude an item while we're trying to remove and add things, it doesn't work reliably.
+			// Forcing the context menu closed is abrupt but better than a user's menu action being ignored (because its
+			// target item was replaced).
+			this.tasks.ContextMenu.IsOpen = false;
+
 			foreach (CommentTask task in e.RemovedTasks)
 			{
 				this.tasks.Items.Remove(task);
 			}
 
+			Options options = MainPackage.TaskOptions;
 			foreach (CommentTask task in e.AddedTasks)
 			{
-				this.tasks.Items.Add(task);
+				// The foreground and background options can be out of sync for up to 2 seconds, which is enough time for
+				// a user to exclude line B after excluding line A. But the background thread will have re-scanned after excluding
+				// line A and will post to the foreground to remove A and add B. So without this extra foreground check, a user
+				// can exclude B and then have it immediately re-appear.
+				if (!options.ExcludeFileCommentSet.Contains(task.ExcludeText))
+				{
+					this.tasks.Items.Add(task);
+				}
 			}
 
 			// This is necessary to make new items respect existing SortDescriptions.
@@ -345,7 +378,10 @@
 
 		private void Tasks_ContextMenuOpening(object sender, ContextMenuEventArgs e)
 		{
-			bool hasSelectedTask = this.SelectedTask != null;
+			// https://stackoverflow.com/a/3880173/1882616
+			Point target = this.tasks.TranslatePoint(new Point(e.CursorLeft, e.CursorTop), Application.Current.MainWindow);
+			bool hasSelectedTask = this.TrySelectTask(target);
+
 			foreach (MenuItem menuItem in this.tasks.ContextMenu.Items.OfType<MenuItem>().Where(item => item.Tag as string == nameof(this.SelectedTask)))
 			{
 				menuItem.IsEnabled = hasSelectedTask;
@@ -354,7 +390,15 @@
 
 		private void Tasks_DoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			this.GoToSelectedTask();
+			if (Utilities.IsShiftPressed && ApplicationInfo.IsDebugBuild)
+			{
+				// We need a way to unselect an item without having to exclude one.
+				this.tasks.SelectedItem = null;
+			}
+			else
+			{
+				this.GoToSelectedTask();
+			}
 		}
 
 		private void Tasks_GoTo(object sender, RoutedEventArgs e)
@@ -434,7 +478,16 @@
 			ThreadHelper.ThrowIfNotOnUIThread();
 
 			CommentTask task = this.SelectedTask;
-			if (task != null)
+			if (task == null)
+			{
+				// When the background thread posts changed tasks to the foreground thread,
+				// the foreground handler replaces all the items, so it's possible for the context
+				// menu to be open and enabled with no selected task (even though we tried to
+				// auto-select on right-click and to disable the menu items if no initial selection).
+				// It's safer to tell the user that their Exclude didn't work than to silently do nothing.
+				this.Package.ShowMessageBox("No task is selected.");
+			}
+			else
 			{
 				Options options = MainPackage.TaskOptions;
 				string text = task.ExcludeText;
@@ -444,14 +497,20 @@
 					excludeFileComments.Add(text);
 					excludeFileComments.Sort();
 
-					// The task would go away in about 2 seconds after Apply, but this makes it disappear instantly.
-					this.tasks.Items.Remove(task);
-
 					options.ExcludeFileComments = string.Join(Environment.NewLine, excludeFileComments);
 					options.Apply();
 					options.SaveSettingsToStorage();
+
+					// The task would go away in about 2 seconds after Apply, but this makes it disappear instantly.
+					// Do this after the options are updated so a background thread won't re-add it immediately.
+					this.tasks.Items.Remove(task);
 				}
 			}
+		}
+
+		private void Tasks_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			this.TrySelectTask(e.GetPosition(this.tasks));
 		}
 
 		#endregion
