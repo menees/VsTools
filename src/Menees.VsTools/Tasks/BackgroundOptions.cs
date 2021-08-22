@@ -37,6 +37,8 @@
 
 		public ISet<string> ExcludeFileComments { get; private set; }
 
+		public IReadOnlyList<Regex> ExcludeCommentsExpressions { get; private set; }
+
 		#endregion
 
 		#region Public Methods
@@ -74,6 +76,12 @@
 				if (this.ExcludeFileComments != options.ExcludeFileCommentSet)
 				{
 					this.ExcludeFileComments = options.ExcludeFileCommentSet;
+					updated = true;
+				}
+
+				if (this.ExcludeCommentsExpressions != options.ExcludeCommentsExpressions)
+				{
+					this.ExcludeCommentsExpressions = options.ExcludeCommentsExpressions;
 					updated = true;
 				}
 			}

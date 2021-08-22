@@ -284,6 +284,9 @@ namespace Menees.VsTools.Tasks
 					{
 						foreach (var pair in itemChanges)
 						{
+							// If two refreshes come in for a FileItem before changes are cleared, then the dictionary can have
+							// old1, new1, old2 (=new1), and new2 tasks in it for a single file item. When that happens the new1
+							// tasks should have their value set to false (for removal) since they should equal the old2 tasks.
 							this.changedTasks[pair.Key] = pair.Value;
 						}
 					}

@@ -33,6 +33,7 @@
 		#region Private Data Members
 
 		private readonly TasksWindow window;
+		private readonly CommentTaskEqualityComparer comparer = new();
 		private bool initiallyEnabled;
 		private DateTime lastSortMenuClosed;
 		private bool isLoading;
@@ -349,29 +350,37 @@
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			CommentTaskEqualityComparer comparer = new();
-			HashSet<CommentTask> unchangedTasks = new(e.RemovedTasks, comparer);
-			unchangedTasks.IntersectWith(e.AddedTasks);
+			CommentTask selected = this.SelectedTask;
 
 			// If a user is trying to exclude an item while we're trying to remove and add things, it doesn't work reliably.
 			// Forcing the context menu closed is abrupt but better than a user's menu action being ignored (because its
 			// target item was replaced).
-			if (this.tasks.ContextMenu.IsOpen)
+			if (this.tasks.ContextMenu.IsOpen && (selected == null || e.RemovedTasks.Contains(selected)))
 			{
-				CommentTask selected = this.SelectedTask;
-				if (selected == null || !unchangedTasks.Contains(selected))
+				this.tasks.ContextMenu.IsOpen = false;
+			}
+
+			// Note: This TasksChanged handler is only raised periodically, so it can report multiple changes for the same file.
+			// For example, quick changes to a file might cause old1, new1, old2(=new1), and new2 tasks to be sent, and
+			// we'd get multiple generations of old tasks for that file.
+			foreach (CommentTask task in e.RemovedTasks)
+			{
+				int countBefore = this.tasks.Items.Count;
+				this.tasks.Items.Remove(task);
+				if (this.tasks.Items.Count == countBefore)
 				{
-					this.tasks.ContextMenu.IsOpen = false;
+					// We should rarely (if ever) miss a change notification, but if we get out-of-sync, then try to
+					// match old tasks by value equality if we fail to match it by reference equality.
+					CommentTask equalTask = FindEqualTaskItem(task);
+					if (equalTask != null)
+					{
+						this.tasks.Items.Remove(equalTask);
+					}
 				}
 			}
 
-			foreach (CommentTask task in e.RemovedTasks.Except(unchangedTasks, comparer))
-			{
-				this.tasks.Items.Remove(task);
-			}
-
 			Options options = MainPackage.TaskOptions;
-			foreach (CommentTask task in e.AddedTasks.Except(unchangedTasks, comparer))
+			foreach (CommentTask task in e.AddedTasks)
 			{
 				// The foreground and background options can be out of sync for up to 2 seconds, which is enough time for
 				// a user to exclude line B after excluding line A. But the background thread will have re-scanned after excluding
@@ -385,6 +394,28 @@
 
 			// This is necessary to make new items respect existing SortDescriptions.
 			this.tasks.Items.Refresh();
+
+			// Try to restore any prior selection.
+			if (this.SelectedTask == null && selected != null)
+			{
+				this.tasks.SelectedItem = FindEqualTaskItem(selected);
+			}
+
+			CommentTask FindEqualTaskItem(CommentTask target)
+			{
+				CommentTask result = null;
+
+				foreach (CommentTask task in this.tasks.Items)
+				{
+					if (this.comparer.Equals(task, target))
+					{
+						result = task;
+						break;
+					}
+				}
+
+				return result;
+			}
 		}
 
 		private void Tasks_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -401,9 +432,10 @@
 
 		private void Tasks_DoubleClick(object sender, MouseButtonEventArgs e)
 		{
+			// In debug builds we need a way to unselect an item without having to exclude one
+			// so we can test the TrySelectTask logic on ContextMenuOpening.
 			if (Utilities.IsShiftPressed && ApplicationInfo.IsDebugBuild)
 			{
-				// We need a way to unselect an item without having to exclude one.
 				this.tasks.SelectedItem = null;
 			}
 			else

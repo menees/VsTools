@@ -39,6 +39,7 @@
 		private string excludeFilesPatterns;
 		private string excludeProjectsPatterns;
 		private string excludeFileComments;
+		private string excludeCommentsPatterns;
 		private int? requestedMaxDegreeOfParallelism;
 
 		#endregion
@@ -51,6 +52,7 @@
 			this.ExcludeFilesPatterns = DefaultExcludeFilesPatterns;
 			this.ExcludeProjectsPatterns = DefaultExcludeProjectsPatterns;
 			this.ExcludeFileComments = null;
+			this.ExcludeCommentsPatterns = null;
 		}
 
 		#endregion
@@ -149,6 +151,26 @@
 			}
 		}
 
+		[Category("Exclude")]
+		[DisplayName("Exclude comment patterns")]
+		[Description("Regular expressions used to exclude task comments. " +
+			"Enter one pattern per line. Each pattern is matched against the comments identified by task tokens.")]
+		[Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+		[DefaultValue(null)]
+		public string ExcludeCommentsPatterns
+		{
+			get
+			{
+				return this.excludeCommentsPatterns;
+			}
+
+			set
+			{
+				this.ExcludeCommentsExpressions = SplitPatterns(value);
+				this.excludeCommentsPatterns = value;
+			}
+		}
+
 		#endregion
 
 		#region Public Non-Browsable Properties (for other state persistence)
@@ -165,6 +187,8 @@
 		internal IReadOnlyList<Regex> ExcludeProjectsExpressions { get; private set; }
 
 		internal ISet<string> ExcludeFileCommentSet { get; private set; }
+
+		internal IReadOnlyList<Regex> ExcludeCommentsExpressions { get; private set; }
 
 		internal int MaxDegreeOfParallelism
 		{

@@ -259,6 +259,9 @@
 
 				LogMessage(string.Format("After {0}'s base.Initialize()", this.ToString()));
 
+				// Set the ApplicationInfo's main assembly so IsDebugBuild will work correctly.
+				ApplicationInfo.Initialize(Title, this.GetType().Assembly);
+
 				await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 				ScanInfo.GetUserRegistryRoot = () => this.UserRegistryRoot;
 

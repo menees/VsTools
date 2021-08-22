@@ -205,7 +205,10 @@ namespace Menees.VsTools.Tasks
 
 		public bool Refresh(RefreshAction action, out IDictionary<CommentTask, bool> itemChanges)
 		{
-			bool isScannable = action != RefreshAction.Remove && this.scanInfo.IsScannable;
+			// When the solution is closed, make sure we treat previously opened items as not scannable so their tasks go away.
+			bool isScannable = action != RefreshAction.Remove && this.scanInfo.IsScannable
+				&& (this.hierarchyItems.Count > 0 || (this.document?.HasTextDocument ?? false) || !string.IsNullOrEmpty(this.ProjectNames));
+
 			if (isScannable)
 			{
 				this.fileInfo.Refresh();
@@ -336,6 +339,7 @@ namespace Menees.VsTools.Tasks
 				.ToList();
 
 			List<CommentTask> result = null;
+			BackgroundOptions options = this.provider.Options;
 
 			int lineNumber = 0;
 			foreach (string line in this.GetLines())
@@ -350,22 +354,22 @@ namespace Menees.VsTools.Tasks
 							MatchCollection matches = regex.Matches(line);
 							foreach (Match match in matches)
 							{
-								CommentTask task = new(
-									this.provider,
-									tokenRegex.Token.Priority,
-									this.ProjectNames,
-									this.ExactCaseFileName,
-									lineNumber,
-									match.Groups[ScanInfo.RegexCommentGroupName].Value.Trim());
-
-								if (!this.provider.Options.ExcludeFileComments.Contains(task.ExcludeText))
+								string comment = match.Groups[ScanInfo.RegexCommentGroupName].Value.Trim();
+								if (!options.ExcludeCommentsExpressions.Any(expr => expr.IsMatch(comment)))
 								{
-									if (result == null)
-									{
-										result = new List<CommentTask>();
-									}
+									CommentTask task = new(
+										this.provider,
+										tokenRegex.Token.Priority,
+										this.ProjectNames,
+										this.ExactCaseFileName,
+										lineNumber,
+										comment);
 
-									result.Add(task);
+									if (!options.ExcludeFileComments.Contains(task.ExcludeText))
+									{
+										result ??= new();
+										result.Add(task);
+									}
 								}
 							}
 						}
