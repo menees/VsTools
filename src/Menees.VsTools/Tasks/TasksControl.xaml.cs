@@ -4,6 +4,7 @@
 
 	using System;
 	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
 	using System.Collections.Specialized;
 	using System.ComponentModel;
 	using System.IO;
@@ -21,7 +22,9 @@
 	using System.Windows.Navigation;
 	using System.Windows.Shapes;
 	using System.Xml.Linq;
+	using EnvDTE;
 	using Microsoft.VisualStudio.Shell;
+	using Microsoft.VisualStudio.Shell.Interop;
 
 	#endregion
 
@@ -34,9 +37,13 @@
 
 		private readonly TasksWindow window;
 		private readonly CommentTaskEqualityComparer comparer = new();
+		private readonly ObservableCollection<CommentTask> allTasks = new();
+		private readonly ObservableCollection<CommentTask> filteredTasks = new();
+		private readonly Predicate<CommentTask> taskFilter;
 		private bool initiallyEnabled;
 		private DateTime lastSortMenuClosed;
 		private bool isLoading;
+		private string activeFilePath;
 
 		#endregion
 
@@ -47,6 +54,8 @@
 			this.InitializeComponent();
 			this.window = window;
 			this.isLoading = true;
+
+			this.taskFilter = task => string.Equals(task.FilePath, this.activeFilePath, StringComparison.CurrentCultureIgnoreCase);
 
 			INotifyCollectionChanged changed = this.tasks.Items.SortDescriptions;
 			changed.CollectionChanged += this.Sort_Changed;
@@ -87,6 +96,8 @@
 				return result;
 			}
 		}
+
+		private bool IsFilterActive => this.DataContext == this.filteredTasks;
 
 		#endregion
 
@@ -153,16 +164,13 @@
 					message = "Task comment scanning will be enabled after Visual Studio is restarted.";
 				}
 			}
+			else if (this.initiallyEnabled)
+			{
+				message = "Task comment scanning has been paused and will be disabled after Visual Studio is restarted.";
+			}
 			else
 			{
-				if (this.initiallyEnabled)
-				{
-					message = "Task comment scanning has been paused and will be disabled after Visual Studio is restarted.";
-				}
-				else
-				{
-					message = $"Task comment scanning is currently disabled (under Tools → Options → {MainPackage.Title} → {TasksWindow.DefaultCaption}).";
-				}
+				message = $"Task comment scanning is currently disabled (under Tools → Options → {MainPackage.Title} → {TasksWindow.DefaultCaption}).";
 			}
 
 			this.warning.Text = message;
@@ -187,6 +195,51 @@
 			return hasSelectedTask;
 		}
 
+		private void ShowFilteredTasks(bool applyFilter, bool force = false)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			if (!force)
+			{
+				Options options = MainPackage.TaskOptions;
+				bool oldState = options.ShowFilteredTasks;
+				options.ShowFilteredTasks = applyFilter;
+				force = oldState != applyFilter;
+				if (force)
+				{
+					options.SaveSettingsToStorage();
+				}
+			}
+
+			if (force)
+			{
+				if (applyFilter)
+				{
+					this.RebuildFilteredTasks(true);
+				}
+
+				this.DataContext = applyFilter ? this.filteredTasks : this.allTasks;
+
+				// Set IsChecked conditionally in case a toggle event is what called us.
+				if (this.filterToggle.IsChecked != applyFilter)
+				{
+					this.filterToggle.IsChecked = applyFilter;
+				}
+			}
+		}
+
+		private void RebuildFilteredTasks(bool force)
+		{
+			this.filteredTasks.Clear();
+			if (force || this.IsFilterActive)
+			{
+				foreach (CommentTask task in this.allTasks.Where(t => this.taskFilter(t)))
+				{
+					this.filteredTasks.Add(task);
+				}
+			}
+		}
+
 		#endregion
 
 		#region Private Event Handlers
@@ -209,7 +262,7 @@
 			DataObject data = new();
 			data.SetText(csv);
 			byte[] bytes = Encoding.UTF8.GetBytes(csv);
-			using (var stream = new MemoryStream(bytes))
+			using (MemoryStream stream = new(bytes))
 			{
 				data.SetData(DataFormats.CommaSeparatedValue, stream);
 				Clipboard.SetDataObject(data, true);
@@ -306,7 +359,7 @@
 					// Turn this (left) Click event into a RightButtonUp event.
 					// This allows the ContextMenuClosing event to fire later.
 					// http://stackoverflow.com/a/27694260/1882616
-					var mouseDownEvent = new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Right)
+					MouseButtonEventArgs mouseDownEvent = new(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Right)
 					{
 						RoutedEvent = Mouse.MouseUpEvent,
 						Source = sender,
@@ -363,18 +416,22 @@
 			// Note: This TasksChanged handler is only raised periodically, so it can report multiple changes for the same file.
 			// For example, quick changes to a file might cause old1, new1, old2(=new1), and new2 tasks to be sent, and
 			// we'd get multiple generations of old tasks for that file.
+			ICollection<CommentTask> allItems = this.allTasks;
+			ICollection<CommentTask> filteredItems = this.IsFilterActive ? this.filteredTasks : null;
 			foreach (CommentTask task in e.RemovedTasks)
 			{
-				int countBefore = this.tasks.Items.Count;
-				this.tasks.Items.Remove(task);
-				if (this.tasks.Items.Count == countBefore)
+				if (allItems.Remove(task))
+				{
+					filteredItems?.Remove(task);
+				}
+				else
 				{
 					// We should rarely (if ever) miss a change notification, but if we get out-of-sync, then try to
 					// match old tasks by value equality if we fail to match it by reference equality.
 					CommentTask equalTask = FindEqualTaskItem(task);
-					if (equalTask != null)
+					if (equalTask != null && allItems.Remove(equalTask))
 					{
-						this.tasks.Items.Remove(equalTask);
+						filteredItems?.Remove(equalTask);
 					}
 				}
 			}
@@ -388,7 +445,11 @@
 				// can exclude B and then have it immediately re-appear.
 				if (!options.ExcludeFileCommentSet.Contains(task.ExcludeText))
 				{
-					this.tasks.Items.Add(task);
+					allItems.Add(task);
+					if (filteredItems != null && this.taskFilter(task))
+					{
+						filteredItems.Add(task);
+					}
 				}
 			}
 
@@ -405,7 +466,7 @@
 			{
 				CommentTask result = null;
 
-				foreach (CommentTask task in this.tasks.Items)
+				foreach (CommentTask task in allItems)
 				{
 					if (this.comparer.Equals(task, target))
 					{
@@ -424,7 +485,7 @@
 			Point target = this.tasks.TranslatePoint(new Point(e.CursorLeft, e.CursorTop), Application.Current.MainWindow);
 			bool hasSelectedTask = this.TrySelectTask(target);
 
-			foreach (MenuItem menuItem in this.tasks.ContextMenu.Items.OfType<MenuItem>().Where(item => item.Tag as string == nameof(this.SelectedTask)))
+			foreach (MenuItem menuItem in this.tasks.ContextMenu.Items.OfType<MenuItem>().Where(item => (item.Tag as string) == nameof(this.SelectedTask)))
 			{
 				menuItem.IsEnabled = hasSelectedTask;
 			}
@@ -484,6 +545,7 @@
 				if (provider != null)
 				{
 					provider.TasksChanged += this.TaskProvider_TasksChanged;
+					provider.DocumentShowing += this.TaskProvider_DocumentShowing;
 				}
 
 				this.initiallyEnabled = options.EnableCommentScans;
@@ -512,6 +574,16 @@
 					}
 				}
 
+				bool applyFilter = options.ShowFilteredTasks;
+				if (applyFilter)
+				{
+					// Initially, filtering to the active document is all we support. Some day we might support other
+					// filter criteria like current project, open documents, or file type.
+					DTE dte = (DTE)package.ServiceProvider.GetService(typeof(SDTE));
+					this.activeFilePath = dte?.ActiveDocument?.FullName;
+				}
+
+				this.ShowFilteredTasks(applyFilter, true);
 				this.isLoading = false;
 			}
 		}
@@ -546,7 +618,10 @@
 
 					// The task would go away in about 2 seconds after Apply, but this makes it disappear instantly.
 					// Do this after the options are updated so a background thread won't re-add it immediately.
-					this.tasks.Items.Remove(task);
+					if (this.DataContext is ICollection<CommentTask> tasks)
+					{
+						tasks.Remove(task);
+					}
 				}
 			}
 		}
@@ -554,6 +629,27 @@
 		private void Tasks_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			this.TrySelectTask(e.GetPosition(this.tasks));
+		}
+
+		private void TaskProvider_DocumentShowing(string activeFilePath)
+		{
+			if (this.activeFilePath != activeFilePath)
+			{
+				this.activeFilePath = activeFilePath;
+				this.RebuildFilteredTasks(false);
+			}
+		}
+
+		private void FilterToggle_Checked(object sender, RoutedEventArgs e)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+			this.ShowFilteredTasks(true);
+		}
+
+		private void FilterToggle_Unchecked(object sender, RoutedEventArgs e)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+			this.ShowFilteredTasks(false);
 		}
 
 		#endregion

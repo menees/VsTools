@@ -5,13 +5,37 @@ root = true
 [*]
 indent_style = tab
 
-# IDE0063: Use simple 'using' statement
-csharp_prefer_simple_using_statement = false:silent
+csharp_using_directive_placement = inside_namespace
+
+# IDE0022: Use block body for methods
+dotnet_diagnostic.IDE0022.severity = none
+
+# IDE0045: Convert to conditional expression
+dotnet_diagnostic.IDE0045.severity = none
 
 # IDE0057: Use range operator
 csharp_style_prefer_range_operator = true:silent
 
+# IDE0058: Expression value is never used
+dotnet_diagnostic.IDE0058.severity = none
+
+# IDE0063: Use simple 'using' statement
+csharp_prefer_simple_using_statement = false:silent
+
 # IDE0066: Convert switch statement to expression
 csharp_style_prefer_switch_expression = false:silent
 
-csharp_using_directive_placement = inside_namespace
+# CC0035: Ordering member inside this type.
+dotnet_diagnostic.CC0035.severity = none
+
+# CC0042: Invert the for loop counting.
+dotnet_diagnostic.CC0042.severity = none
+
+# CC0045: Regular string
+dotnet_diagnostic.CC0045.severity = none
+
+# CC0076: Split into nested if
+dotnet_diagnostic.CC0076.severity = none
+
+# CC0079: Change numeric literal expression
+dotnet_diagnostic.CC0079.severity = none

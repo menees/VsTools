@@ -178,6 +178,9 @@
 		[Browsable(false)]
 		public string TasksStatusXml { get; set; }
 
+		[Browsable(false)]
+		public bool ShowFilteredTasks { get; set; }
+
 		#endregion
 
 		#region Internal Properties

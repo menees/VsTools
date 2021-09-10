@@ -67,7 +67,7 @@
 			<!-- Note: Using an embedded Menu makes it so we can't grab the scrollbar until the ToolWindow has focus.
 			WPF's Menu uses "focus stealing", and WPF only provides static properties for changing that behavior.
 			http://blogs.msdn.com/b/visualstudio/archive/2010/03/09/wpf-in-visual-studio-2010-part-3-focus-and-activation.aspx -->
-			<Button x:Name="sort" BorderBrush="{x:Null}" ContextMenuService.Placement="Bottom"
+			<Button x:Name="sort" BorderBrush="{x:Null}" Background="{x:Null}" ContextMenuService.Placement="Bottom"
 				Click="Sort_Click" ContextMenuClosing="Sort_ContextMenuClosing">
 				<Button.ContextMenu>
 					<ContextMenu>
@@ -83,9 +83,57 @@
 				</Button.ContextMenu>
 				<StackPanel Orientation="Horizontal" Margin="2">
 					<TextBlock Text="Sort"/>
+					<!-- This polygon's Fill is set to the current text color in VS (even though the designer doesn't show it). -->
 					<Polygon Points="0,0 3,3 6,0" VerticalAlignment="Center" Margin="4,0,0,0"/>
 				</StackPanel>
 			</Button>
+			<ToggleButton x:Name="filterToggle" Checked="FilterToggle_Checked" Unchecked="FilterToggle_Unchecked"
+						  IsChecked="False" ToolTip="Filter to active document's tasks only"
+						  BorderBrush="{x:Null}" Background="{x:Null}" Padding="4,0">
+				<!-- From "VS2019 Image Library\vswin2019\Filter\Filter_16x.xaml". This filled image looks good in light and dark modes. -->
+				<Viewbox Width="16" Height="16" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<Rectangle Width="16" Height="16">
+						<Rectangle.Fill>
+							<DrawingBrush>
+								<DrawingBrush.Drawing>
+									<DrawingGroup>
+										<DrawingGroup.Children>
+											<GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+											<GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M0.0081,1.9996L6.0001,10.0446 6.0001,15.9996 10.0001,15.9996 10.0001,10.0446 15.9911,1.9996z" />
+											<GeometryDrawing Brush="#FF424242" Geometry="F1M14,3L9,9.714 9,15 7,15 7,9.714 2,3z" />
+										</DrawingGroup.Children>
+									</DrawingGroup>
+								</DrawingBrush.Drawing>
+							</DrawingBrush>
+						</Rectangle.Fill>
+					</Rectangle>
+				</Viewbox>
+				<!-- From "VS2019 Image Library\vswin2019\Filter\Filter_16x.svg" translated to Xaml using https://github.com/BerndK/SvgToXaml.
+				This image looks good in light mode only. It look jarringly bright in dark modes. :-( -->
+				<!--
+				<Image Width="16" Height="16">
+					<Image.Source>
+						<DrawingImage>
+							<DrawingImage.Drawing>
+								<DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+									<DrawingGroup.Transform>
+										<TranslateTransform X="0" Y="8.8817841970012523E-16" />
+									</DrawingGroup.Transform>
+									<GeometryDrawing Geometry="F1 M16,16z M0,0z M16,16L0,16 0,0 16,0 16,16z">
+										<GeometryDrawing.Brush>
+											<SolidColorBrush Color="#FFF6F6F6" Opacity="0" />
+										</GeometryDrawing.Brush>
+									</GeometryDrawing>
+									<GeometryDrawing Brush="#FFF6F6F6" Geometry="F1 M16,16z M0,0z M0,0L0,3.043 5,9.043 5,16 11,16 11,9.043 16,3.043 16,-8.88178419700125E-16 0,-8.88178419700125E-16z" />
+									<GeometryDrawing Brush="#FFF0EFF1" Geometry="F1 M16,16z M0,0z M7,14L9,14 9,8.319 14,2.319 14,2 2,2 2,2.319 7,8.319 7,14z" />
+									<GeometryDrawing Brush="#FF424242" Geometry="F1 M16,16z M0,0z M10,15L6,15 6,8.681 1,2.681 1,1 15,1 15,2.681 10,8.681 10,15z M7,14L9,14 9,8.319 14,2.319 14,2 2,2 2,2.319 7,8.319 7,14z" />
+								</DrawingGroup>
+							</DrawingImage.Drawing>
+						</DrawingImage>
+					</Image.Source>
+				</Image>
+				-->
+			</ToggleButton>
 			<TextBlock VerticalAlignment="Center" Text="{Binding Items.Count, ElementName=tasks, Mode=OneWay, StringFormat=Count: \{0\}}" Margin="4,0"/>
 		</StackPanel>
 		<Border x:Name="warningBorder" DockPanel.Dock="Top" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
@@ -94,6 +142,7 @@
 			</TextBlock>
 		</Border>
 		<!-- We use ScrollViewer.CanContentScroll="False" to allow smooth scrolling instead of item-by-item scrolling. -->
+		<!-- This binds to DataContext. See Adam Nathan's WPF 4.5 book pg 373 for more info. -->
 		<ListBox x:Name="tasks" ItemsSource="{Binding}"
 				HorizontalContentAlignment="Stretch"
 				ScrollViewer.CanContentScroll="False"

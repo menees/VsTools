@@ -70,6 +70,12 @@ namespace Menees.VsTools.Tasks
 
 		#endregion
 
+		#region Public Properties
+
+		public Action<string> DocumentShowing { get; set; }
+
+		#endregion
+
 		#region Public Methods
 
 		public void Dispose()
@@ -134,6 +140,16 @@ namespace Menees.VsTools.Tasks
 			if (firstShow != 0)
 			{
 				this.HandleDocumentVisibilityChange(docCookie, frame, true);
+			}
+
+			Action<string> documentShowing = this.DocumentShowing;
+			if (documentShowing != null)
+			{
+				string moniker = this.docTable4.GetDocumentMoniker(docCookie);
+				if (!string.IsNullOrEmpty(moniker))
+				{
+					documentShowing(moniker);
+				}
 			}
 
 			return VSConstants.S_OK;

@@ -123,6 +123,12 @@ namespace Menees.VsTools.Tasks
 
 		public BackgroundOptions Options => this.backgroundOptions;
 
+		public Action<string> DocumentShowing
+		{
+			get => this.documentMonitor.DocumentShowing;
+			set => this.documentMonitor.DocumentShowing = value;
+		}
+
 		#endregion
 
 		#region IVsTaskListEvents Methods
