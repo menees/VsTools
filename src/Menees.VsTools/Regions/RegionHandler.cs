@@ -40,6 +40,7 @@ namespace Menees.VsTools.Regions
 			Language.Python, // VS 2015 supported
 			Language.XML, // VS 2017 supported (with no name or tooltip showing)
 			Language.XAML, // VS 2017 supported (if tags have no spaces around them)
+			Language.Razor, // VS 2019 supported
 		};
 
 		#endregion
@@ -385,6 +386,7 @@ namespace Menees.VsTools.Regions
 				case Language.XML:
 				case Language.XAML:
 				case Language.HTML:
+				case Language.Razor:
 					beginRegionToken = "region";
 					endRegionToken = "endregion";
 					tokenPrefix = "<!-- ";
@@ -477,6 +479,7 @@ namespace Menees.VsTools.Regions
 				case Language.XML:
 				case Language.XAML:
 				case Language.HTML:
+				case Language.Razor:
 					// Must begin with '<!--' comment and then optional whitespace and an optional '#'.
 					result = @"\<\!\-\-\s*\#?region";
 					break;
