@@ -34,6 +34,9 @@ dotnet_diagnostic.CC0042.severity = none
 # CC0045: Regular string
 dotnet_diagnostic.CC0045.severity = none
 
+# CC0073: Add braces to switch sections.
+dotnet_diagnostic.CC0073.severity = none
+
 # CC0076: Split into nested if
 dotnet_diagnostic.CC0076.severity = none
 
