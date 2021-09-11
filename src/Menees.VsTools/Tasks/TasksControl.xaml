@@ -64,29 +64,6 @@
 	</UserControl.Resources>
 	<DockPanel>
 		<StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Style="{StaticResource defaultStyle}">
-			<!-- Note: Using an embedded Menu makes it so we can't grab the scrollbar until the ToolWindow has focus.
-			WPF's Menu uses "focus stealing", and WPF only provides static properties for changing that behavior.
-			http://blogs.msdn.com/b/visualstudio/archive/2010/03/09/wpf-in-visual-studio-2010-part-3-focus-and-activation.aspx -->
-			<Button x:Name="sort" BorderBrush="{x:Null}" Background="{x:Null}" ContextMenuService.Placement="Bottom"
-				Click="Sort_Click" ContextMenuClosing="Sort_ContextMenuClosing">
-				<Button.ContextMenu>
-					<ContextMenu>
-						<MenuItem Header="By Pr_iority" Click="SortBy_Click" Tag="Priority"/>
-						<MenuItem Header="By _Comment" Click="SortBy_Click" Tag="Comment"/>
-						<MenuItem Header="By _File Name" Click="SortBy_Click" Tag="FileName"/>
-						<MenuItem Header="By _File Path" Click="SortBy_Click" Tag="FilePath"/>
-						<MenuItem Header="By _Line" Click="SortBy_Click" Tag="Line"/>
-						<MenuItem Header="By Pr_oject" Click="SortBy_Click" Tag="Project"/>
-						<Separator/>
-						<MenuItem x:Name="resetSort" Header="_Reset" Click="ResetSort_Click"/>
-					</ContextMenu>
-				</Button.ContextMenu>
-				<StackPanel Orientation="Horizontal" Margin="2">
-					<TextBlock Text="Sort"/>
-					<!-- This polygon's Fill is set to the current text color in VS (even though the designer doesn't show it). -->
-					<Polygon Points="0,0 3,3 6,0" VerticalAlignment="Center" Margin="4,0,0,0"/>
-				</StackPanel>
-			</Button>
 			<ToggleButton x:Name="filterToggle" Checked="FilterToggle_Checked" Unchecked="FilterToggle_Unchecked"
 						  IsChecked="False" ToolTip="Filter to active document's tasks only"
 						  BorderBrush="{x:Null}" Background="{x:Null}" Padding="4,0">
@@ -134,6 +111,29 @@
 				</Image>
 				-->
 			</ToggleButton>
+			<!-- Note: Using an embedded Menu makes it so we can't grab the scrollbar until the ToolWindow has focus.
+			WPF's Menu uses "focus stealing", and WPF only provides static properties for changing that behavior.
+			http://blogs.msdn.com/b/visualstudio/archive/2010/03/09/wpf-in-visual-studio-2010-part-3-focus-and-activation.aspx -->
+			<Button x:Name="sort" BorderBrush="{x:Null}" Background="{x:Null}" ContextMenuService.Placement="Bottom"
+				Click="Sort_Click" ContextMenuClosing="Sort_ContextMenuClosing">
+				<Button.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="By Pr_iority" Click="SortBy_Click" Tag="Priority"/>
+						<MenuItem Header="By _Comment" Click="SortBy_Click" Tag="Comment"/>
+						<MenuItem Header="By _File Name" Click="SortBy_Click" Tag="FileName"/>
+						<MenuItem Header="By _File Path" Click="SortBy_Click" Tag="FilePath"/>
+						<MenuItem Header="By _Line" Click="SortBy_Click" Tag="Line"/>
+						<MenuItem Header="By Pr_oject" Click="SortBy_Click" Tag="Project"/>
+						<Separator/>
+						<MenuItem x:Name="resetSort" Header="_Reset" Click="ResetSort_Click"/>
+					</ContextMenu>
+				</Button.ContextMenu>
+				<StackPanel Orientation="Horizontal" Margin="2">
+					<TextBlock Text="Sort"/>
+					<!-- This polygon's Fill is set to the current text color in VS (even though the designer doesn't show it). -->
+					<Polygon Points="0,0 3,3 6,0" VerticalAlignment="Center" Margin="4,0,0,0"/>
+				</StackPanel>
+			</Button>
 			<TextBlock VerticalAlignment="Center" Text="{Binding Items.Count, ElementName=tasks, Mode=OneWay, StringFormat=Count: \{0\}}" Margin="4,0"/>
 		</StackPanel>
 		<Border x:Name="warningBorder" DockPanel.Dock="Top" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
