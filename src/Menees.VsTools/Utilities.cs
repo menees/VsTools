@@ -261,6 +261,10 @@
 			return result;
 		}
 
+		[Conditional("DEBUG")]
+		public static void Unused<T>(T value)
+			=> GC.KeepAlive(value);
+
 		#endregion
 	}
 }

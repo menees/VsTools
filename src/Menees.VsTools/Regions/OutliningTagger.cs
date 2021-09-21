@@ -13,6 +13,7 @@ namespace Menees.VsTools.Regions
 	using Microsoft.VisualStudio.Shell;
 	using Microsoft.VisualStudio.Text;
 	using Microsoft.VisualStudio.Text.Tagging;
+	using Microsoft.VisualStudio.Threading;
 
 	#endregion
 
@@ -134,7 +135,8 @@ namespace Menees.VsTools.Regions
 
 		private void BackgroundReparse()
 		{
-			ThreadHelper.JoinableTaskFactory.StartOnIdle(this.Reparse);
+			JoinableTask task = ThreadHelper.JoinableTaskFactory.StartOnIdle(this.Reparse);
+			Utilities.Unused(task); // We just want the task to run in the background.
 		}
 
 		private void Reparse()

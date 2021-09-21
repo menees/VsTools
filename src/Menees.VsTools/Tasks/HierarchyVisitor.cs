@@ -208,6 +208,7 @@ namespace Menees.VsTools.Tasks
 			public HierarchyNode(IVsHierarchy hierarchy)
 				: this(hierarchy, VSConstants.VSITEMID_ROOT)
 			{
+				ThreadHelper.ThrowIfNotOnUIThread();
 			}
 
 			public HierarchyNode(IVsHierarchy hierarchy, uint itemId)
