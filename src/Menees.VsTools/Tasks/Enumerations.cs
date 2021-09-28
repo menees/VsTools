@@ -10,6 +10,18 @@ namespace Menees.VsTools.Tasks
 
 	#endregion
 
+	#region Public TodoSuffix
+
+	public enum TodoSuffix
+	{
+		None,
+		Date,
+		User,
+		UserDate,
+	}
+
+	#endregion
+
 	#region Internal HierarchyItemType
 
 	internal enum HierarchyItemType
@@ -21,7 +33,7 @@ namespace Menees.VsTools.Tasks
 
 	#endregion
 
-	#region internal RefreshAction
+	#region Internal RefreshAction
 
 	internal enum RefreshAction
 	{
