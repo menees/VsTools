@@ -146,12 +146,35 @@ namespace Menees.VsTools
 					sb.Append(' ');
 				}
 
-				sb.Append("TODO: ");
+				Tasks.Options options = MainPackage.TaskOptions;
+				sb.Append(options.AddTodoPrefix);
+
 				int noteStartIndex = sb.Length;
 				string memberName = GetMemberName(handler, language);
 				sb.Append("Finish ").Append(memberName ?? "implementation").Append('.');
 				int noteLength = sb.Length - noteStartIndex;
-				sb.Append(" [").Append(Environment.UserName).Append(", ").Append(DateTime.UtcNow.ToLocalTime().ToShortDateString()).Append(']');
+
+				if (options.AddTodoSuffix != TodoSuffix.None)
+				{
+					sb.Append(" [");
+					switch (options.AddTodoSuffix)
+					{
+						case TodoSuffix.User:
+							sb.Append(Environment.UserName);
+							break;
+
+						case TodoSuffix.UserDate:
+							sb.Append(Environment.UserName).Append(", ");
+							goto case TodoSuffix.Date;
+
+						case TodoSuffix.Date:
+							sb.Append(DateTime.UtcNow.ToLocalTime().ToShortDateString());
+							break;
+					}
+
+					sb.Append(']');
+				}
+
 				if (!string.IsNullOrEmpty(endDelimiter))
 				{
 					sb.Append(' ').Append(endDelimiter);

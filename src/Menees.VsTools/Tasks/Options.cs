@@ -19,7 +19,7 @@
 
 	// Note: The MainPackage has a ProvideOptionPage attribute that associates this class with that package.
 	[Guid(Guids.TaskOptionsString)]
-	[DefaultProperty(nameof(EnableCommentScans))] // Make this get focus in the PropertyGrid first since its category is alphabetically first.
+	[DefaultProperty(nameof(AddTodoPrefix))] // Make this get focus in the PropertyGrid first since its category is alphabetically first.
 	[SuppressMessage("Internal class never created.", "CA1812", Justification = "Created via reflection by VS.")]
 	internal sealed class Options : OptionsBase
 	{
@@ -30,6 +30,8 @@
 			@"jquery-\d+\.\d+\.\d+(-vsdoc)?\.js$";
 
 		private const string DefaultExcludeProjectsPatterns = @".+\.(sql|vc|vcx)proj$";
+		private const string DefaultTodoPrefix = "TODO: ";
+		private const TodoSuffix DefaultTodoSuffix = TodoSuffix.UserDate;
 
 		private const int MinParallelism = 1;
 		private const int MaxParallelism = 8;
@@ -41,6 +43,7 @@
 		private string excludeFileComments;
 		private string excludeCommentsPatterns;
 		private int? requestedMaxDegreeOfParallelism;
+		private string todoPrefix;
 
 		#endregion
 
@@ -53,19 +56,21 @@
 			this.ExcludeProjectsPatterns = DefaultExcludeProjectsPatterns;
 			this.ExcludeFileComments = null;
 			this.ExcludeCommentsPatterns = null;
+			this.AddTodoPrefix = DefaultTodoPrefix;
+			this.AddTodoSuffix = DefaultTodoSuffix;
 		}
 
 		#endregion
 
 		#region Public Browsable Properties (for Options page)
 
-		[Category("Common")]
+		[Category("Scan")]
 		[DisplayName("Enable task scanning (requires restart)")]
 		[Description("Whether open documents and files referenced by the current solution should be scanned for task comments.")]
 		[DefaultValue(false)] // Off by default since it can have a serious CPU impact on large solutions.
 		public bool EnableCommentScans { get; set; }
 
-		[Category("Common")]
+		[Category("Scan")]
 		[DisplayName("Max degree of parallelism")]
 		[Description("The maximum number of concurrent file scans to perform. If blank, then "
 			+ ProcessorScaleFactorPercent + " of your logical CPU count will be used.")]
@@ -170,6 +175,40 @@
 				this.excludeCommentsPatterns = value;
 			}
 		}
+
+		[Category("Add")]
+		[DisplayName("Comment prefix")]
+		[Description("The prefix that the \"Add TODO Comment\" command should add to each comment.")]
+		[DefaultValue(DefaultTodoPrefix)]
+		public string AddTodoPrefix
+		{
+			get
+			{
+				return this.todoPrefix;
+			}
+
+			set
+			{
+				if (string.IsNullOrWhiteSpace(value))
+				{
+					this.todoPrefix = DefaultTodoPrefix;
+				}
+				else
+				{
+					this.todoPrefix = value;
+					if (!char.IsWhiteSpace(this.todoPrefix[this.todoPrefix.Length - 1]))
+					{
+						this.todoPrefix += ' ';
+					}
+				}
+			}
+		}
+
+		[Category("Add")]
+		[DisplayName("Comment suffix")]
+		[Description("The suffix that the \"Add TODO Comment\" command should add to each comment.")]
+		[DefaultValue(DefaultTodoSuffix)]
+		public TodoSuffix AddTodoSuffix { get; set; }
 
 		#endregion
 
