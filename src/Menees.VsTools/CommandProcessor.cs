@@ -173,7 +173,7 @@
 							break;
 
 						case Command.ExpandAllRegions:
-							RegionHandler.ExpandAllRegions(this.dte, this.ActiveLanguage);
+							RegionHandler.ExpandAllRegions(this.dte, this.ActiveLanguage, this.package);
 							break;
 
 						case Command.GenerateGuid:

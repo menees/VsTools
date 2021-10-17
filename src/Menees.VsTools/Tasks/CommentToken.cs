@@ -16,7 +16,7 @@ namespace Menees.VsTools.Tasks
 	{
 		#region Constructors
 
-		public CommentToken(string text, TaskPriority priority, bool isCaseSensitive)
+		public CommentToken(string text, TaskPriority priority = TaskPriority.Normal, bool isCaseSensitive = false)
 		{
 			this.Text = text;
 			this.Priority = priority;

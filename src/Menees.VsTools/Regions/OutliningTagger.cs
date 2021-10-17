@@ -23,9 +23,9 @@ namespace Menees.VsTools.Regions
 		#region Private Data Members
 
 		private const string RegionToken = "#region";
-		private static readonly CommentToken StartToken = new(RegionToken, TaskPriority.Normal, false);
-		private static readonly CommentToken EndToken = new("#endregion", TaskPriority.Normal, false);
-		private static readonly CommentToken AltEndToken = new("#end region", TaskPriority.Normal, false);
+		private static readonly CommentToken StartToken = new(RegionToken);
+		private static readonly CommentToken EndToken = new("#endregion");
+		private static readonly CommentToken AltEndToken = new("#end region");
 
 		private readonly ITextBuffer buffer;
 		private readonly IReadOnlyList<Regex> startExpressions;
@@ -44,8 +44,19 @@ namespace Menees.VsTools.Regions
 
 			// Our RegionHandler's GetRegionBeginRegex only looks for single line comment tokens
 			// when doing Collapse/ExpandAllRegions, so we'll use the same restriction here.
-			this.startExpressions = scanInfo.GetTokenRegexes(StartToken, true).ToList();
-			this.endExpressions = scanInfo.GetTokenRegexes(EndToken, true).Concat(scanInfo.GetTokenRegexes(AltEndToken, true)).ToList();
+			string singleLineDelimiter = scanInfo.TryGetSingleLineCommentDelimiter();
+			this.startExpressions = scanInfo.GetTokenRegexes(Scrub(StartToken), true).ToList();
+			this.endExpressions = scanInfo.GetTokenRegexes(Scrub(EndToken), true).Concat(scanInfo.GetTokenRegexes(Scrub(AltEndToken), true)).ToList();
+			CommentToken Scrub(CommentToken token)
+			{
+				// Python's single line delimiter is #, so we don't want GetTokenRegexes to return a regex like ##region.
+				if (!string.IsNullOrEmpty(singleLineDelimiter) && token.Text.StartsWith(singleLineDelimiter))
+				{
+					token = new(token.Text.Substring(singleLineDelimiter.Length), token.Priority, token.IsCaseSensitive);
+				}
+
+				return token;
+			}
 
 			this.snapshotRegions = new SnapshotRegions(buffer.CurrentSnapshot, CollectionUtility.EmptyArray<Region>());
 			this.buffer.Changed += this.BufferChanged;
