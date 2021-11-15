@@ -108,11 +108,19 @@ namespace Menees.VsTools
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
+			// https://github.com/VsixCommunity/Community.VisualStudio.Toolkit/discussions/34?sort=top#discussioncomment-1062803
 			IVsOutputWindowPane output = this.package.GetOutputPane(VSConstants.OutputWindowPaneGuid.BuildOutputPane_guid, "Build");
-			int hr = output.OutputString(value);
-			if (ErrorHandler.Failed(hr))
+			if (output is IVsOutputWindowPaneNoPump noPump)
 			{
-				Debug.WriteLine($"HRESULT {hr:X8} returned when trying to output: {value}");
+				noPump.OutputStringNoPump(value);
+			}
+			else
+			{
+				int hr = output.OutputStringThreadSafe(value);
+				if (ErrorHandler.Failed(hr))
+				{
+					Debug.WriteLine($"HRESULT {hr:X8} returned when trying to output: {value}");
+				}
 			}
 		}
 

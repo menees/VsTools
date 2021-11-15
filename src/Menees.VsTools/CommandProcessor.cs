@@ -19,6 +19,7 @@
 	using Microsoft.VisualStudio;
 	using Microsoft.VisualStudio.Shell;
 	using Microsoft.VisualStudio.Shell.Interop;
+	using Microsoft.VisualStudio.Threading;
 	using VSLangProj;
 
 	#endregion
@@ -172,7 +173,7 @@
 							break;
 
 						case Command.ExpandAllRegions:
-							RegionHandler.ExpandAllRegions(this.dte, this.ActiveLanguage);
+							RegionHandler.ExpandAllRegions(this.dte, this.ActiveLanguage, this.package);
 							break;
 
 						case Command.GenerateGuid:
@@ -539,7 +540,7 @@
 		private void ViewToolWindow(Type toolWindowPaneType)
 		{
 			// From https://github.com/Microsoft/VSSDK-Analyzers/blob/master/doc/VSSDK003.md
-			this.package.JoinableTaskFactory.RunAsync(async () =>
+			JoinableTask task = this.package.JoinableTaskFactory.RunAsync(async () =>
 			{
 				// Get instance number 0 of this tool window. It's single instance so that's the only one.
 				// The last flag is set to true so that if the tool window does not exist it will be created.
@@ -553,6 +554,8 @@
 				IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
 				ErrorHandler.ThrowOnFailure(windowFrame.Show());
 			});
+
+			Utilities.Unused(task); // We just want the task to run in the background.
 		}
 
 		#endregion

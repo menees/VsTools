@@ -113,6 +113,10 @@
 
 					break;
 
+				case "Razor":
+					result = Language.Razor; // Added in VS 2022
+					break;
+
 				case "HTML":
 				case "HTMLX": // Added in VS 2013 for non-Web Forms HTML editing
 				case "htmlx":
@@ -260,6 +264,10 @@
 
 			return result;
 		}
+
+		[Conditional("DEBUG")]
+		public static void Unused<T>(T value)
+			=> GC.KeepAlive(value);
 
 		#endregion
 	}

@@ -19,7 +19,7 @@ namespace Menees.VsTools.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -67,13 +67,12 @@ namespace Menees.VsTools.Properties {
         ///		&lt;SingleLineDelimiter&gt;//&lt;/SingleLineDelimiter&gt;
         ///		&lt;MultiLineDelimiter Begin=&quot;/*&quot; End=&quot;*/&quot; /&gt;
         ///		&lt;Languages&gt;CPlusPlus, CSharp, IDL, JavaScript, TypeScript&lt;/Languages&gt;
-        ///		&lt;Extensions&gt;cs, c, cpp, cxx, cc, java, js, ts, cshtml, h, hpp, inl, idl, tli, tlh, hh, hxx, rc, aspx, ascx, master, asax&lt;/Extensions&gt;
+        ///		&lt;Extensions&gt;cs, csx, c, cpp, cxx, cc, java, js, json, ts, cshtml, h, hpp, inl, idl, tli, tlh, hh, hxx, rc, aspx, ascx, master, asax, proto, razor&lt;/Extensions&gt;
         ///	&lt;/Style&gt;
         ///
         ///	&lt;Style Name=&quot;VB&quot;&gt;
         ///		&lt;SingleLineDelimiter&gt;&apos;&lt;/SingleLineDelimiter&gt;
-        ///		&lt;Languages&gt;VB, VBScript&lt;/Languages&gt;
-        ///		&lt;Extensions&gt;v [rest of string was truncated]&quot;;.
+        ///		&lt;Languages&gt;VB, VBScript&lt;/La [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ScanInfoXml {
             get {

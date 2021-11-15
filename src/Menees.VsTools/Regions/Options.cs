@@ -45,7 +45,7 @@
 			"Private Event Handlers\r\n" +
 			"Private Types";
 
-		private readonly HashSet<Language> supportRegions = new() { Language.HTML, Language.SQL, Language.XML, Language.XAML };
+		private readonly HashSet<Language> supportRegions = new() { Language.HTML, Language.Python, Language.SQL, Language.XML, Language.XAML };
 
 		#endregion
 
@@ -85,6 +85,12 @@
 		[Description("Whether to support <!-- #region --> outlining in HTML files opened in the Web Forms editor.")]
 		[DefaultValue(true)]
 		public bool SupportHtmlRegions { get => this.IsSupported(Language.HTML); set => this.SetSupported(Language.HTML, value); }
+
+		[Category(nameof(Language))]
+		[DisplayName("Support Python regions")]
+		[Description("Whether to support #region outlining in Python files.")]
+		[DefaultValue(true)]
+		public bool SupportPythonRegions { get => this.IsSupported(Language.Python); set => this.SetSupported(Language.Python, value); }
 
 		[Category(nameof(Language))]
 		[DisplayName("Support SQL regions")]

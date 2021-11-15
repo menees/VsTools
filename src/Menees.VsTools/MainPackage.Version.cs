@@ -20,11 +20,16 @@ namespace Menees.VsTools
 		//
 		// Note: When the version changes (major, minor, build, or revision), also update:
 		// - source.extension.vsixmanifest: <Identity Version="*"/>
-		internal const string Version = VersionYear + ".0.18";
+		internal const string Version = VersionYear + ".0.1";
 
 		internal const string Title = "Menees VS Tools";
 
-		internal const string VersionYear = "2019";
+		// When this changes, also update:
+		// - README.md: Add link to VS Marketplace download.
+		// - source.extension.vsixmanifest: Product Name, ID, & Version; Install Target; .NET Framework; CoreEditor.
+		// - VSPackage.resx: Value for resource 110 contains year.
+		// - VS SDK package references: Use latest package versions.
+		internal const string VersionYear = "2022";
 
 		#endregion
 	}

@@ -34,6 +34,7 @@ This software is CharityWare. If you use it, I ask that you donate something to 
 
 ### Visual Studio Marketplace
 
+* [Menees VS Tools 2022](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools2022)
 * [Menees VS Tools 2019](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools2019)
 * [Menees VS Tools 2017](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools2017)
 * [Menees VS Tools 2015](https://marketplace.visualstudio.com/items?itemName=BillMenees.MeneesVSTools2015)

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Menees VS Tools 2019" Version="2019.0.18" Language="en-US" Publisher="Bill Menees" />
-        <DisplayName>Menees VS Tools 2019</DisplayName>
+        <Identity Id="Menees VS Tools 2022" Version="2022.0.1" Language="en-US" Publisher="Bill Menees" />
+        <DisplayName>Menees VS Tools 2022</DisplayName>
         <Description xml:space="preserve">Provides several new commands such as Sort Lines, Sort Members, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, ExpandAllRegions, and ToggleFiles.
 
 Also, provides colorized text in the Output and Find Results windows, an enhanced Tasks tool window (e.g., for TODO comments), a Base Converter tool window, and a way to generate project dependency graphs.</Description>
@@ -13,10 +13,12 @@ Also, provides colorized text in the Output and Find Results windows, an enhance
     </Metadata>
     <Installation InstalledByMsi="false">
         <!-- http://blogs.msdn.com/b/visualstudio/archive/2013/08/08/update-for-extension-authors-vsix-manifest-version-ranges.aspx -->
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0,17.0)" />
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
     </Installation>
     <Dependencies>
-        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.6,)" />
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.8,)" />
         <Dependency Id="Microsoft.VisualStudio.MPF.12.0" DisplayName="Visual Studio MPF 12.0" d:Source="Installed" Version="[12.0,)" />
     </Dependencies>
     <Assets>
@@ -24,6 +26,6 @@ Also, provides colorized text in the Output and Find Results windows, an enhance
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
     </Assets>
     <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0.28315.86,17.0)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
     </Prerequisites>
 </PackageManifest>

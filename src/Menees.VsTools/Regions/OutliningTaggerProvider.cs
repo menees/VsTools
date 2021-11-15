@@ -21,6 +21,7 @@ namespace Menees.VsTools.Regions
 	[Export(typeof(ITaggerProvider))]
 	[TagType(typeof(IOutliningRegionTag))]
 	[ContentType("html")]
+	[ContentType("Python")]
 	[ContentType("SQL Server Tools")]
 	[ContentType("T-SQL90")]
 	[ContentType("XAML")]
