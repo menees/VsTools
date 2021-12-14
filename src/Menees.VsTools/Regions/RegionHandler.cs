@@ -277,11 +277,15 @@ namespace Menees.VsTools.Regions
 			if (!string.IsNullOrEmpty(tokenPrefix) && string.IsNullOrEmpty(tokenSuffix))
 			{
 				EditPoint commentSearch = startPoint.CreateEditPoint();
-				if (!commentSearch.FindPattern(tokenPrefix, (int)vsFindOptions.vsFindOptionsFromStart))
+				commentSearch.StartOfDocument();
+				EditPoint commentSearchEnd = startPoint.CreateEditPoint();
+				commentSearchEnd.EndOfDocument();
+				string documentText = commentSearch.GetText(commentSearchEnd);
+				if (documentText.IndexOf(tokenPrefix) < 0)
 				{
 					string trimmedTokenPrefix = tokenPrefix.Trim();
 					string pattern = Regex.Escape(trimmedTokenPrefix) + @"\S"; // Token prefix immediately followed by non-whitespace.
-					if (commentSearch.FindPattern(pattern, (int)(vsFindOptions.vsFindOptionsFromStart | vsFindOptions.vsFindOptionsRegularExpression)))
+					if (Regex.IsMatch(documentText, pattern))
 					{
 						tokenPrefix = trimmedTokenPrefix;
 					}
