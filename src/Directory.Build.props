@@ -1,6 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<NeutralLanguage>en-US</NeutralLanguage>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<Authors>Bill Menees</Authors>
 		<PackageProjectUrl>http://www.menees.com</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
