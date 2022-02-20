@@ -27,7 +27,11 @@
 
 		private const string DefaultExcludeFilesPatterns = @".+\.Designer\.\w+$" + "\r\n" +
 			@"modernizr-\d+\.\d+\.\d+(-vsdoc)?\.js$" + "\r\n" +
-			@"jquery-\d+\.\d+\.\d+(-vsdoc)?\.js$";
+			@"jquery-\d+\.\d+\.\d+(-vsdoc)?\.js$" + "\r\n" +
+			@".+\.min\.js$" + "\r\n" +
+			@"globalize\..+.js$" + "\r\n" +
+			@"ace\.js$" + "\r\n" +
+			@"cldr\.js$";
 
 		private const string DefaultExcludeProjectsPatterns = @".+\.(sql|vc|vcx)proj$";
 		private const string DefaultTodoPrefix = "TODO: ";
