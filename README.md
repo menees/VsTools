@@ -1,7 +1,7 @@
 ![VsTools](http://www.menees.com/Images/VSTools.png) ![windows build](https://github.com/menees/VsTools/workflows/windows%20build/badge.svg)
 # Menees VS Tools
 
-Menees VS Tools is an extension for Visual Studio.  It adds several new commands to process selected text, add new text, and work with open files.  It started life in 2001 as an add-in for Visual C++ 6, and it has been rewritten several times since for various versions of Visual Studio. Some of its commands are:
+Menees VS Tools is an extension for Visual Studio.  It adds several new commands to process selected text, add new text, and work with open files.  It started life in 2001 as an add-in for Visual C++ 6, and since then it has been rewritten several times for newer versions of Visual Studio. Now it is predominantly focused on C# development, but it also has limited support for C++, XML, HTML, CSS, SQL, IDL, F#, VB, VBScript, JavaScript, TypeScript, PowerShell, Python, XAML, Razor, and plain text. Some of its commands are:
 
 * [Sort Lines](http://www.menees.com/Images/VSToolsSort.png)
 * [Sort Members](http://www.menees.com/Images/VSToolsSortMembers.png)
