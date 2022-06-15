@@ -112,6 +112,13 @@
 			if (buildContent.Length > 0)
 			{
 				result.Add(new OutputHighlight("Code Analysis Success", OutputHighlightType.None, @"\s0 error\(s\), 0 warning\(s\)$", buildContent));
+
+				// This default can go away once https://github.com/NuGet/Home/issues/11724 and https://github.com/NuGet/Home/issues/11752 ship.
+				result.Add(new OutputHighlight(
+					"CentralPackageVersionManagement Preview",
+					OutputHighlightType.Detail,
+					@"using CentralPackageVersionManagement, a NuGet preview feature",
+					buildContent));
 			}
 
 			// The "Ext: ExceptionBreaker (Diagnostic)" pane uses a general Output content type.

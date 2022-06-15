@@ -28,8 +28,8 @@ namespace Menees.VsTools.Editor
 			this.buffer = buffer;
 			buffer.ContentTypeChanged += this.TextBuffer_ContentTypeChanged;
 
-			// Indicate that we need to re-classify everything when our VSTools options change (specifically the highlighting options).
-			MainPackage.GeneralOptions.Applied += this.PackageOptionsApplied;
+			// Indicate that we need to re-classify everything when our VSTools highlighting options change.
+			MainPackage.HighlightOptions.Applied += this.HighlightOptionsApplied;
 		}
 
 		#endregion
@@ -100,7 +100,7 @@ namespace Menees.VsTools.Editor
 			if (disposing)
 			{
 				this.buffer.ContentTypeChanged -= this.TextBuffer_ContentTypeChanged;
-				MainPackage.GeneralOptions.Applied -= this.PackageOptionsApplied;
+				MainPackage.HighlightOptions.Applied -= this.HighlightOptionsApplied;
 			}
 		}
 
@@ -141,10 +141,10 @@ namespace Menees.VsTools.Editor
 			this.ContentTypeChanged(this.buffer, e);
 		}
 
-		private void PackageOptionsApplied(object sender, EventArgs e)
+		private void HighlightOptionsApplied(object sender, EventArgs e)
 		{
-			// If any of the Menees VS Tools options change, we'll re-classify.  Typically, only a few options actually
-			// affect each classifier, but it's rare for any of the package options to change.  So it doesn't hurt to just
+			// If any of the Menees VS Tools highlighting options change, we'll re-classify. Typically, only a few options actually
+			// affect each classifier, but it's rare for any of the highlighting options to change. So it doesn't hurt to just
 			// re-classify if anything changed.
 			this.OptionsChanged(null);
 		}
