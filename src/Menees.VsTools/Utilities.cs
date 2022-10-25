@@ -99,18 +99,7 @@
 			switch (languageOrContentType)
 			{
 				case "C/C++":
-					result = Language.CPlusPlus;
-					if (!string.IsNullOrEmpty(fileName))
-					{
-						switch (Path.GetExtension(fileName).ToLower())
-						{
-							case ".idl":
-							case ".odl":
-								result = Language.IDL;
-								break;
-						}
-					}
-
+					result = GetCppLanguage(fileName);
 					break;
 
 				case "Razor":
@@ -121,28 +110,7 @@
 				case "HTMLX": // Added in VS 2013 for non-Web Forms HTML editing
 				case "htmlx":
 				case "HTMLXProjection": // Seen in VS 2019 for .razor files.
-					result = Language.HTML;
-					if (!string.IsNullOrEmpty(fileName))
-					{
-						switch (Path.GetExtension(fileName).ToLower())
-						{
-							case ".razor":
-								result = Language.Razor;
-								break;
-
-							case ".vbs":
-								// VS dropped support for VBScript in VS 2008, but added it back in VS 2008 SP1.
-								// http://blogs.msdn.com/b/webdev/archive/2008/05/12/visual-studio-2008-sp1-beta.aspx
-								result = Language.VBScript;
-								break;
-
-							case ".js":
-								// Older versions of VS treated JScript as HTML, but by VS 2012 JavaScript had its own language service.
-								result = Language.JavaScript;
-								break;
-						}
-					}
-
+					result = GetHtmlLanguage(fileName);
 					break;
 
 				case "XML":
@@ -198,6 +166,14 @@
 				case "VBScript":
 				case "vbscript":
 					result = Language.VBScript;
+					break;
+
+				case "LESS":
+					result = Language.Less;
+					break;
+
+				case "SCSS":
+					result = Language.Scss;
 					break;
 
 				default: // PL/SQL, SQL, T-SQL, T-SQL7, T-SQL80, T-SQL90, SQL Server Tools, etc.
@@ -268,6 +244,56 @@
 		[Conditional("DEBUG")]
 		public static void Unused<T>(T value)
 			=> GC.KeepAlive(value);
+
+		#endregion
+
+		#region Private Methods
+
+		private static Language GetCppLanguage(string fileName)
+		{
+			Language result = Language.CPlusPlus;
+
+			if (!string.IsNullOrEmpty(fileName))
+			{
+				switch (Path.GetExtension(fileName).ToLower())
+				{
+					case ".idl":
+					case ".odl":
+						result = Language.IDL;
+						break;
+				}
+			}
+
+			return result;
+		}
+
+		private static Language GetHtmlLanguage(string fileName)
+		{
+			Language result = Language.HTML;
+
+			if (!string.IsNullOrEmpty(fileName))
+			{
+				switch (Path.GetExtension(fileName).ToLower())
+				{
+					case ".razor":
+						result = Language.Razor;
+						break;
+
+					case ".vbs":
+						// VS dropped support for VBScript in VS 2008, but added it back in VS 2008 SP1.
+						// http://blogs.msdn.com/b/webdev/archive/2008/05/12/visual-studio-2008-sp1-beta.aspx
+						result = Language.VBScript;
+						break;
+
+					case ".js":
+						// Older versions of VS treated JScript as HTML, but by VS 2012 JavaScript had its own language service.
+						result = Language.JavaScript;
+						break;
+				}
+			}
+
+			return result;
+		}
 
 		#endregion
 	}

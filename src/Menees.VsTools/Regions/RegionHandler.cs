@@ -211,23 +211,20 @@ namespace Menees.VsTools.Regions
 			return result;
 		}
 
-		private static void MakeRegion(
-			Document doc,
-			string regionName,
-			EditPoint startPoint,
-			EditPoint endPoint,
-			string padding,
+		private static void GetRegionInfo(
 			Language language,
-			bool hasSelection,
-			Options options)
+			out string beginRegionToken,
+			out string endRegionToken,
+			out string regionNameQuote,
+			out string tokenPrefix,
+			out string tokenSuffix)
 		{
-			ThreadHelper.ThrowIfNotOnUIThread();
+			beginRegionToken = string.Empty;
+			endRegionToken = string.Empty;
+			regionNameQuote = string.Empty;
+			tokenPrefix = string.Empty;
+			tokenSuffix = string.Empty;
 
-			string beginRegionToken = string.Empty;
-			string endRegionToken = string.Empty;
-			string regionNameQuote = string.Empty;
-			string tokenPrefix = string.Empty;
-			string tokenSuffix = string.Empty;
 			switch (language)
 			{
 				case Language.CSharp:
@@ -256,6 +253,16 @@ namespace Menees.VsTools.Regions
 					tokenPrefix = "// ";
 					break;
 
+				case Language.CSS:
+				case Language.Less:
+				case Language.Scss:
+					// Use multi-line delimiter so region comments will remain in generated CSS.
+					beginRegionToken = "region";
+					endRegionToken = "endregion";
+					tokenPrefix = "/* ";
+					tokenSuffix = " */";
+					break;
+
 				case Language.XML:
 				case Language.XAML:
 				case Language.HTML:
@@ -272,6 +279,27 @@ namespace Menees.VsTools.Regions
 					tokenPrefix = "-- ";
 					break;
 			}
+		}
+
+		private static void MakeRegion(
+			Document doc,
+			string regionName,
+			EditPoint startPoint,
+			EditPoint endPoint,
+			string padding,
+			Language language,
+			bool hasSelection,
+			Options options)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			GetRegionInfo(
+				language,
+				out string beginRegionToken,
+				out string endRegionToken,
+				out string regionNameQuote,
+				out string tokenPrefix,
+				out string tokenSuffix);
 
 			// See if this file consistently uses no space after a single-line comment start token.
 			if (!string.IsNullOrEmpty(tokenPrefix) && string.IsNullOrEmpty(tokenSuffix))
@@ -351,6 +379,17 @@ namespace Menees.VsTools.Regions
 				case Language.TypeScript:
 					// Must begin with '//' comment and then optional whitespace.
 					result = @"^//\s*\#region";
+					break;
+
+				case Language.CSS:
+					// Must begin with '/*' comment and then optional whitespace.
+					result = @"^/\*\s*\#region";
+					break;
+
+				case Language.Less:
+				case Language.Scss:
+					// Must begin with '//' or '/*' comment and then optional '!' and whitespace.
+					result = @"^/[/\*]!?\s*\#region";
 					break;
 
 				case Language.XML:

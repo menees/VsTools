@@ -33,7 +33,14 @@
 	<Style Name="CSS">
 		<MultiLineDelimiter Begin="/*" End="*/" />
 		<Languages>CSS</Languages>
-		<Extensions>css, htm, html, cshtml, vbhtml, aspx, ascx, master, less, razor</Extensions>
+		<Extensions>css, htm, html, cshtml, vbhtml, aspx, ascx, master, razor</Extensions>
+	</Style>
+
+	<Style Name="CSS Preprocessor">
+		<SingleLineDelimiter>//</SingleLineDelimiter>
+		<MultiLineDelimiter Begin="/*" End="*/" />
+		<Languages>Less, Scss</Languages>
+		<Extensions>less, scss</Extensions>
 	</Style>
 
 	<Style Name="F#">

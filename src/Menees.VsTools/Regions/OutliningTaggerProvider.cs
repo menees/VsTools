@@ -27,6 +27,9 @@ namespace Menees.VsTools.Regions
 	[ContentType("XAML")]
 	[ContentType("XML")]
 	[ContentType("XOML")]
+	[ContentType("CSS")]
+	[ContentType("LESS")]
+	[ContentType("SCSS")]
 	internal sealed class OutliningTaggerProvider : ITaggerProvider
 	{
 		#region Public Methods

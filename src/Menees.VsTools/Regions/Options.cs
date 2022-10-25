@@ -45,7 +45,19 @@
 			"Private Event Handlers\r\n" +
 			"Private Types";
 
-		private readonly HashSet<Language> supportRegions = new() { Language.HTML, Language.Python, Language.SQL, Language.XML, Language.XAML };
+		private readonly HashSet<Language> supportRegions = new()
+		{
+			Language.HTML,
+			Language.Python,
+			Language.SQL,
+			Language.XML,
+			Language.XAML,
+			Language.CSS,
+			Language.Less,
+			Language.Scss,
+
+			// Keep these languages in sync with Regions\OutliningTaggerProvider's attributes.
+		};
 
 		#endregion
 
@@ -109,6 +121,24 @@
 		[Description("Whether to support <!-- #region --> outlining in XML files other than XAML.")]
 		[DefaultValue(true)]
 		public bool SupportXmlRegions { get => this.IsSupported(Language.XML); set => this.SetSupported(Language.XML, value); }
+
+		[Category(nameof(Language))]
+		[DisplayName("Support CSS regions")]
+		[Description("Whether to support #region outlining in CSS files.")]
+		[DefaultValue(true)]
+		public bool SupportCssRegions { get => this.IsSupported(Language.CSS); set => this.SetSupported(Language.CSS, value); }
+
+		[Category(nameof(Language))]
+		[DisplayName("Support Less regions")]
+		[Description("Whether to support #region outlining in Less files.")]
+		[DefaultValue(true)]
+		public bool SupportLessRegions { get => this.IsSupported(Language.Less); set => this.SetSupported(Language.Less, value); }
+
+		[Category(nameof(Language))]
+		[DisplayName("Support Scss regions")]
+		[Description("Whether to support #region outlining in Scss files.")]
+		[DefaultValue(true)]
+		public bool SupportScssRegions { get => this.IsSupported(Language.Scss); set => this.SetSupported(Language.Scss, value); }
 
 		#endregion
 
