@@ -172,6 +172,7 @@
 
 		public void Dispose()
 		{
+			ThreadHelper.ThrowIfNotOnUIThread();
 			this.Dispose(true);
 		}
 
@@ -320,6 +321,7 @@
 
 		protected override void Dispose(bool disposing)
 		{
+			ThreadHelper.ThrowIfNotOnUIThread();
 			this.commentTaskProvider?.Dispose();
 			this.buildTimer?.Dispose();
 			base.Dispose(disposing);

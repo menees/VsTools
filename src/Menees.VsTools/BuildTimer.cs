@@ -74,6 +74,8 @@ namespace Menees.VsTools
 
 		public void Dispose()
 		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
 			if (this.buildEvents != null)
 			{
 				this.buildEvents.OnBuildBegin -= this.BuildEvents_OnBuildBegin;
