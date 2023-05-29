@@ -39,6 +39,25 @@
 	[ProvideOptionPage(typeof(Sort.Options), Title, Sort.Options.DefaultCaption, 113, 118, false)]
 	[ProvideOptionPage(typeof(Regions.Options), Title, Regions.Options.DefaultCaption, 113, 119, false)]
 	[ProvideOptionPage(typeof(Projects.Options), Title, Projects.Options.DefaultCaption, 113, 120, false)]
+	/*
+		The ProvideOptionPage.SupportsProfiles property requires SupportsAutomation. If both are true and all
+		the options hierarchy is marked ComVisible, then import/export profiles can be theoretically be automatic.
+		However, that doesn't work for me. I always get an error trying to export each Options category:
+			"Failed to export settings for 'Xxx' [code 6896]"
+		So, I have to manually use ProvideProfile, which means I can't group the pages in the import/export dialog.
+		(Via reflection it looks like ProvileProfile.GroupName is only used for registry key nesting not UI grouping.)
+		This is ugly, but it's better than having no support for import/export.
+		https://github.com/VsixCommunity/Community.VisualStudio.Toolkit/discussions/237
+		https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/support-for-user-settings
+		https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.shell.provideprofileattribute.-ctor
+	*/
+	[ProvideProfile(typeof(Options), Title, "General", 113, 212, true)]
+	[ProvideProfile(typeof(BaseConverter.Options), Title, BaseConverter.Window.DefaultCaption, 113, 215, true)]
+	[ProvideProfile(typeof(Tasks.Options), Title, TasksWindow.DefaultCaption, 113, 216, true)]
+	[ProvideProfile(typeof(HighlightOptions), Title, HighlightOptions.DefaultCaption, 113, 217, true)]
+	[ProvideProfile(typeof(Sort.Options), Title, Sort.Options.DefaultCaption, 113, 218, true)]
+	[ProvideProfile(typeof(Regions.Options), Title, Regions.Options.DefaultCaption, 113, 219, true)]
+	[ProvideProfile(typeof(Projects.Options), Title, Projects.Options.DefaultCaption, 113, 220, true)]
 	public sealed partial class MainPackage
 	{
 	}

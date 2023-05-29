@@ -159,6 +159,34 @@ Also, provides colorized text in the Output and Find Results windows, an enhance
     <value>Projects</value>
     <comment>Name of the Projects options page</comment>
   </data>
+  <data name="212" xml:space="preserve">
+    <value>Menees VS Tools - General</value>
+    <comment>Name of default options page for import/export</comment>
+  </data>
+  <data name="215" xml:space="preserve">
+    <value>Menees VS Tools - Base Converter</value>
+    <comment>Name of Base Converter options page for import/export</comment>
+  </data>
+  <data name="216" xml:space="preserve">
+    <value>Menees VS Tools - Tasks</value>
+    <comment>Name of the Tasks options page for import/export</comment>
+  </data>
+  <data name="217" xml:space="preserve">
+    <value>Menees VS Tools - Highlight</value>
+    <comment>Name of the Highlight options page for import/export</comment>
+  </data>
+  <data name="218" xml:space="preserve">
+    <value>Menees VS Tools - Sort</value>
+    <comment>Name of the Sort options page for import/export</comment>
+  </data>
+  <data name="219" xml:space="preserve">
+    <value>Menees VS Tools - Regions</value>
+    <comment>Name of the Regions options page for import/export</comment>
+  </data>
+  <data name="220" xml:space="preserve">
+    <value>Menees VS Tools - Projects</value>
+    <comment>Name of the Projects options page for import/export</comment>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="301" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>images.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
