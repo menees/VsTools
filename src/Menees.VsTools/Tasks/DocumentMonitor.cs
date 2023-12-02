@@ -7,6 +7,7 @@ namespace Menees.VsTools.Tasks
 	using System.ComponentModel.Composition;
 	using System.Diagnostics;
 	using System.Diagnostics.CodeAnalysis;
+	using System.IO;
 	using System.Linq;
 	using System.Text;
 	using EnvDTE;
@@ -28,8 +29,6 @@ namespace Menees.VsTools.Tasks
 	internal sealed class DocumentMonitor : IDisposable, IVsRunningDocTableEvents, IVsRunningDocTableEvents2
 	{
 		#region Private Data Members
-
-		private const string TempTxtFile = "Temp.txt";
 
 		private readonly CommentTaskProvider provider;
 		private readonly RunningDocumentTable docTable;
@@ -197,6 +196,24 @@ namespace Menees.VsTools.Tasks
 
 		#region Private Methods
 
+		private static bool IsTempFile(string filePath)
+		{
+			const string TempTxtFile = "Temp.txt";
+			const StringComparison comparison = StringComparison.OrdinalIgnoreCase;
+
+			filePath ??= string.Empty;
+			bool result = filePath.Equals(TempTxtFile, comparison);
+			if (!result)
+			{
+				string fileDirectory = Path.GetDirectoryName(filePath);
+				string tempDirectory = Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar);
+				result = fileDirectory.StartsWith(tempDirectory, comparison)
+					&& Path.GetExtension(filePath).Equals(".tmp", comparison);
+			}
+
+			return result;
+		}
+
 		private void AddChangedDocument(ITextDocument document)
 		{
 			if (document != null)
@@ -287,7 +304,7 @@ namespace Menees.VsTools.Tasks
 		private void DocumentFactory_TextDocumentCreated(object sender, TextDocumentEventArgs e)
 		{
 			ITextDocument document = e.TextDocument;
-			if (document.FilePath != TempTxtFile)
+			if (!IsTempFile(document.FilePath))
 			{
 				document.FileActionOccurred += this.Document_FileActionOccurred;
 				document.TextBuffer.PostChanged += this.TextBuffer_PostChanged;
@@ -303,7 +320,7 @@ namespace Menees.VsTools.Tasks
 		private void DocumentFactory_TextDocumentDisposed(object sender, TextDocumentEventArgs e)
 		{
 			ITextDocument document = e.TextDocument;
-			if (document.FilePath != TempTxtFile)
+			if (!IsTempFile(document.FilePath))
 			{
 				this.AddChangedDocument(document.FilePath, null);
 
