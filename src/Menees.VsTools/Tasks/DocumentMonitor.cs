@@ -196,19 +196,27 @@ namespace Menees.VsTools.Tasks
 
 		#region Private Methods
 
-		private static bool IsTempFile(string filePath)
+		private static bool IsTempFile(ITextDocument document)
 		{
 			const string TempTxtFile = "Temp.txt";
-			const StringComparison comparison = StringComparison.OrdinalIgnoreCase;
+			const StringComparison IgnoreCase = StringComparison.OrdinalIgnoreCase;
 
-			filePath ??= string.Empty;
-			bool result = filePath.Equals(TempTxtFile, comparison);
+			string filePath = document.FilePath ?? string.Empty;
+			bool result = filePath.Equals(TempTxtFile, IgnoreCase);
 			if (!result)
 			{
 				string fileDirectory = Path.GetDirectoryName(filePath);
 				string tempDirectory = Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar);
-				result = fileDirectory.StartsWith(tempDirectory, comparison)
-					&& Path.GetExtension(filePath).Equals(".tmp", comparison);
+
+				// In VS 2022, a TFS Annotate or Git Blame window will use two temp documents.
+				// The first uses Temp.txt, and the second is a vctmp* or tmp*.tmp file.
+				// To test this, find any checked in file with a "// Note:" comment, and
+				// temporarily add "Note" as a custom Task token.
+				result = fileDirectory.StartsWith(tempDirectory, IgnoreCase)
+					&& (Path.GetExtension(filePath).Equals(".tmp", IgnoreCase)
+						|| (!document.IsDirty
+							&& document.LastSavedTime == DateTime.MinValue
+							&& Path.GetFileName(filePath).StartsWith("vctmp", IgnoreCase)));
 			}
 
 			return result;
@@ -304,7 +312,7 @@ namespace Menees.VsTools.Tasks
 		private void DocumentFactory_TextDocumentCreated(object sender, TextDocumentEventArgs e)
 		{
 			ITextDocument document = e.TextDocument;
-			if (!IsTempFile(document.FilePath))
+			if (!IsTempFile(document))
 			{
 				document.FileActionOccurred += this.Document_FileActionOccurred;
 				document.TextBuffer.PostChanged += this.TextBuffer_PostChanged;
@@ -320,7 +328,7 @@ namespace Menees.VsTools.Tasks
 		private void DocumentFactory_TextDocumentDisposed(object sender, TextDocumentEventArgs e)
 		{
 			ITextDocument document = e.TextDocument;
-			if (!IsTempFile(document.FilePath))
+			if (!IsTempFile(document))
 			{
 				this.AddChangedDocument(document.FilePath, null);
 
