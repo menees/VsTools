@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Menees VS Tools 2022" Version="2022.0.8" Language="en-US" Publisher="Bill Menees" />
+        <Identity Id="Menees VS Tools 2022" Version="2022.0.9" Language="en-US" Publisher="Bill Menees" />
         <DisplayName>Menees VS Tools 2022</DisplayName>
         <Description xml:space="preserve">Provides several new commands such as Sort Lines, Sort Members, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, ExpandAllRegions, and ToggleFiles.
 
