@@ -137,7 +137,7 @@
 			<TextBlock VerticalAlignment="Center" Text="{Binding Items.Count, ElementName=tasks, Mode=OneWay, StringFormat=Count: \{0\}}" Margin="4,0"/>
 		</StackPanel>
 		<Border x:Name="warningBorder" DockPanel.Dock="Top" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
-			<TextBlock x:Name="warning" Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" Padding="6" TextWrapping="Wrap">
+			<TextBlock x:Name="warning" Background="{DynamicResource {x:Static vs:EnvironmentColors.SystemInfoBackgroundBrushKey}}" Padding="6" TextWrapping="Wrap">
 			Task comment scanning is currently disabled (under Tools → Options → Menees VS Tools → Tasks).
 			</TextBlock>
 		</Border>
