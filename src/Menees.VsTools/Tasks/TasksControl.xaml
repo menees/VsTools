@@ -148,6 +148,7 @@
 				ScrollViewer.CanContentScroll="False"
 				ScrollViewer.HorizontalScrollBarVisibility="Disabled"
 				KeyDown="Tasks_KeyDown"
+				BorderBrush="{x:Null}"
 				MouseDoubleClick="Tasks_DoubleClick"
 				TextSearch.TextPath="Comment"
 				ContextMenuOpening="Tasks_ContextMenuOpening"
