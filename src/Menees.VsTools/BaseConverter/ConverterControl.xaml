@@ -3,21 +3,21 @@
 			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+			xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
 			mc:Ignorable="d" x:ClassModifier="internal"
 			d:DesignHeight="300" d:DesignWidth="300"
 			Loaded="BaseConverterControl_Loaded"
-			Background="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}">
+			Background="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowBackgroundBrushKey}}">
 	<UserControl.Resources>
 		<Style x:Key="defaultStyle">
 			<!--http://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.vsbrushes.aspx-->
-			<Setter Property="Control.Background" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}" />
-			<Setter Property="Control.Foreground" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowTextBrushKey}}" />
+			<Setter Property="Control.Background" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowBackgroundBrushKey}}" />
+			<Setter Property="Control.Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTextBrushKey}}" />
 		</Style>
 		<Style TargetType="{x:Type Label}" BasedOn="{StaticResource defaultStyle}" />
 		<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource defaultStyle}" />
 		<Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource defaultStyle}">
-			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static vs:EnvironmentColors.ComboBoxPopupBorderBrushKey}}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static ui:EnvironmentColors.ComboBoxPopupBorderBrushKey}}"/>
 		</Style>
 		<!-- I tried styling ComboBox (using ComboBoxTextBrushKey and ComboBoxBackgroundBrushKey),
 		but it doesn't work correctly in the Dark theme.  It becomes unreadable with white text on a silver

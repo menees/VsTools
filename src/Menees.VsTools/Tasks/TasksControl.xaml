@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+	xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
 	xmlns:tasks="clr-namespace:Menees.VsTools.Tasks"
 	mc:Ignorable="d" x:ClassModifier="internal"
 	d:DesignHeight="300" d:DesignWidth="300" Loaded="TasksControl_Loaded"
@@ -13,20 +13,20 @@
 		<tasks:PriorityImageConverter x:Key="PriorityImageConverter"/>
 
 		<Style x:Key="defaultStyle">
-			<Setter Property="Control.Background" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}" />
-			<Setter Property="Control.Foreground" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowTextBrushKey}}" />
+			<Setter Property="Control.Background" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowBackgroundBrushKey}}" />
+			<Setter Property="Control.Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTextBrushKey}}" />
 		</Style>
 		<Style TargetType="Button" BasedOn="{StaticResource defaultStyle}" />
 		<Style TargetType="TextBlock" BasedOn="{StaticResource defaultStyle}" />
 		<Style x:Key="CommentAttributes" TargetType="TextBlock" BasedOn="{StaticResource defaultStyle}">
 			<Setter Property="FontSize" Value="11"/>
-			<Setter Property="Foreground" Value="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarTextInactiveBrushKey}}"/>
+			<Setter Property="Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.CommandBarTextInactiveBrushKey}}"/>
 		</Style>
 		<Style TargetType="ContextMenu" BasedOn="{StaticResource defaultStyle}">
-			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarMenuBorderBrushKey}}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static ui:EnvironmentColors.CommandBarMenuBorderBrushKey}}"/>
 		</Style>
 		<Style TargetType="MenuItem" BasedOn="{StaticResource defaultStyle}">
-			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
 			<Setter Property="Padding" Value="-2,-1,-1,-1"/>
 			<Setter Property="Margin" Value="-1,0,0,0"/>
 		</Style>
@@ -38,7 +38,7 @@
 				<Setter.Value>
 					<ControlTemplate TargetType="{x:Type Separator}">
 						<Grid Height="3" Style="{StaticResource defaultStyle}">
-							<Rectangle Height="1" Fill="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}"
+							<Rectangle Height="1" Fill="{DynamicResource {x:Static ui:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}"
 								VerticalAlignment="Center"/>
 						</Grid>
 					</ControlTemplate>
@@ -56,10 +56,10 @@
 			-->
 		</Style>
 		<Style x:Key="TaskBorder" TargetType="Border">
-			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTextBrushKey}}"/>
 		</Style>
 		<Style TargetType="Polygon">
-			<Setter Property="Fill" Value="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarMenuGlyphBrushKey}}"/>
+			<Setter Property="Fill" Value="{DynamicResource {x:Static ui:EnvironmentColors.CommandBarMenuGlyphBrushKey}}"/>
 		</Style>
 	</UserControl.Resources>
 	<DockPanel>
@@ -136,8 +136,8 @@
 			</Button>
 			<TextBlock VerticalAlignment="Center" Text="{Binding Items.Count, ElementName=tasks, Mode=OneWay, StringFormat=Count: \{0\}}" Margin="4,0"/>
 		</StackPanel>
-		<Border x:Name="warningBorder" DockPanel.Dock="Top" BorderThickness="1" BorderBrush="{DynamicResource {x:Static vs:EnvironmentColors.SystemActiveBorderBrushKey}}">
-			<TextBlock x:Name="warning" Background="{DynamicResource {x:Static vs:EnvironmentColors.SystemInfoBackgroundBrushKey}}" Padding="6" TextWrapping="Wrap">
+		<Border x:Name="warningBorder" DockPanel.Dock="Top" BorderThickness="1" BorderBrush="{DynamicResource {x:Static ui:EnvironmentColors.SystemActiveBorderBrushKey}}">
+			<TextBlock x:Name="warning" Background="{DynamicResource {x:Static ui:EnvironmentColors.SystemInfoBackgroundBrushKey}}" Padding="6" TextWrapping="Wrap">
 			Task comment scanning is currently disabled (under Tools → Options → Menees VS Tools → Tasks).
 			</TextBlock>
 		</Border>
