@@ -42,3 +42,6 @@ dotnet_diagnostic.CC0076.severity = none
 
 # CC0079: Change numeric literal expression
 dotnet_diagnostic.CC0079.severity = none
+
+# IDE0290: Use primary constructor
+dotnet_diagnostic.IDE0290.severity = none

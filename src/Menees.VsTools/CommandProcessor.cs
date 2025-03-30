@@ -30,6 +30,7 @@
 
 		private readonly MainPackage package;
 		private readonly DTE dte;
+		private CopyInfoHandler copyInfoHandler;
 
 		#endregion
 
@@ -125,6 +126,20 @@
 
 						case Command.AddToDoComment:
 							result = CommentHandler.CanAddToDoComment(this.dte);
+							break;
+
+						case Command.CopySolutionRelativePath:
+						case Command.CopyProjectRelativePath:
+						case Command.CopyRepoRelativePath:
+						case Command.CopyParentPath:
+						case Command.CopyFullPath:
+						case Command.CopyNameOnly:
+						case Command.CopyUnixSolutionRelativePath:
+						case Command.CopyUnixProjectRelativePath:
+						case Command.CopyUnixRepoRelativePath:
+						case Command.CopyUnixParentPath:
+						case Command.CopyUnixFullPath:
+							result = this.GetCopyInfoHandler().CanExecute(command);
 							break;
 					}
 				}
@@ -228,6 +243,20 @@
 						case Command.ViewTasks:
 							this.ViewToolWindow(typeof(Tasks.TasksWindow));
 							break;
+
+						case Command.CopySolutionRelativePath:
+						case Command.CopyProjectRelativePath:
+						case Command.CopyRepoRelativePath:
+						case Command.CopyParentPath:
+						case Command.CopyFullPath:
+						case Command.CopyNameOnly:
+						case Command.CopyUnixSolutionRelativePath:
+						case Command.CopyUnixProjectRelativePath:
+						case Command.CopyUnixRepoRelativePath:
+						case Command.CopyUnixParentPath:
+						case Command.CopyUnixFullPath:
+							this.GetCopyInfoHandler().Execute(command);
+							break;
 					}
 				}
 			}
@@ -316,7 +345,7 @@
 				catch (COMException ex)
 				{
 					// If we get REGDB_E_CLASSNOTREG, then Word probably isn't installed.
-					const uint REGDB_E_CLASSNOTREG = 0x80040154;
+					const uint REGDB_E_CLASSNOTREG = 0x_8004_0154;
 					if (unchecked((uint)ex.ErrorCode) == REGDB_E_CLASSNOTREG)
 					{
 						this.package.ShowMessageBox(
@@ -351,7 +380,7 @@
 					// Rethrow the exception unless the user hit Cancel when prompted to save changes for a document.
 					// Cancelling throws an HRESULT of 0x80004004, which is the C constant E_ABORT with the description
 					// "Operation aborted".
-					const uint E_ABORT = 0x80004004;
+					const uint E_ABORT = 0x_8000_4004;
 					if (unchecked((uint)ex.ErrorCode) != E_ABORT)
 					{
 						throw;
@@ -557,6 +586,9 @@
 
 			Utilities.Unused(task); // We just want the task to run in the background.
 		}
+
+		private CopyInfoHandler GetCopyInfoHandler()
+			=> this.copyInfoHandler ??= new CopyInfoHandler(this.dte, this.package);
 
 		#endregion
 	}

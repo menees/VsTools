@@ -87,6 +87,17 @@
 		AddToDoComment = 319,
 		ViewTasks = 320,
 		ViewProjectDependencies = 321,
+		CopySolutionRelativePath = 322,
+		CopyProjectRelativePath = 323,
+		CopyRepoRelativePath = 324,
+		CopyParentPath = 325,
+		CopyFullPath = 326,
+		CopyNameOnly = 327,
+		CopyUnixSolutionRelativePath = 328,
+		CopyUnixProjectRelativePath = 329,
+		CopyUnixRepoRelativePath = 330,
+		CopyUnixParentPath = 331,
+		CopyUnixFullPath = 332,
 	}
 
 	#endregion
