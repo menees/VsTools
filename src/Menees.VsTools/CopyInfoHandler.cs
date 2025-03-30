@@ -238,6 +238,19 @@ internal class CopyInfoHandler
 
 	#region Private Methods
 
+	private static bool IsTempFile(Document document)
+	{
+		// This is a little different from DocumentMonitor.IsTempFile(ITextDocument document).
+		ThreadHelper.ThrowIfNotOnUIThread();
+		string fullName = document.FullName;
+		string directory = Path.GetDirectoryName(fullName);
+		string fileName = Path.GetFileName(fullName);
+		StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+		bool result = comparer.Equals(directory, Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar))
+			&& !comparer.Equals(fileName, document.ActiveWindow?.Caption);
+		return result;
+	}
+
 	private string GetRelativePath(string fullBaseName, string fullItemName, bool asUnix)
 	{
 		string result = null;
@@ -336,7 +349,17 @@ internal class CopyInfoHandler
 			// we can't get ProjectItems from the normal IVsHierarchy, so for doc
 			// commands we'll use the DTE's ActiveDocument directly.
 			Document document = this.dte.ActiveDocument;
-			result = [document.ProjectItem];
+			ProjectItem projectItem = document.ProjectItem;
+			if (projectItem == null ||
+				(projectItem.ContainingProject.Kind == EnvDTE.Constants.vsProjectKindMisc
+				&& IsTempFile(document)))
+			{
+				result = [];
+			}
+			else
+			{
+				result = [document.ProjectItem];
+			}
 		}
 
 		return result;
