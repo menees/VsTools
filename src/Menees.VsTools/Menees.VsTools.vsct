@@ -57,6 +57,9 @@
 			<Group guid="CommandSet" id="ItemCopyInfoStandard" priority="0x0101"/>
 			<Group guid="CommandSet" id="ItemCopyInfoUnix" priority="0x0102"/>
 			<Group guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0100"/>
+			<Group guid="CommandSet" id="DocCopyInfoStandard" priority="0x0101"/>
+			<Group guid="CommandSet" id="DocCopyInfoUnix" priority="0x0102"/>
+			<Group guid="CommandSet" id="DocCopyInfoSubMenuGroup" priority="0x0100"/>
 		</Groups>
 
 		<!--Buttons section. -->
@@ -469,6 +472,128 @@
 					<LocCanonicalName>Menees.VsTools.CopyUnixFullPath</LocCanonicalName>
 				</Strings>
 			</Button>
+
+			<Button guid="CommandSet" id="CopyDocSolutionRelativePath" priority="0x0121" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Solution-Relative Path</ButtonText>
+					<ToolTipText>Copies the path of the document relative to the current solution.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocSolutionRelativePath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocSolutionRelativePath</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocProjectRelativePath" priority="0x0122" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Project-Relative Path</ButtonText>
+					<ToolTipText>Copies the path of the document relative to its project.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocProjectRelativePath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocProjectRelativePath</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocRepoRelativePath" priority="0x0123" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Repo-Relative Path</ButtonText>
+					<ToolTipText>Copies the path of the document relative to its Git repository.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocRepoRelativePath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocRepoRelativePath</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocParentPath" priority="0x0124" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Parent Path</ButtonText>
+					<ToolTipText>Copies the path of the document's parent folder.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocParentPath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocParentPath</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocFullPath" priority="0x0125" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Full Path</ButtonText>
+					<ToolTipText>Copies the full path of the document.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocFullPath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocFullPath</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocNameOnly" priority="0x0126" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Name Only</ButtonText>
+					<ToolTipText>Copies the name of the document.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocNameOnly</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocNameOnly</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocUnixSolutionRelativePath" priority="0x0121" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Unix Solution-Relative Path</ButtonText>
+					<ToolTipText>Copies the Unix path of the document relative to the current solution.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocUnixSolutionRelativePath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocUnixSolutionRelativePath</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocUnixProjectRelativePath" priority="0x0122" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Unix Project-Relative Path</ButtonText>
+					<ToolTipText>Copies the Unix path of the document relative to its project.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocUnixProjectRelativePath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocUnixProjectRelativePath</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocUnixRepoRelativePath" priority="0x0123" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Unix Repo-Relative Path</ButtonText>
+					<ToolTipText>Copies the Unix path of the document relative to its Git repository.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocUnixRepoRelativePath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocUnixRepoRelativePath</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocUnixParentPath" priority="0x0124" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Unix Parent Path</ButtonText>
+					<ToolTipText>Copies the Unix path of the document's parent folder.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocUnixParentPath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocUnixParentPath</LocCanonicalName>
+				</Strings>
+			</Button>
+			<Button guid="CommandSet" id="CopyDocUnixFullPath" priority="0x0125" type="Button">
+				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Unix Full Path</ButtonText>
+					<ToolTipText>Copies the Unix full path of the document.</ToolTipText>
+					<CanonicalName>Menees.VsTools.CopyDocUnixFullPath</CanonicalName>
+					<LocCanonicalName>Menees.VsTools.CopyDocUnixFullPath</LocCanonicalName>
+				</Strings>
+			</Button>
 		</Buttons>
 
 		<!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -515,6 +640,12 @@
 			</Menu>
 
 			<Menu guid="CommandSet" id="ItemCopyInfoSubMenu" type="Menu">
+				<Strings>
+					<ButtonText>Copy Info</ButtonText>
+				</Strings>
+			</Menu>
+
+			<Menu guid="CommandSet" id="DocCopyInfoSubMenu" type="Menu">
 				<Strings>
 					<ButtonText>Copy Info</ButtonText>
 				</Strings>
@@ -687,9 +818,6 @@
 		<CommandPlacement guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0501">
 			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_FOLDERNODE" />
 		</CommandPlacement>
-		<CommandPlacement guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0100">
-			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" />
-		</CommandPlacement>
 
 		<CommandPlacement guid="CommandSet" id="CopySolutionRelativePath" priority="0x0101">
 			<Parent guid="CommandSet" id="ProjectCopyInfoStandard"/>
@@ -763,6 +891,52 @@
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="SolutionCopyInfoSubMenuGroup" priority="0x0801">
 			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
+		</CommandPlacement>
+
+		<CommandPlacement guid="CommandSet" id="CopyDocSolutionRelativePath" priority="0x0101">
+			<Parent guid="CommandSet" id="DocCopyInfoStandard"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocProjectRelativePath" priority="0x0102">
+			<Parent guid="CommandSet" id="DocCopyInfoStandard"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocRepoRelativePath" priority="0x0103">
+			<Parent guid="CommandSet" id="DocCopyInfoStandard"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocParentPath" priority="0x0104">
+			<Parent guid="CommandSet" id="DocCopyInfoStandard"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocFullPath" priority="0x0105">
+			<Parent guid="CommandSet" id="DocCopyInfoStandard"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocNameOnly" priority="0x0106">
+			<Parent guid="CommandSet" id="DocCopyInfoStandard"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocUnixSolutionRelativePath" priority="0x0101">
+			<Parent guid="CommandSet" id="DocCopyInfoUnix"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocUnixProjectRelativePath" priority="0x0102">
+			<Parent guid="CommandSet" id="DocCopyInfoUnix"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocUnixRepoRelativePath" priority="0x0103">
+			<Parent guid="CommandSet" id="DocCopyInfoUnix"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocUnixParentPath" priority="0x0104">
+			<Parent guid="CommandSet" id="DocCopyInfoUnix"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="CopyDocUnixFullPath" priority="0x0105">
+			<Parent guid="CommandSet" id="DocCopyInfoUnix"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="DocCopyInfoStandard" priority="0x0100">
+			<Parent guid="CommandSet" id="DocCopyInfoSubMenu"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="DocCopyInfoUnix" priority="0x0101">
+			<Parent guid="CommandSet" id="DocCopyInfoSubMenu"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="DocCopyInfoSubMenu" priority="0x0101">
+			<Parent guid="CommandSet" id="DocCopyInfoSubMenuGroup"/>
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="DocCopyInfoSubMenuGroup" priority="0x0100">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" />
 		</CommandPlacement>
 
 		<!--Toolbar-->
@@ -877,6 +1051,7 @@
 		<VisibilityItem guid="CommandSet" id="ListAllProjectProperties" context="UICONTEXT_SolutionHasMultipleProjects" />
 		<VisibilityItem guid="CommandSet" id="ViewProjectDependencies" context="UICONTEXT_SolutionHasSingleProject" />
 		<VisibilityItem guid="CommandSet" id="ViewProjectDependencies" context="UICONTEXT_SolutionHasMultipleProjects" />
+
 		<VisibilityItem guid="CommandSet" id="CopySolutionRelativePath" context="UICONTEXT_SolutionHasSingleProject" />
 		<VisibilityItem guid="CommandSet" id="CopySolutionRelativePath" context="UICONTEXT_SolutionHasMultipleProjects" />
 		<VisibilityItem guid="CommandSet" id="CopyProjectRelativePath" context="UICONTEXT_SolutionHasSingleProject" />
@@ -899,6 +1074,29 @@
 		<VisibilityItem guid="CommandSet" id="CopyUnixParentPath" context="UICONTEXT_SolutionHasMultipleProjects" />
 		<VisibilityItem guid="CommandSet" id="CopyUnixFullPath" context="UICONTEXT_SolutionHasSingleProject" />
 		<VisibilityItem guid="CommandSet" id="CopyUnixFullPath" context="UICONTEXT_SolutionHasMultipleProjects" />
+
+		<VisibilityItem guid="CommandSet" id="CopyDocSolutionRelativePath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocSolutionRelativePath" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocProjectRelativePath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocProjectRelativePath" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocRepoRelativePath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocRepoRelativePath" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocParentPath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocParentPath" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocFullPath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocFullPath" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocNameOnly" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocNameOnly" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixSolutionRelativePath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixSolutionRelativePath" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixProjectRelativePath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixProjectRelativePath" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixRepoRelativePath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixRepoRelativePath" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixParentPath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixParentPath" context="UICONTEXT_SolutionHasMultipleProjects" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixFullPath" context="UICONTEXT_SolutionHasSingleProject" />
+		<VisibilityItem guid="CommandSet" id="CopyDocUnixFullPath" context="UICONTEXT_SolutionHasMultipleProjects" />
 	</VisibilityConstraints>
 
 	<KeyBindings>
@@ -935,15 +1133,19 @@
 			<IDSymbol name="SolutionCopyInfoStandard" value="0x1100" />
 			<IDSymbol name="SolutionCopyInfoUnix" value="0x1101" />
 			<IDSymbol name="SolutionCopyInfoSubMenu" value="0x1102" />
-			<IDSymbol name="ProjectCopyInfoStandard" value="0x1103" />
-			<IDSymbol name="ProjectCopyInfoUnix" value="0x1104" />
-			<IDSymbol name="ProjectCopyInfoSubMenu" value="0x1105" />
-			<IDSymbol name="ItemCopyInfoStandard" value="0x1106" />
-			<IDSymbol name="ItemCopyInfoUnix" value="0x1107" />
-			<IDSymbol name="ItemCopyInfoSubMenu" value="0x1108" />
-			<IDSymbol name="SolutionCopyInfoSubMenuGroup" value="0x1109" />
-			<IDSymbol name="ProjectCopyInfoSubMenuGroup" value="0x110A" />
+			<IDSymbol name="SolutionCopyInfoSubMenuGroup" value="0x1103" />
+			<IDSymbol name="ProjectCopyInfoStandard" value="0x1104" />
+			<IDSymbol name="ProjectCopyInfoUnix" value="0x1105" />
+			<IDSymbol name="ProjectCopyInfoSubMenu" value="0x1106" />
+			<IDSymbol name="ProjectCopyInfoSubMenuGroup" value="0x1107" />
+			<IDSymbol name="ItemCopyInfoStandard" value="0x1108" />
+			<IDSymbol name="ItemCopyInfoUnix" value="0x1109" />
+			<IDSymbol name="ItemCopyInfoSubMenu" value="0x110A" />
 			<IDSymbol name="ItemCopyInfoSubMenuGroup" value="0x110B" />
+			<IDSymbol name="DocCopyInfoStandard" value="0x110C" />
+			<IDSymbol name="DocCopyInfoUnix" value="0x110D" />
+			<IDSymbol name="DocCopyInfoSubMenu" value="0x110E" />
+			<IDSymbol name="DocCopyInfoSubMenuGroup" value="0x110F" />
 
 			<IDSymbol name="SortLines" value="301" />
 			<IDSymbol name="Trim" value="302" />
@@ -966,6 +1168,8 @@
 			<IDSymbol name="AddToDoComment" value="319"/>
 			<IDSymbol name="ViewTasks" value="320" />
 			<IDSymbol name="ViewProjectDependencies" value="321" />
+
+			<!-- Copy Info commands used in Solution Explorer context menus -->
 			<IDSymbol name="CopySolutionRelativePath" value="322" />
 			<IDSymbol name="CopyProjectRelativePath" value="323" />
 			<IDSymbol name="CopyRepoRelativePath" value="324" />
@@ -977,6 +1181,19 @@
 			<IDSymbol name="CopyUnixRepoRelativePath" value="330" />
 			<IDSymbol name="CopyUnixParentPath" value="331" />
 			<IDSymbol name="CopyUnixFullPath" value="332" />
+
+			<!-- Copy Info commands used in document tab context menu -->
+			<IDSymbol name="CopyDocSolutionRelativePath" value="333" />
+			<IDSymbol name="CopyDocProjectRelativePath" value="334" />
+			<IDSymbol name="CopyDocRepoRelativePath" value="335" />
+			<IDSymbol name="CopyDocParentPath" value="336" />
+			<IDSymbol name="CopyDocFullPath" value="337" />
+			<IDSymbol name="CopyDocNameOnly" value="338" />
+			<IDSymbol name="CopyDocUnixSolutionRelativePath" value="339" />
+			<IDSymbol name="CopyDocUnixProjectRelativePath" value="340" />
+			<IDSymbol name="CopyDocUnixRepoRelativePath" value="341" />
+			<IDSymbol name="CopyDocUnixParentPath" value="342" />
+			<IDSymbol name="CopyDocUnixFullPath" value="343" />
 		</GuidSymbol>
 
 		<GuidSymbol name="Images" value="{23de3de7-c077-43ea-b7e6-9ce5d7936031}" >

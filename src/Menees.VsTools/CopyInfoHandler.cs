@@ -26,6 +26,7 @@ internal class CopyInfoHandler
 	private readonly DTE dte;
 	private readonly MainPackage package;
 	private readonly List<string> lines = [];
+	private readonly Options options;
 
 	private string solutionPath;
 	private string solutionRepoPath;
@@ -38,6 +39,9 @@ internal class CopyInfoHandler
 	{
 		this.dte = dte;
 		this.package = package;
+
+		ThreadHelper.ThrowIfNotOnUIThread();
+		this.options = MainPackage.GeneralOptions;
 	}
 
 	#endregion
@@ -46,21 +50,62 @@ internal class CopyInfoHandler
 
 	public bool CanExecute(Command command)
 	{
-		bool result = false;
+		bool isOsAvailable = false;
+		bool isTargetAvailable = false;
 
 		ThreadHelper.ThrowIfNotOnUIThread();
 		switch (command)
 		{
 			case Command.CopySolutionRelativePath:
 			case Command.CopyProjectRelativePath:
+			case Command.CopyRepoRelativePath:
+			case Command.CopyParentPath:
+			case Command.CopyFullPath:
+			case Command.CopyDocSolutionRelativePath:
+			case Command.CopyDocProjectRelativePath:
+			case Command.CopyDocRepoRelativePath:
+			case Command.CopyDocParentPath:
+			case Command.CopyDocFullPath:
+				isOsAvailable = this.options.ShowCopyInfoStandardCommands;
+				break;
+
 			case Command.CopyUnixSolutionRelativePath:
 			case Command.CopyUnixProjectRelativePath:
-				result = this.dte.Solution.FullName.IsNotEmpty();
+			case Command.CopyUnixRepoRelativePath:
+			case Command.CopyUnixParentPath:
+			case Command.CopyUnixFullPath:
+			case Command.CopyDocUnixSolutionRelativePath:
+			case Command.CopyDocUnixProjectRelativePath:
+			case Command.CopyDocUnixRepoRelativePath:
+			case Command.CopyDocUnixParentPath:
+			case Command.CopyDocUnixFullPath:
+				isOsAvailable = this.options.ShowCopyInfoUnixCommands;
+				break;
+
+			case Command.CopyNameOnly:
+			case Command.CopyDocNameOnly:
+				isOsAvailable = this.options.ShowCopyInfoStandardCommands || this.options.ShowCopyInfoUnixCommands;
+				break;
+		}
+
+		switch (command)
+		{
+			case Command.CopySolutionRelativePath:
+			case Command.CopyProjectRelativePath:
+			case Command.CopyUnixSolutionRelativePath:
+			case Command.CopyUnixProjectRelativePath:
+			case Command.CopyDocSolutionRelativePath:
+			case Command.CopyDocProjectRelativePath:
+			case Command.CopyDocUnixSolutionRelativePath:
+			case Command.CopyDocUnixProjectRelativePath:
+				isTargetAvailable = this.dte.Solution.FullName.IsNotEmpty();
 				break;
 
 			case Command.CopyRepoRelativePath:
 			case Command.CopyUnixRepoRelativePath:
-				result = this.FindGitRepo(this.dte.Solution.FullName);
+			case Command.CopyDocRepoRelativePath:
+			case Command.CopyDocUnixRepoRelativePath:
+				isTargetAvailable = this.FindGitRepo(this.dte.Solution.FullName);
 				break;
 
 			case Command.CopyParentPath:
@@ -68,10 +113,16 @@ internal class CopyInfoHandler
 			case Command.CopyNameOnly:
 			case Command.CopyUnixParentPath:
 			case Command.CopyUnixFullPath:
-				result = true;
+			case Command.CopyDocParentPath:
+			case Command.CopyDocFullPath:
+			case Command.CopyDocNameOnly:
+			case Command.CopyDocUnixParentPath:
+			case Command.CopyDocUnixFullPath:
+				isTargetAvailable = true;
 				break;
 		}
 
+		bool result = isOsAvailable && isTargetAvailable;
 		return result;
 	}
 
@@ -80,12 +131,16 @@ internal class CopyInfoHandler
 		ThreadHelper.ThrowIfNotOnUIThread();
 		this.lines.Clear();
 
+		// TODO: Detect doc command. [Bill, 3/30/2025]
 		switch (command)
 		{
 			case Command.CopySolutionRelativePath:
 			case Command.CopyUnixSolutionRelativePath:
+			case Command.CopyDocSolutionRelativePath:
+			case Command.CopyDocUnixSolutionRelativePath:
 				this.GetRelativePaths(
-					command == Command.CopyUnixSolutionRelativePath,
+					command == Command.CopyDocSolutionRelativePath || command == Command.CopyDocUnixSolutionRelativePath,
+					command == Command.CopyUnixSolutionRelativePath || command == Command.CopyDocUnixSolutionRelativePath,
 					project =>
 					{
 						ThreadHelper.ThrowIfNotOnUIThread();
@@ -100,8 +155,11 @@ internal class CopyInfoHandler
 
 			case Command.CopyProjectRelativePath:
 			case Command.CopyUnixProjectRelativePath:
+			case Command.CopyDocProjectRelativePath:
+			case Command.CopyDocUnixProjectRelativePath:
 				this.GetRelativePaths(
-					command == Command.CopyUnixProjectRelativePath,
+					command == Command.CopyDocProjectRelativePath || command == Command.CopyDocUnixProjectRelativePath,
+					command == Command.CopyUnixProjectRelativePath || command == Command.CopyDocUnixProjectRelativePath,
 					project =>
 					{
 						ThreadHelper.ThrowIfNotOnUIThread();
@@ -116,10 +174,13 @@ internal class CopyInfoHandler
 
 			case Command.CopyRepoRelativePath:
 			case Command.CopyUnixRepoRelativePath:
+			case Command.CopyDocRepoRelativePath:
+			case Command.CopyDocUnixRepoRelativePath:
 				if (this.FindGitRepo(this.dte.Solution.FullName))
 				{
 					this.GetRelativePaths(
-						command == Command.CopyUnixRepoRelativePath,
+						command == Command.CopyDocRepoRelativePath || command == Command.CopyDocUnixRepoRelativePath,
+						command == Command.CopyUnixRepoRelativePath || command == Command.CopyDocUnixRepoRelativePath,
 						_ => this.solutionRepoPath,
 						_ => this.solutionRepoPath);
 				}
@@ -128,16 +189,30 @@ internal class CopyInfoHandler
 
 			case Command.CopyParentPath:
 			case Command.CopyUnixParentPath:
-				this.GetPaths(command == Command.CopyUnixParentPath, Path.GetDirectoryName);
+			case Command.CopyDocParentPath:
+			case Command.CopyDocUnixParentPath:
+				this.GetPaths(
+					command == Command.CopyDocParentPath || command == Command.CopyDocUnixParentPath,
+					command == Command.CopyUnixParentPath || command == Command.CopyDocUnixParentPath,
+					Path.GetDirectoryName);
 				break;
 
 			case Command.CopyFullPath:
 			case Command.CopyUnixFullPath:
-				this.GetPaths(command == Command.CopyUnixFullPath, path => path);
+			case Command.CopyDocFullPath:
+			case Command.CopyDocUnixFullPath:
+				this.GetPaths(
+					command == Command.CopyDocFullPath || command == Command.CopyDocUnixFullPath,
+					command == Command.CopyUnixFullPath || command == Command.CopyDocUnixFullPath,
+					path => path);
 				break;
 
 			case Command.CopyNameOnly:
-				this.GetPaths(false, Path.GetFileName);
+			case Command.CopyDocNameOnly:
+				this.GetPaths(
+					command == Command.CopyDocNameOnly,
+					false,
+					Path.GetFileName);
 				break;
 		}
 
@@ -163,7 +238,7 @@ internal class CopyInfoHandler
 
 	#region Private Methods
 
-	private static string GetRelativePath(string fullBaseName, string fullItemName, bool asUnix)
+	private string GetRelativePath(string fullBaseName, string fullItemName, bool asUnix)
 	{
 		string result = null;
 
@@ -175,7 +250,7 @@ internal class CopyInfoHandler
 				result = fullItemName;
 				if (asUnix)
 				{
-					result = GetUnixPath(result);
+					result = this.GetUnixPath(result);
 				}
 			}
 			else
@@ -187,7 +262,7 @@ internal class CopyInfoHandler
 				if (asUnix)
 				{
 					// The "relative" path may still end up a rooted path on another drive, so its drive may need reformatting.
-					result = GetUnixPath(result);
+					result = this.GetUnixPath(result);
 				}
 				else
 				{
@@ -200,12 +275,19 @@ internal class CopyInfoHandler
 		return result;
 	}
 
-	private static string GetUnixPath(string path)
+	private string GetUnixPath(string path)
 	{
 		string result = path.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 		if (result.Length >= 2 && char.IsLetter(result[0]) && result[1] == ':')
 		{
-			result = $"{Path.AltDirectorySeparatorChar}{char.ToLower(result[0])}{result.Substring(2)}";
+			char driveLetter = result[0];
+			string remainingPath = result.Substring(2);
+			result = this.options.UnixDriveFormat switch
+			{
+				UnixDriveFormat.MountLowerLetter => $"/mnt/{char.ToLower(driveLetter)}{remainingPath}",
+				UnixDriveFormat.UpperLetterColon => $"{char.ToUpper(driveLetter)}:{remainingPath}",
+				_ => $"/{char.ToLower(driveLetter)}{remainingPath}",
+			};
 		}
 
 		return result;
@@ -237,6 +319,27 @@ internal class CopyInfoHandler
 		}
 
 		return this.solutionRepoPath.IsNotEmpty();
+	}
+
+	private List<object> GetSelectedObjects(bool fromActiveDocument)
+	{
+		List<object> result;
+
+		ThreadHelper.ThrowIfNotOnUIThread();
+		if (!fromActiveDocument)
+		{
+			result = this.GetSelectedObjects();
+		}
+		else
+		{
+			// Unless "Show Miscellaneous Files in Solution Explorer" is enabled,
+			// we can't get ProjectItems from the normal IVsHierarchy, so for doc
+			// commands we'll use the DTE's ActiveDocument directly.
+			Document document = this.dte.ActiveDocument;
+			result = [document.ProjectItem];
+		}
+
+		return result;
 	}
 
 	private List<object> GetSelectedObjects()
@@ -274,9 +377,16 @@ internal class CopyInfoHandler
 		{
 			result.Add(selectedObject);
 		}
+		else if (hierarchyPointer == IntPtr.Zero
+			&& projectItemId == VSConstants.VSITEMID_ROOT
+			&& multiItemSelect is null
+			&& selectionContainerPointer != IntPtr.Zero)
+		{
+			result.Add(this.dte.Solution);
+		}
 		else
 		{
-			// When the root solution node is selected, we need to get the Solution object from the DTE.
+			// This block is typically only reached when no solution is open.
 			int selectedCount = this.dte.SelectedItems.Count;
 			for (int index = 1; index <= selectedCount; index++)
 			{
@@ -310,10 +420,10 @@ internal class CopyInfoHandler
 		return result;
 	}
 
-	private void GetRelativePaths(bool asUnix, Func<Project, string> getProjectBase, Func<ProjectItem, string> getItemBase)
+	private void GetRelativePaths(bool fromActiveDocument, bool asUnix, Func<Project, string> getProjectBase, Func<ProjectItem, string> getItemBase)
 	{
 		ThreadHelper.ThrowIfNotOnUIThread();
-		foreach (object selectedObject in this.GetSelectedObjects())
+		foreach (object selectedObject in this.GetSelectedObjects(fromActiveDocument))
 		{
 			(string fullItemName, string fullBaseName) = selectedObject switch
 			{
@@ -324,7 +434,7 @@ internal class CopyInfoHandler
 				_ => (null, null),
 			};
 
-			string relativePath = GetRelativePath(fullBaseName, fullItemName, asUnix);
+			string relativePath = this.GetRelativePath(fullBaseName, fullItemName, asUnix);
 			if (relativePath.IsNotEmpty())
 			{
 				this.lines.Add(relativePath);
@@ -332,10 +442,10 @@ internal class CopyInfoHandler
 		}
 	}
 
-	private void GetPaths(bool asUnix, Func<string, string> convertPath)
+	private void GetPaths(bool fromActiveDocument, bool asUnix, Func<string, string> convertPath)
 	{
 		ThreadHelper.ThrowIfNotOnUIThread();
-		foreach (object selectedObject in this.GetSelectedObjects())
+		foreach (object selectedObject in this.GetSelectedObjects(fromActiveDocument))
 		{
 			string fullItemName = selectedObject switch
 			{
@@ -353,7 +463,7 @@ internal class CopyInfoHandler
 				string finalName = convertPath(fullItemName);
 				if (asUnix)
 				{
-					finalName = GetUnixPath(finalName);
+					finalName = this.GetUnixPath(finalName);
 				}
 
 				if (finalName.IsNotEmpty())

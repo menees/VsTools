@@ -139,6 +139,17 @@
 						case Command.CopyUnixRepoRelativePath:
 						case Command.CopyUnixParentPath:
 						case Command.CopyUnixFullPath:
+						case Command.CopyDocSolutionRelativePath:
+						case Command.CopyDocProjectRelativePath:
+						case Command.CopyDocRepoRelativePath:
+						case Command.CopyDocParentPath:
+						case Command.CopyDocFullPath:
+						case Command.CopyDocNameOnly:
+						case Command.CopyDocUnixSolutionRelativePath:
+						case Command.CopyDocUnixProjectRelativePath:
+						case Command.CopyDocUnixRepoRelativePath:
+						case Command.CopyDocUnixParentPath:
+						case Command.CopyDocUnixFullPath:
 							result = this.GetCopyInfoHandler().CanExecute(command);
 							break;
 					}
@@ -153,7 +164,9 @@
 			}
 		}
 
+#pragma warning disable MEN003 // Method is too long. Large switch statement for handling all commands.
 		public void Execute(Command command)
+#pragma warning restore MEN003 // Method is too long
 		{
 			try
 			{
@@ -255,6 +268,17 @@
 						case Command.CopyUnixRepoRelativePath:
 						case Command.CopyUnixParentPath:
 						case Command.CopyUnixFullPath:
+						case Command.CopyDocSolutionRelativePath:
+						case Command.CopyDocProjectRelativePath:
+						case Command.CopyDocRepoRelativePath:
+						case Command.CopyDocParentPath:
+						case Command.CopyDocFullPath:
+						case Command.CopyDocNameOnly:
+						case Command.CopyDocUnixSolutionRelativePath:
+						case Command.CopyDocUnixProjectRelativePath:
+						case Command.CopyDocUnixRepoRelativePath:
+						case Command.CopyDocUnixParentPath:
+						case Command.CopyDocUnixFullPath:
 							this.GetCopyInfoHandler().Execute(command);
 							break;
 					}

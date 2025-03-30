@@ -87,6 +87,7 @@
 		AddToDoComment = 319,
 		ViewTasks = 320,
 		ViewProjectDependencies = 321,
+
 		CopySolutionRelativePath = 322,
 		CopyProjectRelativePath = 323,
 		CopyRepoRelativePath = 324,
@@ -98,6 +99,18 @@
 		CopyUnixRepoRelativePath = 330,
 		CopyUnixParentPath = 331,
 		CopyUnixFullPath = 332,
+
+		CopyDocSolutionRelativePath = 333,
+		CopyDocProjectRelativePath = 334,
+		CopyDocRepoRelativePath = 335,
+		CopyDocParentPath = 336,
+		CopyDocFullPath = 337,
+		CopyDocNameOnly = 338,
+		CopyDocUnixSolutionRelativePath = 339,
+		CopyDocUnixProjectRelativePath = 340,
+		CopyDocUnixRepoRelativePath = 341,
+		CopyDocUnixParentPath = 342,
+		CopyDocUnixFullPath = 343,
 	}
 
 	#endregion
@@ -129,6 +142,31 @@
 
 		// Note: When you add a language here, also add it to Tasks\ScanInfo.xml
 		// (e.g., as a new <Languages> node under an existing <Style>).
+	}
+
+	#endregion
+
+	#region UnixDriveFormat
+
+	/// <summary>
+	/// The supported formats when converting Windows drive-based paths to Unix format in <see cref="CopyInfoHandler"/>.
+	/// </summary>
+	internal enum UnixDriveFormat
+	{
+		/// <summary>
+		/// E.g., C:\Test -> /c/Test
+		/// </summary>
+		LowerLetter,
+
+		/// <summary>
+		/// E.g., C:\Test -> /mnt/c/Test
+		/// </summary>
+		MountLowerLetter,
+
+		/// <summary>
+		/// E.g., C:\Test -> C:/Test
+		/// </summary>
+		UpperLetterColon,
 	}
 
 	#endregion

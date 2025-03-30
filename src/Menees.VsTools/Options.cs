@@ -29,12 +29,12 @@
 	// http://bloggingabout.net/blogs/perikles/archive/2006/11/22/How-to-dynamically-Import_2F00_Export-setting-in-Visual-Studio-2005_2E00_.aspx
 	[Guid(Guids.GeneralOptionsString)]
 	[DefaultProperty(nameof(IsMouseWheelZoomEnabled))] // Make this get focus in the PropertyGrid first since its category is alphabetically first.
-	[SuppressMessage("Internal class never created.", "CA1812", Justification = "Created via reflection by VS.")]
 	internal sealed class Options : OptionsBase
 	{
 		#region Private Data Members
 
 		private GuidFormat guidFormat;
+		private UnixDriveFormat unixDriveFormat;
 
 		#endregion
 
@@ -44,6 +44,7 @@
 		{
 			// Fields
 			this.guidFormat = GuidFormatStringConverter.DefaultFormat;
+			this.unixDriveFormat = UnixDriveFormatStringConverter.DefaultFormat;
 
 			// Displayed options
 			// Note: Features that add to VS capabilities I've turned on by default.
@@ -53,6 +54,8 @@
 			this.SaveAllBeforeExecuteFile = true;
 			this.UppercaseGuids = true;
 			this.IsMouseWheelZoomEnabled = true;
+			this.ShowCopyInfoStandardCommands = true;
+			this.ShowCopyInfoUnixCommands = true;
 
 			// Other dialog state settings
 			this.TrimEnd = true;
@@ -137,6 +140,38 @@
 		[DefaultValue(BuildTiming.None)]
 		public BuildTiming BuildTiming { get; set; }
 
+		[Category("Copy Info")]
+		[DisplayName("Show standard commands")]
+		[Description("Add context menu commands to copy Windows path information for the selected item.")]
+		[DefaultValue(true)]
+		public bool ShowCopyInfoStandardCommands { get; set; }
+
+		[Category("Copy Info")]
+		[DisplayName("Show Unix commands")]
+		[Description("Add context menu commands to copy Unix path information for the selected item.")]
+		[DefaultValue(true)]
+		public bool ShowCopyInfoUnixCommands { get; set; }
+
+		[Category("Copy Info")]
+		[DisplayName("Unix drive format")]
+		[Description("The format to use for Windows drives when converting to Unix paths.")]
+		[DefaultValue(UnixDriveFormatStringConverter.DefaultFormatText)]
+		[TypeConverter(typeof(UnixDriveFormatStringConverter))]
+		public string UnixDriveFormatText
+		{
+			get
+			{
+				string result = UnixDriveFormatStringConverter.ToString(this.unixDriveFormat);
+				return result;
+			}
+
+			set
+			{
+				// See GuidFormatText's setter for more info on why the public property is a string.
+				this.unixDriveFormat = UnixDriveFormatStringConverter.ToFormat(value);
+			}
+		}
+
 		#endregion
 
 		#region Public Non-Browsable Properties (for other state persistence)
@@ -152,6 +187,8 @@
 		#region Internal Properties
 
 		internal GuidFormat GuidFormat => this.guidFormat;
+
+		internal UnixDriveFormat UnixDriveFormat => this.unixDriveFormat;
 
 		#endregion
 	}

@@ -219,6 +219,7 @@
     <Compile Include="TrimDialog.xaml.cs">
       <DependentUpon>TrimDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UnixDriveFormatStringConverter.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
