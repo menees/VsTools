@@ -48,6 +48,41 @@ internal class CopyInfoHandler
 
 	#region Public Methods
 
+	public static bool IsHandled(Command command)
+	{
+		// I could replace this with a more compact expression like:
+		// result = command >= Command.CopySolutionRelativePath && command <= Command.CopyDocUnixFullPath;
+		// However, this explicit switch expression allows Find All References to work for each enum field.
+		bool result = command switch
+		{
+			Command.CopySolutionRelativePath => true,
+			Command.CopyProjectRelativePath => true,
+			Command.CopyRepoRelativePath => true,
+			Command.CopyParentPath => true,
+			Command.CopyFullPath => true,
+			Command.CopyUnixSolutionRelativePath => true,
+			Command.CopyUnixProjectRelativePath => true,
+			Command.CopyUnixRepoRelativePath => true,
+			Command.CopyUnixParentPath => true,
+			Command.CopyUnixFullPath => true,
+			Command.CopyNameOnly => true,
+			Command.CopyDocSolutionRelativePath => true,
+			Command.CopyDocProjectRelativePath => true,
+			Command.CopyDocRepoRelativePath => true,
+			Command.CopyDocParentPath => true,
+			Command.CopyDocFullPath => true,
+			Command.CopyDocUnixSolutionRelativePath => true,
+			Command.CopyDocUnixProjectRelativePath => true,
+			Command.CopyDocUnixRepoRelativePath => true,
+			Command.CopyDocUnixParentPath => true,
+			Command.CopyDocUnixFullPath => true,
+			Command.CopyDocNameOnly => true,
+			_ => false,
+		};
+
+		return result;
+	}
+
 	public bool CanExecute(Command command)
 	{
 		bool isOsAvailable = false;
@@ -201,6 +236,9 @@ internal class CopyInfoHandler
 			case Command.CopyUnixFullPath:
 			case Command.CopyDocFullPath:
 			case Command.CopyDocUnixFullPath:
+				// Note: VS provides a "Copy Full Path" command, but it doesn't support several scenarios that we do:
+				// solution items that aren't in a project, files in .sqlproj and .vcxproj projects, several scenarios
+				// with heterogeneous multi-selection, and new files where the %TEMP% file path shouldn't be returned.
 				this.GetPaths(
 					command == Command.CopyDocFullPath || command == Command.CopyDocUnixFullPath,
 					command == Command.CopyUnixFullPath || command == Command.CopyDocUnixFullPath,
@@ -247,7 +285,7 @@ internal class CopyInfoHandler
 		string fileName = Path.GetFileName(fullName);
 		StringComparer comparer = StringComparer.OrdinalIgnoreCase;
 		bool result = comparer.Equals(directory, Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar))
-			&& !comparer.Equals(fileName, document.ActiveWindow?.Caption);
+			&& !comparer.Equals(fileName, document.ProjectItem.Name);
 		return result;
 	}
 
@@ -336,36 +374,39 @@ internal class CopyInfoHandler
 
 	private List<object> GetSelectedObjects(bool fromActiveDocument)
 	{
-		List<object> result;
-
 		ThreadHelper.ThrowIfNotOnUIThread();
-		if (!fromActiveDocument)
+		List<object> result = fromActiveDocument
+			? this.GetSelectedObjectsFromActiveDocument()
+			: this.GetSelectedObjectsFromSolutionExplorer();
+		return result;
+	}
+
+	private List<object> GetSelectedObjectsFromActiveDocument()
+	{
+		ThreadHelper.ThrowIfNotOnUIThread();
+
+		// Unless "Show Miscellaneous Files in Solution Explorer" is enabled, we can't get miscellaneous ProjectItems
+		// from the normal IVsHierarchy, so for doc commands we'll use the DTE's ActiveDocument directly.
+		Document document = this.dte.ActiveDocument;
+		ProjectItem projectItem = document.ProjectItem;
+
+		List<object> result;
+		if (projectItem.ContainingProject.Kind != EnvDTE.Constants.vsProjectKindMisc || !IsTempFile(document))
 		{
-			result = this.GetSelectedObjects();
+			result = [document.ProjectItem];
 		}
 		else
 		{
-			// Unless "Show Miscellaneous Files in Solution Explorer" is enabled,
-			// we can't get ProjectItems from the normal IVsHierarchy, so for doc
-			// commands we'll use the DTE's ActiveDocument directly.
-			Document document = this.dte.ActiveDocument;
-			ProjectItem projectItem = document.ProjectItem;
-			if (projectItem == null ||
-				(projectItem.ContainingProject.Kind == EnvDTE.Constants.vsProjectKindMisc
-				&& IsTempFile(document)))
-			{
-				result = [];
-			}
-			else
-			{
-				result = [document.ProjectItem];
-			}
+			// Unlike VS, we don't want to report the temp path and temp name for a new document.
+			// For a new temp file, we'll report the visible name instead of the temp path,
+			// e.g., "TextFile1.txt" instead of "C:\\Temp\\Env\\Bill\\iuhjo0gk..txt"
+			result = [new NamedObject(projectItem.Name)];
 		}
 
 		return result;
 	}
 
-	private List<object> GetSelectedObjects()
+	private List<object> GetSelectedObjectsFromSolutionExplorer()
 	{
 		// Started from https://stackoverflow.com/a/45180002/1882616
 		ThreadHelper.ThrowIfNotOnUIThread();
@@ -454,6 +495,7 @@ internal class CopyInfoHandler
 				ProjectItem projectItem => (projectItem.FileCount > 0 ? projectItem.FileNames[1] : null, getItemBase(projectItem)),
 				Project project => (project.FullName, getProjectBase(project)),
 				Solution solution => (solution.FullName, solution.FullName),
+				NamedObject namedObject => (namedObject.Name, null),
 				_ => (null, null),
 			};
 
@@ -476,6 +518,7 @@ internal class CopyInfoHandler
 				ProjectItem projectItem => projectItem.FileCount > 0 ? projectItem.FileNames[1] : null,
 				Project project => project.FullName,
 				Solution solution => solution.FullName,
+				NamedObject namedObject => namedObject.Name,
 				_ => null,
 			};
 
@@ -495,6 +538,15 @@ internal class CopyInfoHandler
 				}
 			}
 		}
+	}
+
+	#endregion
+
+	#region Private Types
+
+	private sealed class NamedObject(string name)
+	{
+		public string Name { get; } = name;
 	}
 
 	#endregion

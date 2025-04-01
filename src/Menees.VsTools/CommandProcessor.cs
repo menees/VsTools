@@ -128,29 +128,8 @@
 							result = CommentHandler.CanAddToDoComment(this.dte);
 							break;
 
-						case Command.CopySolutionRelativePath:
-						case Command.CopyProjectRelativePath:
-						case Command.CopyRepoRelativePath:
-						case Command.CopyParentPath:
-						case Command.CopyFullPath:
-						case Command.CopyNameOnly:
-						case Command.CopyUnixSolutionRelativePath:
-						case Command.CopyUnixProjectRelativePath:
-						case Command.CopyUnixRepoRelativePath:
-						case Command.CopyUnixParentPath:
-						case Command.CopyUnixFullPath:
-						case Command.CopyDocSolutionRelativePath:
-						case Command.CopyDocProjectRelativePath:
-						case Command.CopyDocRepoRelativePath:
-						case Command.CopyDocParentPath:
-						case Command.CopyDocFullPath:
-						case Command.CopyDocNameOnly:
-						case Command.CopyDocUnixSolutionRelativePath:
-						case Command.CopyDocUnixProjectRelativePath:
-						case Command.CopyDocUnixRepoRelativePath:
-						case Command.CopyDocUnixParentPath:
-						case Command.CopyDocUnixFullPath:
-							result = this.GetCopyInfoHandler().CanExecute(command);
+						default:
+							result = CopyInfoHandler.IsHandled(command) && this.GetCopyInfoHandler().CanExecute(command);
 							break;
 					}
 				}
@@ -164,9 +143,7 @@
 			}
 		}
 
-#pragma warning disable MEN003 // Method is too long. Large switch statement for handling all commands.
 		public void Execute(Command command)
-#pragma warning restore MEN003 // Method is too long
 		{
 			try
 			{
@@ -257,29 +234,12 @@
 							this.ViewToolWindow(typeof(Tasks.TasksWindow));
 							break;
 
-						case Command.CopySolutionRelativePath:
-						case Command.CopyProjectRelativePath:
-						case Command.CopyRepoRelativePath:
-						case Command.CopyParentPath:
-						case Command.CopyFullPath:
-						case Command.CopyNameOnly:
-						case Command.CopyUnixSolutionRelativePath:
-						case Command.CopyUnixProjectRelativePath:
-						case Command.CopyUnixRepoRelativePath:
-						case Command.CopyUnixParentPath:
-						case Command.CopyUnixFullPath:
-						case Command.CopyDocSolutionRelativePath:
-						case Command.CopyDocProjectRelativePath:
-						case Command.CopyDocRepoRelativePath:
-						case Command.CopyDocParentPath:
-						case Command.CopyDocFullPath:
-						case Command.CopyDocNameOnly:
-						case Command.CopyDocUnixSolutionRelativePath:
-						case Command.CopyDocUnixProjectRelativePath:
-						case Command.CopyDocUnixRepoRelativePath:
-						case Command.CopyDocUnixParentPath:
-						case Command.CopyDocUnixFullPath:
-							this.GetCopyInfoHandler().Execute(command);
+						default:
+							if (CopyInfoHandler.IsHandled(command))
+							{
+								this.GetCopyInfoHandler().Execute(command);
+							}
+
 							break;
 					}
 				}
