@@ -122,9 +122,9 @@
     <comment>Version-specific product name</comment>
   </data>
   <data name="111" xml:space="preserve">
-    <value>Provides several new commands such as Sort Lines, Sort Members, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, ExpandAllRegions, and ToggleFiles.
+    <value>Provides several new commands such as Sort Lines, Sort Members, Trim, Statistics, ExecuteFile, AddRegion, CollapseAllRegions, ExpandAllRegions, and ToggleFiles. Provides several new Copy Info context menu commands to copy relative and full path parts in Windows or Unix format.
 
-Also, provides colorized text in the Output and Find Results windows, an enhanced Tasks tool window (e.g., for TODO comments), and a Base Converter tool window.</value>
+Also, provides colorized text in the Output and Find Results windows, an enhanced Tasks tool window (e.g., for TODO comments), a Base Converter tool window, and a way to generate project dependency graphs.</value>
     <comment>Displayed in Help -&gt; About's Product Details section</comment>
   </data>
   <data name="112" xml:space="preserve">
