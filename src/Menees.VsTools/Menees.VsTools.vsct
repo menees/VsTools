@@ -819,6 +819,12 @@
 			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_FOLDERNODE" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0501">
+			<!-- This is the "Properties" folder in a C# project and the "My Project" folder in a VB project. See:
+			https://github.com/dotnet/project-system/blob/main/src/Microsoft.VisualStudio.ProjectSystem.Managed/ProjectSystem/Tree/AppDesignerFolderProjectTreePropertiesProvider.cs#L10
+			-->
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_APPDESIGNERFOLDER" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0501">
 			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_SLNITEM" />
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0501">

@@ -166,7 +166,6 @@ internal class CopyInfoHandler
 		ThreadHelper.ThrowIfNotOnUIThread();
 		this.lines.Clear();
 
-		// TODO: Detect doc command. [Bill, 3/30/2025]
 		switch (command)
 		{
 			case Command.CopySolutionRelativePath:
@@ -237,8 +236,9 @@ internal class CopyInfoHandler
 			case Command.CopyDocFullPath:
 			case Command.CopyDocUnixFullPath:
 				// Note: VS provides a "Copy Full Path" command, but it doesn't support several scenarios that we do:
-				// solution items that aren't in a project, files in .sqlproj and .vcxproj projects, several scenarios
-				// with heterogeneous multi-selection, and new files where the %TEMP% file path shouldn't be returned.
+				// solution items that aren't in a project, files in .sqlproj and .vcxproj projects, heterogeneous
+				// multi-selection, and new files where the %TEMP% file path shouldn't be returned.
+				// We also trim the final separator off folder items.
 				this.GetPaths(
 					command == Command.CopyDocFullPath || command == Command.CopyDocUnixFullPath,
 					command == Command.CopyUnixFullPath || command == Command.CopyDocUnixFullPath,
@@ -260,14 +260,10 @@ internal class CopyInfoHandler
 			Clipboard.SetText(value);
 
 #if DEBUG
-			// TODO: Remove this. [Bill, 3/24/2025]
-			VsShellUtilities.ShowMessageBox(
-				this.package,
-				value,
-				command.ToString(),
-				OLEMSGICON.OLEMSGICON_INFO,
-				OLEMSGBUTTON.OLEMSGBUTTON_OK,
-				OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+			if (Convert.ToBoolean(0))
+			{
+				this.package.ShowMessageBox($"{command}\r\n\r\n{value}");
+			}
 #endif
 		}
 	}
@@ -289,6 +285,16 @@ internal class CopyInfoHandler
 		return result;
 	}
 
+	private static string GetFullName(ProjectItem projectItem)
+	{
+		ThreadHelper.ThrowIfNotOnUIThread();
+
+		// FileNames is an old 1-based COM collection.
+		// If projectItem is for a folder, we need to remove the last separator.
+		string result = projectItem.FileCount > 0 ? projectItem.FileNames[1].TrimEnd(Path.DirectorySeparatorChar) : null;
+		return result;
+	}
+
 	private string GetRelativePath(string fullBaseName, string fullItemName, bool asUnix)
 	{
 		string result = null;
@@ -306,10 +312,12 @@ internal class CopyInfoHandler
 			}
 			else
 			{
-				// We always want the path relative to the base folder, so we have to end it with a separator.
+				// We always want the item path relative to the base folder, so we have to end base with a separator,
+				// and we have to make sure item doesn't end with a separator (e.g., for a project folder item).
 				string fullBaseFolder = Path.GetDirectoryName(fullBaseName) + Path.DirectorySeparatorChar;
+				string fullItemEntry = fullItemName.TrimEnd(Path.DirectorySeparatorChar);
 				Uri baseUri = new(fullBaseFolder);
-				Uri itemUri = new(fullItemName);
+				Uri itemUri = new(fullItemEntry);
 				Uri relativeUri = baseUri.MakeRelativeUri(itemUri);
 				result = Uri.UnescapeDataString(relativeUri.ToString());
 				if (asUnix)
@@ -502,8 +510,7 @@ internal class CopyInfoHandler
 		{
 			(string fullItemName, string fullBaseName) = selectedObject switch
 			{
-				// FileNames is an old 1-based COM collection.
-				ProjectItem projectItem => (projectItem.FileCount > 0 ? projectItem.FileNames[1] : null, getItemBase(projectItem)),
+				ProjectItem projectItem => (GetFullName(projectItem), getItemBase(projectItem)),
 				Project project => (project.FullName, getProjectBase(project)),
 				Solution solution => (solution.FullName, solution.FullName),
 				NamedObject namedObject => (namedObject.Name, null),
@@ -525,8 +532,7 @@ internal class CopyInfoHandler
 		{
 			string fullItemName = selectedObject switch
 			{
-				// FileNames is an old 1-based COM collection.
-				ProjectItem projectItem => projectItem.FileCount > 0 ? projectItem.FileNames[1] : null,
+				ProjectItem projectItem => GetFullName(projectItem),
 				Project project => project.FullName,
 				Solution solution => solution.FullName,
 				NamedObject namedObject => namedObject.Name,
