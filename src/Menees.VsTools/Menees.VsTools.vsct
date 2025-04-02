@@ -818,6 +818,15 @@
 		<CommandPlacement guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0501">
 			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_FOLDERNODE" />
 		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0501">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_SLNITEM" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0501">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_PROJITEM" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ItemCopyInfoSubMenuGroup" priority="0x0501">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_MULTIITEM" />
+		</CommandPlacement>
 
 		<CommandPlacement guid="CommandSet" id="CopySolutionRelativePath" priority="0x0101">
 			<Parent guid="CommandSet" id="ProjectCopyInfoStandard"/>
@@ -857,6 +866,12 @@
 		</CommandPlacement>
 		<CommandPlacement guid="CommandSet" id="ProjectCopyInfoSubMenuGroup" priority="0x0780">
 			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ProjectCopyInfoSubMenuGroup" priority="0x0780">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_MULTIPROJ" />
+		</CommandPlacement>
+		<CommandPlacement guid="CommandSet" id="ProjectCopyInfoSubMenuGroup" priority="0x0780">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_XPROJ_SLNPROJ" />
 		</CommandPlacement>
 
 		<CommandPlacement guid="CommandSet" id="CopyRepoRelativePath" priority="0x0103">

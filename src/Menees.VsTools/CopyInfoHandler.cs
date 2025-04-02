@@ -306,7 +306,9 @@ internal class CopyInfoHandler
 			}
 			else
 			{
-				Uri baseUri = new(fullBaseName);
+				// We always want the path relative to the base folder, so we have to end it with a separator.
+				string fullBaseFolder = Path.GetDirectoryName(fullBaseName) + Path.DirectorySeparatorChar;
+				Uri baseUri = new(fullBaseFolder);
 				Uri itemUri = new(fullItemName);
 				Uri relativeUri = baseUri.MakeRelativeUri(itemUri);
 				result = Uri.UnescapeDataString(relativeUri.ToString());
@@ -442,11 +444,13 @@ internal class CopyInfoHandler
 			result.Add(selectedObject);
 		}
 		else if (hierarchyPointer == IntPtr.Zero
-			&& projectItemId == VSConstants.VSITEMID_ROOT
 			&& multiItemSelect is null
 			&& selectionContainerPointer != IntPtr.Zero)
 		{
-			result.Add(this.dte.Solution);
+			if (TryGetSelectedObject(null, projectItemId, out selectedObject))
+			{
+				result.Add(selectedObject);
+			}
 		}
 		else
 		{
@@ -470,12 +474,19 @@ internal class CopyInfoHandler
 			}
 		}
 
-		static bool TryGetSelectedObject(IVsHierarchy hierarchy, uint itemid, out object selectedObject)
+		bool TryGetSelectedObject(IVsHierarchy hierarchy, uint itemid, out object selectedObject)
 		{
-			selectedObject = null;
 			if (hierarchy != null && ErrorHandler.Succeeded(hierarchy.GetProperty(itemid, (int)__VSHPROPID.VSHPROPID_ExtObject, out object extObject)))
 			{
 				selectedObject = extObject;
+			}
+			else if (hierarchy is null && itemid == VSConstants.VSITEMID_ROOT)
+			{
+				selectedObject = this.dte.Solution;
+			}
+			else
+			{
+				selectedObject = null;
 			}
 
 			return selectedObject != null;
