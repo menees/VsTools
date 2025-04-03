@@ -212,11 +212,15 @@ internal class CopyInfoHandler
 			case Command.CopyDocUnixRepoRelativePath:
 				if (this.FindGitRepo(this.dte.Solution.FullName))
 				{
+					string repoRelativeBase = this.options.IncludeRepoNameInRelativePath
+						? Path.GetDirectoryName(this.solutionRepoPath)
+						: this.solutionRepoPath;
+
 					this.GetRelativePaths(
 						command == Command.CopyDocRepoRelativePath || command == Command.CopyDocUnixRepoRelativePath,
 						command == Command.CopyUnixRepoRelativePath || command == Command.CopyDocUnixRepoRelativePath,
-						_ => this.solutionRepoPath,
-						_ => this.solutionRepoPath);
+						_ => repoRelativeBase,
+						_ => repoRelativeBase);
 				}
 
 				break;

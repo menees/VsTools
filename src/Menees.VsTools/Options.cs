@@ -172,6 +172,12 @@
 			}
 		}
 
+		[Category("Copy Info")]
+		[DisplayName("Include repo name in relative path")]
+		[Description("Whether a repo-relative path should start with the repository name.")]
+		[DefaultValue(false)]
+		public bool IncludeRepoNameInRelativePath { get; set; }
+
 		#endregion
 
 		#region Public Non-Browsable Properties (for other state persistence)
