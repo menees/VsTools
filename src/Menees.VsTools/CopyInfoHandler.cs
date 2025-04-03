@@ -401,7 +401,20 @@ internal class CopyInfoHandler
 		ProjectItem projectItem = document.ProjectItem;
 
 		List<object> result;
-		if (projectItem.ContainingProject.Kind != EnvDTE.Constants.vsProjectKindMisc || !IsTempFile(document))
+		if (projectItem is null)
+		{
+			// An SDK-style .csproj file open in the editor won't have a ProjectItem for its document
+			// if it's also a project in the current solution. A .csproj that's not in the solution
+			// or if its project has been unloaded will have a miscellaneous ProjectItem.
+			string fullName = document.FullName;
+			Project project = this.dte.Solution.Projects.Cast<Project>().FirstOrDefault(proj =>
+				{
+					ThreadHelper.ThrowIfNotOnUIThread();
+					return string.Equals(proj.FullName, fullName, StringComparison.OrdinalIgnoreCase);
+				});
+			result = [project ?? (object)new NamedObject(fullName)];
+		}
+		else if (projectItem.ContainingProject.Kind != EnvDTE.Constants.vsProjectKindMisc || !IsTempFile(document))
 		{
 			result = [document.ProjectItem];
 		}
