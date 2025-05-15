@@ -220,6 +220,7 @@ internal class CopyInfoHandler
 						command == Command.CopyDocRepoRelativePath || command == Command.CopyDocUnixRepoRelativePath,
 						command == Command.CopyUnixRepoRelativePath || command == Command.CopyDocUnixRepoRelativePath,
 						_ => repoRelativeBase,
+						_ => repoRelativeBase,
 						_ => repoRelativeBase);
 				}
 
@@ -520,7 +521,12 @@ internal class CopyInfoHandler
 		return result;
 	}
 
-	private void GetRelativePaths(bool fromActiveDocument, bool asUnix, Func<Project, string> getProjectBase, Func<ProjectItem, string> getItemBase)
+	private void GetRelativePaths(
+		bool fromActiveDocument,
+		bool asUnix,
+		Func<Project, string> getProjectBase,
+		Func<ProjectItem, string> getItemBase,
+		Func<Solution, string> getSolutionBase = null)
 	{
 		ThreadHelper.ThrowIfNotOnUIThread();
 		foreach (object selectedObject in this.GetSelectedObjects(fromActiveDocument))
@@ -529,7 +535,7 @@ internal class CopyInfoHandler
 			{
 				ProjectItem projectItem => (GetFullName(projectItem), getItemBase(projectItem)),
 				Project project => (project.FullName, getProjectBase(project)),
-				Solution solution => (solution.FullName, solution.FullName),
+				Solution solution => (solution.FullName, getSolutionBase?.Invoke(solution) ?? solution.FullName),
 				NamedObject namedObject => (namedObject.Name, null),
 				_ => (null, null),
 			};
