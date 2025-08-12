@@ -652,29 +652,31 @@ namespace Menees.VsTools.Sort
 			// (even though some of the member types have Comment and DocComment properties
 			// and the code model's RemoveMember will remove the comments).  So we have to
 			// grab any attached comment lines manually.
+			// We also need to look for directives like #if, #pragma, etc. before and after.
 			TextPoint startPoint = this.element.GetStartPoint(vsCMPart.vsCMPartWholeWithAttributes);
 			TextPoint endPoint = this.element.GetEndPoint(vsCMPart.vsCMPartWholeWithAttributes);
-			string commentRegexPattern;
+			string triviaRegexPattern;
 			switch (this.language)
 			{
 				case Language.CSharp:
-					// Look for lines starting with optional whitespace followed by //, /*, */, or *.
-					commentRegexPattern = @"^\s*(//|/\*|\*/|\*)";
+					// Look for lines starting with optional whitespace followed by //, /*, */, * or #.
+					triviaRegexPattern = @"^\s*(//|/\*|\*/|\*|#)";
 					break;
 
 				case Language.VB:
 					// Look for lines starting with optional whitespace followed by '.
-					commentRegexPattern = @"^\s*'";
+					triviaRegexPattern = @"^\s*'";
 					break;
 
 				default:
 					throw new NotSupportedException("Unsupported language: " + this.language);
 			}
 
+			// Look before
 			EditPoint startEdit = startPoint.CreateEditPoint();
 			startEdit.LineUp();
 			while (!startEdit.AtStartOfDocument
-				&& Regex.IsMatch(startEdit.GetLines(startEdit.Line, startEdit.Line + 1), commentRegexPattern))
+				&& Regex.IsMatch(startEdit.GetLines(startEdit.Line, startEdit.Line + 1), triviaRegexPattern))
 			{
 				startEdit.LineUp();
 				startEdit.StartOfLine();
@@ -683,7 +685,20 @@ namespace Menees.VsTools.Sort
 			startEdit.LineDown();
 			startEdit.StartOfLine();
 
-			Tuple<TextPoint, TextPoint> result = Tuple.Create((TextPoint)startEdit, endPoint);
+			// Look after
+			EditPoint endEdit = endPoint.CreateEditPoint();
+			endEdit.LineDown();
+			while (!endEdit.AtEndOfDocument
+				&& Regex.IsMatch(endEdit.GetLines(endEdit.Line, endEdit.Line + 1), triviaRegexPattern))
+			{
+				endEdit.LineDown();
+				endEdit.StartOfLine();
+			}
+
+			endEdit.LineUp();
+			endEdit.StartOfLine();
+
+			Tuple<TextPoint, TextPoint> result = Tuple.Create((TextPoint)startEdit, (TextPoint)endEdit);
 			return result;
 		}
 
