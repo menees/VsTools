@@ -10,7 +10,8 @@
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<SignAssembly>true</SignAssembly>
 		<LangVersion>latest</LangVersion>
-		<Copyright>Copyright © 2002-2023 Bill Menees</Copyright>
+		<CurrentYear>$([System.DateTime]::UtcNow.ToString(`yyyy`))</CurrentYear>
+		<Copyright>Copyright © 2002-$(CurrentYear) Bill Menees</Copyright>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
